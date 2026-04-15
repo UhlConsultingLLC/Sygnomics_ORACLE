@@ -5,8 +5,8 @@ All functions return Pydantic models, not ORM objects, at the boundary.
 
 from typing import Optional
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 from connectors.models.trial import (
     EligibilityCriteria,
@@ -19,13 +19,9 @@ from connectors.models.trial import (
     Trial,
 )
 from database.models import (
-    ArmRecord,
     ConditionRecord,
-    EligibilityRecord,
     InterventionRecord,
-    LocationRecord,
     MOAAnnotationRecord,
-    OutcomeRecord,
     SponsorRecord,
     TrialRecord,
 )

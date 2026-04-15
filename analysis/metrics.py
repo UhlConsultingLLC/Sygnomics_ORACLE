@@ -1,7 +1,7 @@
 """Summary metrics and aggregate statistics for clinical trial data."""
 
 import pandas as pd
-from sqlalchemy import func, select
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from analysis.models import (

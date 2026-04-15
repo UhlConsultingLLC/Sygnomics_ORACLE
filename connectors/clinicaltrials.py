@@ -7,7 +7,6 @@ In production, methods call MCP tools. For testing, responses can be injected.
 import asyncio
 import json
 import logging
-import time
 from datetime import date
 from pathlib import Path
 from typing import Any, Callable, Optional
@@ -23,7 +22,6 @@ from connectors.models.trial import (
     Sponsor,
     StudyArm,
     Trial,
-    TrialSearchResult,
 )
 
 logger = logging.getLogger(__name__)
@@ -158,8 +156,8 @@ def _fetch_json(url: str, params: dict[str, Any]) -> dict:
     ClinicalTrials.gov blocks httpx/requests via Cloudflare bot detection,
     but accepts urllib with a standard User-Agent header.
     """
-    import urllib.request
     import urllib.parse
+    import urllib.request
 
     query = urllib.parse.urlencode(params)
     full_url = f"{url}?{query}"

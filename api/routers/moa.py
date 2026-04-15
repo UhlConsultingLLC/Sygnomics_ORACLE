@@ -2,9 +2,8 @@
 
 import asyncio
 import logging
-from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -159,9 +158,9 @@ def lookup_drug_moa(req: MOADrugLookupRequest):
 
     Useful for previewing MOA resolution before running full classification.
     """
+    from api.mesh_expansion import expand_intervention
     from connectors.open_targets import OpenTargetsClient
     from moa_classification.moa_shorthand import resolve_shorthand
-    from api.mesh_expansion import expand_intervention
 
     client = OpenTargetsClient()
     result = client.lookup_drug_moa(req.drug_name)

@@ -233,7 +233,7 @@ def main() -> int:
             .count()
         )
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Inserted: {inserted} CIViC associations")
     print(f"  Skipped (duplicate of manual): {skipped_dup}")
     print(f"  Total associations in DB: {total} ({total - civic_count} manual + {civic_count} CIViC)")

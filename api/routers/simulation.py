@@ -2,6 +2,7 @@
 
 import logging
 import threading
+
 import numpy as np
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -32,7 +33,8 @@ def _get_cached_engine():
 
 
 def _load_sim_summary(sim_id: str) -> dict:
-    import json, os
+    import json
+    import os
     path = os.path.join("data", "simulations", sim_id, "summary.json")
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail=f"Simulation {sim_id} summary not found")
@@ -58,9 +60,9 @@ def run_simulation(req: SimulationRequest, db: Session = Depends(get_db)):
 
     # Try full TCGA-based simulation first
     try:
-        from analysis.simulation import InSilicoSimulator
-        from analysis.response_model import HistoricalResponseModel
         from analysis.moa_simulation import extract_response_rate
+        from analysis.response_model import HistoricalResponseModel
+        from analysis.simulation import InSilicoSimulator
         from connectors.tcga import TCGAConnector
 
         tcga = TCGAConnector()
@@ -246,9 +248,11 @@ def list_moa_simulations():
 @router.get("/moa-responder-similarity/{sim_id}")
 def get_responder_similarity(sim_id: str, rule: str = "majority", q_cutoff: float = 0.1):
     """Compute responder-similarity analysis for a completed MOA simulation."""
-    from analysis.responder_similarity import compute_responder_similarity
-    from fastapi.responses import JSONResponse
     import math
+
+    from fastapi.responses import JSONResponse
+
+    from analysis.responder_similarity import compute_responder_similarity
 
     summary = _load_sim_summary(sim_id)
     matrix = summary.get("responder_classification_matrix")
@@ -278,9 +282,10 @@ def get_responder_similarity(sim_id: str, rule: str = "majority", q_cutoff: floa
 @router.get("/moa-responder-similarity/{sim_id}/download")
 def download_responder_similarity(sim_id: str, rule: str = "majority", q_cutoff: float = 0.1):
     """Download full responder-similarity feature table as CSV with provenance header."""
+    from fastapi.responses import Response
+
     from analysis.responder_similarity import compute_responder_similarity, features_to_csv
     from api.provenance import build_export_metadata, csv_header_lines, provenance_filename
-    from fastapi.responses import Response
 
     summary = _load_sim_summary(sim_id)
     matrix = summary.get("responder_classification_matrix")
@@ -324,9 +329,9 @@ def get_available_moa_categories(db: Session = Depends(get_db)):
       - drugs:       list of unique drug names in the category
       - members:     (groups only) list of specific MOA short-forms included
     """
-    from database.models import MOAAnnotationRecord, InterventionRecord
-    from sqlalchemy import func
     from collections import defaultdict
+
+    from database.models import InterventionRecord, MOAAnnotationRecord
 
     # ── Fetch all (broad, short, drug_name) tuples ──
     rows = (
@@ -453,7 +458,8 @@ def screening_impact(moas: str = "EGFR inhibitor,PARP inhibitor,VEGFR inhibitor"
     return every testing-trial arm that (a) had non-empty recruitment criteria
     and (b) shows a positive lift (screened RR > observed RR).
     """
-    import json, os
+    import json
+    import os
 
     wanted = [m.strip() for m in moas.split(",") if m.strip()]
     base = os.path.join("data", "simulations")
@@ -546,8 +552,9 @@ def simulate_proposed_drug(req: ProposedDrugRequest):
       - predicted_rates: list of per-iteration predicted response rates
       - patients: per-patient scatter data (dcna, expr, responder, mgmt_status)
     """
-    from analysis.moa_simulation import TrialInfo
     import numpy as np
+
+    from analysis.moa_simulation import TrialInfo
 
     # 1) Pull learned threshold from the referenced MOA summary
     summary = _load_sim_summary(req.sim_id)
@@ -771,7 +778,9 @@ def tam_estimate(req: TAMRequest):
     Also returns the union of responder IDs across all MOAs to estimate
     unique patients covered by at least one drug class.
     """
-    import json, os
+    import json
+    import os
+
     from analysis.responder_similarity import apply_aggregation
 
     base = os.path.join("data", "simulations")

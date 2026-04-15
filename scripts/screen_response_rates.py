@@ -26,13 +26,12 @@ import json
 import sys
 from collections import Counter
 
-from api.dependencies import get_engine, get_session_factory
 from analysis.moa_simulation import (
-    extract_response_rate,
     _classify_unit,
+    extract_response_rate,
 )
+from api.dependencies import get_engine, get_session_factory
 from database.models import OutcomeRecord, TrialRecord
-
 
 RESPONSE_KEYWORDS = (
     "response", "responder", "remission", "ORR", "objective response",

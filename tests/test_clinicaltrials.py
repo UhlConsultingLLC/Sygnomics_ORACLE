@@ -1,17 +1,15 @@
 """Tests for the ClinicalTrials.gov connector and disease mapper."""
 
-import asyncio
 import json
 from pathlib import Path
 from unittest.mock import AsyncMock
 
 import pytest
 
-from connectors.clinicaltrials import ClinicalTrialsConnector, _parse_trial_from_search
-from connectors.disease_mapper import DiseaseMapper, KNOWN_SYNONYMS
-from connectors.models.trial import Trial
 from config.schema import ClinicalTrialsConfig
-
+from connectors.clinicaltrials import ClinicalTrialsConnector, _parse_trial_from_search
+from connectors.disease_mapper import DiseaseMapper
+from connectors.models.trial import Trial
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 

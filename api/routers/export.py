@@ -19,7 +19,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from analysis.filters import canonicalize_phase, CANONICAL_PHASES
+from analysis.filters import CANONICAL_PHASES, canonicalize_phase
 from api.dependencies import get_db
 from api.provenance import (
     build_export_metadata,

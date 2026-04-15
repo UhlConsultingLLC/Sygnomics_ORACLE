@@ -66,7 +66,7 @@ def main():
             for t in p.target_who_types:
                 type_counts[t] = type_counts.get(t, 0) + 1
 
-        print(f"\nWHO 2021 Subtype Distribution (trials may target multiple types):")
+        print("\nWHO 2021 Subtype Distribution (trials may target multiple types):")
         for t, count in sorted(type_counts.items(), key=lambda x: -x[1]):
             pct = 100 * count / len(profiles)
             print(f"  {t:55s}  {count:4d}  ({pct:5.1f}%)")
@@ -76,7 +76,7 @@ def main():
         for p in profiles:
             conf_counts[p.confidence] = conf_counts.get(p.confidence, 0) + 1
 
-        print(f"\nClassification Confidence:")
+        print("\nClassification Confidence:")
         for c in ["high", "medium", "low"]:
             count = conf_counts.get(c, 0)
             pct = 100 * count / len(profiles)
@@ -87,7 +87,7 @@ def main():
         for p in profiles:
             idh_counts[p.idh_status] = idh_counts.get(p.idh_status, 0) + 1
 
-        print(f"\nIDH Status Requirement:")
+        print("\nIDH Status Requirement:")
         for status in ["required", "excluded", "any", "mentioned", "unknown"]:
             count = idh_counts.get(status, 0)
             if count:
@@ -102,7 +102,7 @@ def main():
             ("cdkn2a_status", "CDKN2A"),
             ("h3k27m_status", "H3K27M"),
         ]
-        print(f"\nMolecular Requirement Summary:")
+        print("\nMolecular Requirement Summary:")
         print(f"  {'Marker':12s}  {'Required':>8s}  {'Excluded':>8s}  {'Any':>8s}  {'Mentioned':>9s}  {'Unknown':>7s}")
         for field, label in mol_fields:
             counts = {}
@@ -124,7 +124,7 @@ def main():
             key = f"{p.who_grade_min}-{p.who_grade_max}"
             grade_counts[key] = grade_counts.get(key, 0) + 1
 
-        print(f"\nGrade Range Distribution:")
+        print("\nGrade Range Distribution:")
         for grade_range, count in sorted(grade_counts.items(), key=lambda x: -x[1])[:10]:
             pct = 100 * count / len(profiles)
             print(f"  {grade_range:25s}  {count:4d}  ({pct:5.1f}%)")
@@ -132,7 +132,7 @@ def main():
         # High-confidence examples
         high_conf = [p for p in profiles if p.confidence == "high"]
         if high_conf:
-            print(f"\nSample High-Confidence Classifications (up to 10):")
+            print("\nSample High-Confidence Classifications (up to 10):")
             for p in high_conf[:10]:
                 types_str = ", ".join(p.target_who_types)
                 print(f"  {p.nct_id:15s}  IDH={p.idh_status:8s}  -> {types_str}")

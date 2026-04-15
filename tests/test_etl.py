@@ -2,7 +2,7 @@
 
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 from connectors.models.trial import (
     EligibilityCriteria,
@@ -13,8 +13,8 @@ from connectors.models.trial import (
     StudyArm,
     Trial,
 )
-from database.models import Base, ConditionRecord, InterventionRecord, TrialRecord
 from database.etl import load_trial, load_trials
+from database.models import Base, ConditionRecord, TrialRecord
 from database.queries import (
     get_all_conditions,
     get_all_trials,

@@ -15,11 +15,12 @@ from typing import Optional
 
 import httpx
 import numpy as np
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from analysis.filters import CANONICAL_PHASES, canonicalize_phase
 from api.dependencies import get_db
 from database.models import (
     ConditionRecord,
@@ -29,8 +30,6 @@ from database.models import (
     trial_conditions,
     trial_interventions,
 )
-
-from analysis.filters import canonicalize_phase, CANONICAL_PHASES
 
 
 def _display_phase_norm(raw):

@@ -12,8 +12,8 @@ Classification:
 """
 
 import re
-import sys
 
+from config.schema import load_config
 from database.engine import create_db_engine, get_session_factory, init_db
 from database.models import (
     ArmRecord,
@@ -22,7 +22,6 @@ from database.models import (
     TrialRecord,
     trial_interventions,
 )
-from config.schema import load_config
 
 # ── Intercavitary delivery regex patterns ────────────────────────────────
 

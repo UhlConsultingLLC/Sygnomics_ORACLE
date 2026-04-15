@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import auc, roc_curve
 
 import visualization.theme  # noqa: F401
 

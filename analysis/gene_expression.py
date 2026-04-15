@@ -1,7 +1,6 @@
 """Gene expression processing: normalization and differential expression."""
 
 import logging
-from typing import Optional
 
 import numpy as np
 import pandas as pd

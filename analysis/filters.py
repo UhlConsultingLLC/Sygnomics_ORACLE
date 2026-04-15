@@ -1,7 +1,6 @@
 """Dynamic filtering engine for clinical trial queries."""
 
 import re
-from datetime import date
 
 from sqlalchemy import and_, func, or_
 from sqlalchemy.orm import Session
@@ -45,8 +44,6 @@ from database.models import (
     OutcomeRecord,
     SponsorRecord,
     TrialRecord,
-    trial_conditions,
-    trial_interventions,
 )
 
 

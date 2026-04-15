@@ -302,8 +302,9 @@ def list_ctis_import_jobs():
 @router.get("/stats")
 def get_ctis_stats(db: Session = Depends(get_db)):
     """Get statistics about CTIS trials in the database."""
-    from database.models import TrialRecord, LocationRecord
     from sqlalchemy import func
+
+    from database.models import LocationRecord, TrialRecord
 
     total_ctis = (
         db.query(func.count(TrialRecord.nct_id))

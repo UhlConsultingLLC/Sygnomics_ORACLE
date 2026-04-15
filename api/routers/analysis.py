@@ -2,12 +2,11 @@
 
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from analysis.filters import CANONICAL_PHASES, apply_filters, canonicalize_phase, get_filter_options
 from api.dependencies import get_db
 from api.schemas import FilterOptionsResponse, MetricsSummary
-from analysis.filters import apply_filters, canonicalize_phase, CANONICAL_PHASES, get_filter_options
 
 
 def _display_phase(raw):
@@ -25,7 +24,7 @@ from analysis.metrics import (
 from analysis.models import FilterSpec
 from connectors.outcome_mapper import OutcomeMapper
 from database.models import ConditionRecord, InterventionRecord, OutcomeRecord
-from database.queries import get_all_conditions, get_all_interventions, get_trial_count
+from database.queries import get_all_conditions, get_all_interventions
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
 
@@ -139,6 +138,7 @@ def autocomplete(
     synonym of ``q``, so typing "GBM" surfaces "Glioblastoma" results too.
     """
     from sqlalchemy import or_
+
     from api.mesh_expansion import expand_condition, expand_intervention
 
     q_lower = q.lower()

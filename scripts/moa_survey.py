@@ -44,16 +44,15 @@ def print(*args, **kwargs):
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from database.engine import create_db_engine, init_db, get_session_factory
+from database.engine import create_db_engine, get_session_factory, init_db
 from database.models import (
+    EligibilityRecord,
     InterventionRecord,
     MOAAnnotationRecord,
     TrialRecord,
-    EligibilityRecord,
     TrialSATGBMMetric,
     trial_interventions,
 )
-
 
 THRESHOLD_CACHE_PATH = ROOT / "data" / "moa_threshold_cache.json"
 OUT_JSON_PATH = ROOT / "data" / "moa_survey_results.json"
@@ -162,7 +161,8 @@ def main():
     # ── 2) Lazy-load heavy modules ──
     from analysis.biomarker_extractor import extract_biomarkers
     from analysis.moa_simulation import MOASimulationEngine
-    from api.routers.tcga import get_drug_targets as tcga_get_drug_targets, _load_dcna, _load_expression
+    from api.routers.tcga import _load_dcna, _load_expression
+    from api.routers.tcga import get_drug_targets as tcga_get_drug_targets
 
     print("Loading TCGA DCNA + expression data...")
     dcna_patients, _, dcna_data = _load_dcna()
@@ -223,7 +223,7 @@ def main():
             if threshold is None:
                 threshold_cache[moa_key] = {"error": "no learned threshold"}
                 _save_threshold_cache(threshold_cache)
-                print(f"  !! No learned threshold")
+                print("  !! No learned threshold")
                 continue
 
             learned_threshold = float(threshold)
@@ -412,7 +412,7 @@ def main():
         all_pcts = [m.pct_responders_recovered for m in all_metrics]
         all_folds = [m.fold_change for m in all_metrics if m.fold_change is not None]
 
-        print(f"\nPercentage of predicted responders recovered:")
+        print("\nPercentage of predicted responders recovered:")
         print(f"  Min:    {min(all_pcts):.1f}%")
         print(f"  Q1:     {np.percentile(all_pcts, 25):.1f}%")
         print(f"  Median: {np.median(all_pcts):.1f}%")

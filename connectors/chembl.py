@@ -50,8 +50,8 @@ def _parse_target(raw: dict) -> Target:
 
 def _fetch_chembl_json(url: str, params: dict | None = None) -> dict:
     """Fetch JSON from the ChEMBL REST API using urllib (no extra deps)."""
-    import urllib.request
     import urllib.parse
+    import urllib.request
 
     base = url
     if params:

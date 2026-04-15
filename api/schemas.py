@@ -4,9 +4,6 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from analysis.models import FilterSpec
-
-
 # --- Request schemas ---
 
 

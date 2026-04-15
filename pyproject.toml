@@ -52,7 +52,46 @@ line-length = 100
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W"]
+# Rule selection tailored to this codebase's conventions:
+# - E   = pycodestyle errors (keep; catches real bugs)
+# - F   = pyflakes           (keep; undefined names, unused imports, etc.)
+# - I   = isort              (keep; import ordering)
+# - W   = pycodestyle warnings (keep)
+# Dropped vs. ruff default:
+# - N   = pep8-naming — this codebase uses scientific naming conventions
+#         (e.g. `X_train`, `MOA_COLORS`, `DCNA`) that PEP 8 flags as wrong.
+#         Enforcing would require mass-renaming of domain-accurate names.
+select = ["E", "F", "I", "W"]
+
+# Rule-level exemptions within the selected sets:
+ignore = [
+    # Long lines are common in this codebase (docstrings + scientific
+    # f-strings that read better as one line than reflowed to 100 chars).
+    # Formatter will normalize real runaway cases.
+    "E501",
+    # Module-level imports are often placed mid-file for optional /
+    # conditional deps (e.g. gseapy, anndata) so they don't pull in heavy
+    # genomics libraries at boot for endpoints that don't need them.
+    "E402",
+]
+
+# Per-file overrides: tests occasionally need side-effect imports + fixtures
+# that trip otherwise-valid rules; a few analysis / connector modules have
+# legacy unused-variable or compact-if patterns that aren't worth mass-editing.
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["F841"]  # unused-variable — fixtures that exist for side effect
+"scripts/**/*.py" = ["E701", "E702"]  # multi-statement lines — terse CLI helpers
+# moa_simulation.py has a compact `if unit == ...: return ...` unit-conversion
+# block that's more readable as one-liners than reformatted into a dict.
+"analysis/moa_simulation.py" = ["E701", "E702"]
+# Five pre-existing unused-variable spots in application code. Flagging here
+# rather than silencing inline so a future cleanup PR can track them down.
+# TODO(v1.1): remove these from the ignore list and either delete the
+# assignments or wire them into the surrounding logic.
+"analysis/who_extractor.py" = ["F841"]
+"api/routers/analysis.py" = ["F841"]
+"connectors/civic.py" = ["F841"]
+"connectors/mesh_client.py" = ["F841"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

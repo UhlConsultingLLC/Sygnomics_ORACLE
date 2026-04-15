@@ -181,7 +181,7 @@ def main() -> int:
             if "IDH1" in muts or "IDH2" in muts:
                 idh_and_codel += 1
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  codeleted: {codeleted}")
     print(f"  intact: {intact}")
     print(f"  codeleted + IDH-mutant: {idh_and_codel}/{codeleted}")

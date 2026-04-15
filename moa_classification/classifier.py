@@ -16,7 +16,6 @@ from database.models import InterventionRecord, MOAAnnotationRecord
 from moa_classification.moa_categories import (
     MOACategory,
     classify_moa,
-    INTERVENTION_TYPE_TO_CATEGORY,
 )
 from moa_classification.moa_shorthand import resolve_shorthand
 from moa_classification.name_resolver import (
