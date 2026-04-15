@@ -1,0 +1,2276 @@
+{
+  "sim_id": "5e4a6ad8",
+  "moa_category": "EGFR inhibitor",
+  "total_drugs": 30,
+  "total_trials": 27,
+  "median_response_rate": 0.0204,
+  "overall_learned_threshold": 0.603284765625,
+  "threshold_std": 0.2691197519655139,
+  "total_training_thresholds": 350,
+  "moa_drug_names": [
+    "AC-480",
+    "AC480",
+    "AFATINIB",
+    "AMIVANTAMAB",
+    "ANTI-EGFR CAR T",
+    "BEVACIZUMAB AND ERLOTINIB",
+    "BIBW 2992",
+    "BIBW2992",
+    "CETUXIMAB",
+    "CETUXIMAB-IRDYE 800CW",
+    "CETUXIMAB-IRDYE800",
+    "DACOMITINIB",
+    "ERLOTINIB",
+    "ERLOTINIB + SIROLIMUS",
+    "ERLOTINIB AND DASATINIB",
+    "ERLOTINIB HCL (OSI-774)",
+    "ERLOTINIB HYDROCHLORIDE",
+    "GC1118",
+    "GEFITINIB",
+    "LAPATINIB",
+    "LAPATINIB DITOSYLATE",
+    "MAB-425",
+    "MAB-425 RADIOLABELED WITH I-125",
+    "OSIMERTINIB",
+    "PANITUMUMAB",
+    "PANITUMUMAB-IRDYE800",
+    "PF-299804 (DACOMITINIB)",
+    "TARCEVA",
+    "TESEVATINIB",
+    "VANDETANIB",
+    "ZD6474",
+    "ZD6474 (VANDETANIB)"
+  ],
+  "training_trials": [
+    {
+      "nct_id": "NCT01520870",
+      "title": "Safety and Efficacy of PF-299804 (Dacomitinib), a Pan-HER Irreversible Inhibitor, in Patients With Recurrent Glioblastoma With EGFR Amplification or Presence of EGFRvIII Mutation. A Phase II CT.",
+      "arm_group": "",
+      "enrollment": 49,
+      "actual_response_rate": 0.0204,
+      "drugs": [
+        "DACOMITINIB"
+      ],
+      "all_trial_drugs": [
+        "DACOMITINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "EGFRvIII",
+        "Recurrent"
+      ],
+      "eligible_patients": 159,
+      "total_patients": 548,
+      "cohort_size": 49,
+      "mean_threshold": 0.7383968749999998,
+      "std_threshold": 0.059540138854100956,
+      "mean_predicted_rate": 0.01836734693877551
+    },
+    {
+      "nct_id": "NCT00671970:Who Grade III",
+      "title": "Phase (Ph) II Bevacizumab + Erlotinib for Patients (Pts) With Recurrent Malignant Glioma (MG)",
+      "arm_group": "Who Grade III",
+      "enrollment": 32,
+      "actual_response_rate": 0.0312,
+      "drugs": [
+        "BEVACIZUMAB",
+        "ERLOTINIB"
+      ],
+      "all_trial_drugs": [
+        "BEVACIZUMAB",
+        "ERLOTINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent",
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 32,
+      "mean_threshold": 0.7724566406250001,
+      "std_threshold": 0.07983637578031458,
+      "mean_predicted_rate": 0.03125
+    },
+    {
+      "nct_id": "NCT00387894",
+      "title": "Erlotinib in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "arm_group": "",
+      "enrollment": 6,
+      "actual_response_rate": 0.04,
+      "drugs": [
+        "ERLOTINIB HYDROCHLORIDE"
+      ],
+      "all_trial_drugs": [
+        "ERLOTINIB HYDROCHLORIDE"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "PTEN Intact"
+      ],
+      "eligible_patients": 147,
+      "total_patients": 548,
+      "cohort_size": 6,
+      "mean_threshold": 0.228375,
+      "std_threshold": 0.3908268678392006,
+      "mean_predicted_rate": 0.07333333333333332
+    },
+    {
+      "nct_id": "NCT00671970:WHO Grade IV",
+      "title": "Phase (Ph) II Bevacizumab + Erlotinib for Patients (Pts) With Recurrent Malignant Glioma (MG)",
+      "arm_group": "WHO Grade IV",
+      "enrollment": 25,
+      "actual_response_rate": 0.04,
+      "drugs": [
+        "BEVACIZUMAB",
+        "ERLOTINIB"
+      ],
+      "all_trial_drugs": [
+        "BEVACIZUMAB",
+        "ERLOTINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent",
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 25,
+      "mean_threshold": 0.742374609375,
+      "std_threshold": 0.10391231817410604,
+      "mean_predicted_rate": 0.039200000000000006
+    },
+    {
+      "nct_id": "NCT00727506:Phase I - Afatinib 20 mg Plus Temozolomide 75mg/m^2",
+      "title": "BIBW 2992 (Afatinib) With or Without Daily Temozolomide in the Treatment of Patients With Recurrent Malignant Glioma",
+      "arm_group": "Phase I - Afatinib 20 mg Plus Temozolomide 75mg/m^2",
+      "enrollment": 6,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent",
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 6,
+      "mean_threshold": 0.42459375,
+      "std_threshold": 0.23493376934055799,
+      "mean_predicted_rate": 0.056666666666666664
+    },
+    {
+      "nct_id": "NCT00727506:Phase I - Afatinib 50 mg Plus Temozolomide 75mg/m^2",
+      "title": "BIBW 2992 (Afatinib) With or Without Daily Temozolomide in the Treatment of Patients With Recurrent Malignant Glioma",
+      "arm_group": "Phase I - Afatinib 50 mg Plus Temozolomide 75mg/m^2",
+      "enrollment": 18,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent",
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 18,
+      "mean_threshold": 0.64734375,
+      "std_threshold": 0.1199130910870973,
+      "mean_predicted_rate": 0.03
+    },
+    {
+      "nct_id": "NCT00085566:RAD 001 30 mg",
+      "title": "Everolimus and Gefitinib in Treating Patients With Progressive Glioblastoma Multiforme or Progressive Metastatic Prostate Cancer",
+      "arm_group": "RAD 001 30 mg",
+      "enrollment": 3,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "all_trial_drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "arm_drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 3,
+      "mean_threshold": 0,
+      "std_threshold": 0,
+      "mean_predicted_rate": 0
+    },
+    {
+      "nct_id": "NCT00085566:RAD 001 50 mg",
+      "title": "Everolimus and Gefitinib in Treating Patients With Progressive Glioblastoma Multiforme or Progressive Metastatic Prostate Cancer",
+      "arm_group": "RAD 001 50 mg",
+      "enrollment": 3,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "all_trial_drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "arm_drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 3,
+      "mean_threshold": 0,
+      "std_threshold": 0,
+      "mean_predicted_rate": 0
+    },
+    {
+      "nct_id": "NCT00335764:Group 1 Phase II Sorafenib and Erlotinib",
+      "title": "Sorafenib Combined With Erlotinib, Tipifarnib, or Temsirolimus in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "arm_group": "Group 1 Phase II Sorafenib and Erlotinib",
+      "enrollment": 19,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "ERLOTINIB HYDROCHLORIDE",
+        "SORAFENIB TOSYLATE"
+      ],
+      "all_trial_drugs": [
+        "TEMSIROLIMUS",
+        "ERLOTINIB HYDROCHLORIDE",
+        "TIPIFARNIB",
+        "SORAFENIB TOSYLATE"
+      ],
+      "arm_drugs": [
+        "ERLOTINIB HYDROCHLORIDE",
+        "SORAFENIB TOSYLATE"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 19,
+      "mean_threshold": 0.669452734375,
+      "std_threshold": 0.13753246789574594,
+      "mean_predicted_rate": 0.01263157894736842
+    }
+  ],
+  "testing_trials": [
+    {
+      "nct_id": "NCT00095940:Recurrent Medulloblastoma",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "arm_group": "Recurrent Medulloblastoma",
+      "enrollment": 15,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "all_trial_drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "arm_drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 15,
+      "mean_predicted_rate": 0.08266666666666668,
+      "std_predicted_rate": 0.06607739569794062
+    },
+    {
+      "nct_id": "NCT00095940:Recurrent High Grade Glioma",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "arm_group": "Recurrent High Grade Glioma",
+      "enrollment": 13,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "all_trial_drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "arm_drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 13,
+      "mean_predicted_rate": 0.08307692307692309,
+      "std_predicted_rate": 0.06677702896680217
+    },
+    {
+      "nct_id": "NCT00095940:Recurrent Ependymoma",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "arm_group": "Recurrent Ependymoma",
+      "enrollment": 13,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "all_trial_drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "arm_drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 13,
+      "mean_predicted_rate": 0.08307692307692306,
+      "std_predicted_rate": 0.06498065255982424
+    },
+    {
+      "nct_id": "NCT00672243",
+      "title": "Ph II Erlotinib + Sirolimus for Pts w Recurrent Malignant Glioma Multiforme",
+      "arm_group": "",
+      "enrollment": 32,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "SIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "all_trial_drugs": [
+        "SIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent",
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 32,
+      "mean_predicted_rate": 0.0125,
+      "std_predicted_rate": 0.017677669529663688
+    },
+    {
+      "nct_id": "NCT01017653",
+      "title": "Panitumumab and Irinotecan for Malignant Gliomas",
+      "arm_group": "",
+      "enrollment": 16,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "PANITUMUMAB",
+        "IRINOTECAN"
+      ],
+      "all_trial_drugs": [
+        "PANITUMUMAB",
+        "IRINOTECAN"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 16,
+      "mean_predicted_rate": 0.11625,
+      "std_predicted_rate": 0.07289761655911665
+    },
+    {
+      "nct_id": "NCT00350727:Phase II: Biomarker Positive",
+      "title": "Pazopanib In Combination With Lapatinib In Adult Patients With Relapsed Malignant Glioma",
+      "arm_group": "Phase II: Biomarker Positive",
+      "enrollment": 19,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "all_trial_drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "arm_drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "molecular_criteria": [
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 548,
+      "total_patients": 548,
+      "cohort_size": 19,
+      "mean_predicted_rate": 0.010526315789473684,
+      "std_predicted_rate": 0.02353755765789252
+    },
+    {
+      "nct_id": "NCT00350727:Phase II: Biomarker Negative",
+      "title": "Pazopanib In Combination With Lapatinib In Adult Patients With Relapsed Malignant Glioma",
+      "arm_group": "Phase II: Biomarker Negative",
+      "enrollment": 22,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "all_trial_drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "arm_drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "molecular_criteria": [
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 548,
+      "total_patients": 548,
+      "cohort_size": 22,
+      "mean_predicted_rate": 0.01,
+      "std_predicted_rate": 0.020909090909090912
+    },
+    {
+      "nct_id": "NCT00112736",
+      "title": "Erlotinib and Temsirolimus in Treating Patients With Recurrent Malignant Glioma",
+      "arm_group": "",
+      "enrollment": 69,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "TEMSIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "all_trial_drugs": [
+        "TEMSIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 69,
+      "mean_predicted_rate": 0.015652173913043476,
+      "std_predicted_rate": 0.00954323341052425
+    },
+    {
+      "nct_id": "NCT00085566:RAD 001 70 mg",
+      "title": "Everolimus and Gefitinib in Treating Patients With Progressive Glioblastoma Multiforme or Progressive Metastatic Prostate Cancer",
+      "arm_group": "RAD 001 70 mg",
+      "enrollment": 43,
+      "actual_response_rate": 0.0465,
+      "drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "all_trial_drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "arm_drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 43,
+      "mean_predicted_rate": 0.01674418604651163,
+      "std_predicted_rate": 0.017427901390879248
+    },
+    {
+      "nct_id": "NCT02844439:Total",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "arm_group": "Total",
+      "enrollment": 40,
+      "actual_response_rate": 0.0625,
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "all_trial_drugs": [
+        "TESEVATINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [],
+      "eligible_patients": 548,
+      "total_patients": 548,
+      "cohort_size": 40,
+      "mean_predicted_rate": 0.13,
+      "std_predicted_rate": 0.04330127018922193
+    },
+    {
+      "nct_id": "NCT00335764:Group 2 Phase II Sorafenib and Temsirolimus",
+      "title": "Sorafenib Combined With Erlotinib, Tipifarnib, or Temsirolimus in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "arm_group": "Group 2 Phase II Sorafenib and Temsirolimus",
+      "enrollment": 18,
+      "actual_response_rate": 0.1111,
+      "drugs": [
+        "TEMSIROLIMUS",
+        "SORAFENIB TOSYLATE"
+      ],
+      "all_trial_drugs": [
+        "TEMSIROLIMUS",
+        "ERLOTINIB HYDROCHLORIDE",
+        "TIPIFARNIB",
+        "SORAFENIB TOSYLATE"
+      ],
+      "arm_drugs": [
+        "TEMSIROLIMUS",
+        "SORAFENIB TOSYLATE"
+      ],
+      "molecular_criteria": [
+        "Recurrent"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 18,
+      "mean_predicted_rate": 0.03777777777777778,
+      "std_predicted_rate": 0.03590109871423003
+    },
+    {
+      "nct_id": "NCT00727506:Phase I - Afatinib 40 mg Plus Temozolomide 75mg/m^2",
+      "title": "BIBW 2992 (Afatinib) With or Without Daily Temozolomide in the Treatment of Patients With Recurrent Malignant Glioma",
+      "arm_group": "Phase I - Afatinib 40 mg Plus Temozolomide 75mg/m^2",
+      "enrollment": 8,
+      "actual_response_rate": 0.125,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [
+        "Recurrent",
+        "Prior Bevacizumab"
+      ],
+      "eligible_patients": 217,
+      "total_patients": 548,
+      "cohort_size": 8,
+      "mean_predicted_rate": 0.085,
+      "std_predicted_rate": 0.08077747210701755
+    },
+    {
+      "nct_id": "NCT02844439:Sub-population A",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "arm_group": "Sub-population A",
+      "enrollment": 24,
+      "actual_response_rate": 0.175,
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "all_trial_drugs": [
+        "TESEVATINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [],
+      "eligible_patients": 548,
+      "total_patients": 548,
+      "cohort_size": 24,
+      "mean_predicted_rate": 0.135,
+      "std_predicted_rate": 0.059837743570054135
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 30 mg, Radiotherapy + Temozolomide - Regimen M",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "arm_group": "Afatinib 30 mg, Radiotherapy + Temozolomide - Regimen M",
+      "enrollment": 6,
+      "actual_response_rate": 0.5,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [
+        "AFATINIB"
+      ],
+      "molecular_criteria": [
+        "Newly Diagnosed"
+      ],
+      "eligible_patients": 331,
+      "total_patients": 548,
+      "cohort_size": 6,
+      "mean_predicted_rate": 0.13666666666666666,
+      "std_predicted_rate": 0.15162087220725548
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 20 Milligram, Radiotherapy + Temozolomide - Regimen M",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "arm_group": "Afatinib 20 Milligram, Radiotherapy + Temozolomide - Regimen M",
+      "enrollment": 7,
+      "actual_response_rate": 0.7143,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [
+        "AFATINIB"
+      ],
+      "molecular_criteria": [
+        "Newly Diagnosed"
+      ],
+      "eligible_patients": 331,
+      "total_patients": 548,
+      "cohort_size": 7,
+      "mean_predicted_rate": 0.1257142857142857,
+      "std_predicted_rate": 0.12662011317805905
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy + Temozolomide - Regimen M",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "arm_group": "Afatinib 40 mg, Radiotherapy + Temozolomide - Regimen M",
+      "enrollment": 7,
+      "actual_response_rate": 0.7143,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [
+        "AFATINIB"
+      ],
+      "molecular_criteria": [
+        "Newly Diagnosed"
+      ],
+      "eligible_patients": 331,
+      "total_patients": 548,
+      "cohort_size": 7,
+      "mean_predicted_rate": 0.11142857142857142,
+      "std_predicted_rate": 0.12548680717712998
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy - Regimen U",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "arm_group": "Afatinib 40 mg, Radiotherapy - Regimen U",
+      "enrollment": 13,
+      "actual_response_rate": 0.7692,
+      "drugs": [
+        "AFATINIB"
+      ],
+      "all_trial_drugs": [
+        "AFATINIB"
+      ],
+      "arm_drugs": [
+        "AFATINIB"
+      ],
+      "molecular_criteria": [
+        "Newly Diagnosed"
+      ],
+      "eligible_patients": 331,
+      "total_patients": 548,
+      "cohort_size": 13,
+      "mean_predicted_rate": 0.10153846153846154,
+      "std_predicted_rate": 0.09028554308382283
+    },
+    {
+      "nct_id": "NCT02844439:Sub-population B",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "arm_group": "Sub-population B",
+      "enrollment": 11,
+      "actual_response_rate": 0.8273,
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "all_trial_drugs": [
+        "TESEVATINIB"
+      ],
+      "arm_drugs": [],
+      "molecular_criteria": [],
+      "eligible_patients": 548,
+      "total_patients": 548,
+      "cohort_size": 11,
+      "mean_predicted_rate": 0.1509090909090909,
+      "std_predicted_rate": 0.09379069364748313
+    }
+  ],
+  "testing_violin_data": [
+    {
+      "nct_id": "NCT00095940:Recurrent Medulloblastoma",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.06666666666666667,
+        0.2,
+        0.2,
+        0.0,
+        0.06666666666666667,
+        0.0,
+        0.06666666666666667,
+        0.0,
+        0.13333333333333333,
+        0.2,
+        0.0,
+        0.06666666666666667,
+        0.0,
+        0.0,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.0,
+        0.13333333333333333,
+        0.06666666666666667,
+        0.13333333333333333,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.13333333333333333,
+        0.13333333333333333,
+        0.0,
+        0.13333333333333333,
+        0.2,
+        0.13333333333333333,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.13333333333333333,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.0,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.13333333333333333,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.0,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.3333333333333333,
+        0.13333333333333333
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.8889,
+        "median": 0.0125,
+        "count": 58
+      }
+    },
+    {
+      "nct_id": "NCT00095940:Recurrent High Grade Glioma",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.23076923076923078,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.0,
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.0,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.0,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.0,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.0,
+        0.3076923076923077,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.0,
+        0.0,
+        0.23076923076923078
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.8889,
+        "median": 0.0125,
+        "count": 58
+      }
+    },
+    {
+      "nct_id": "NCT00095940:Recurrent Ependymoma",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.0,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.23076923076923078,
+        0.07692307692307693,
+        0.23076923076923078,
+        0.15384615384615385,
+        0.0,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.15384615384615385,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.07692307692307693,
+        0.23076923076923078,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.0,
+        0.07692307692307693
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.8889,
+        "median": 0.0125,
+        "count": 58
+      }
+    },
+    {
+      "nct_id": "NCT00672243",
+      "title": "Ph II Erlotinib + Sirolimus for Pts w Recurrent Malignant Glioma Multiforme",
+      "drugs": [
+        "SIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.0,
+        0.0,
+        0.0,
+        0.0625,
+        0.03125,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.0625,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.03125,
+        0.03125,
+        0.0,
+        0.0,
+        0.03125,
+        0.0,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.03125,
+        0.0,
+        0.03125,
+        0.0,
+        0.0,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.03125,
+        0.0,
+        0.0,
+        0.03125,
+        0.0,
+        0.0,
+        0.03125,
+        0.0,
+        0.03125,
+        0.03125,
+        0.0,
+        0.0,
+        0.03125,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0,
+        "count": 1
+      }
+    },
+    {
+      "nct_id": "NCT01017653",
+      "title": "Panitumumab and Irinotecan for Malignant Gliomas",
+      "drugs": [
+        "PANITUMUMAB",
+        "IRINOTECAN"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.125,
+        0.1875,
+        0.0625,
+        0.125,
+        0.0,
+        0.1875,
+        0.125,
+        0.0,
+        0.125,
+        0.0,
+        0.0625,
+        0.0625,
+        0.0,
+        0.1875,
+        0.125,
+        0.0625,
+        0.125,
+        0.3125,
+        0.125,
+        0.125,
+        0.125,
+        0.3125,
+        0.1875,
+        0.1875,
+        0.0,
+        0.25,
+        0.0625,
+        0.1875,
+        0.0625,
+        0.0,
+        0.125,
+        0.0625,
+        0.125,
+        0.125,
+        0.0625,
+        0.0625,
+        0.125,
+        0.125,
+        0.1875,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.1875,
+        0.0625,
+        0.0,
+        0.125,
+        0.1875
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.714,
+        "median": 0.1815,
+        "count": 12
+      }
+    },
+    {
+      "nct_id": "NCT00350727:Phase II: Biomarker Positive",
+      "title": "Pazopanib In Combination With Lapatinib In Adult Patients With Relapsed Malignant Glioma",
+      "drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.05263157894736842,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.05263157894736842,
+        0.05263157894736842,
+        0.0,
+        0.05263157894736842,
+        0.05263157894736842,
+        0.10526315789473684,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.05263157894736842,
+        0.05263157894736842,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.05263157894736842,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0,
+        "count": 6
+      }
+    },
+    {
+      "nct_id": "NCT00350727:Phase II: Biomarker Negative",
+      "title": "Pazopanib In Combination With Lapatinib In Adult Patients With Relapsed Malignant Glioma",
+      "drugs": [
+        "LAPATINIB",
+        "PAZOPANIB"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.045454545454545456,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0,
+        "count": 6
+      }
+    },
+    {
+      "nct_id": "NCT00112736",
+      "title": "Erlotinib and Temsirolimus in Treating Patients With Recurrent Malignant Glioma",
+      "drugs": [
+        "TEMSIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.0,
+        0.028985507246376812,
+        0.0,
+        0.028985507246376812,
+        0.0,
+        0.0,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.0,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.0,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.0,
+        0.028985507246376812,
+        0.0,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.0,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.014492753623188406
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.8889,
+        "median": 0.0125,
+        "count": 54
+      }
+    },
+    {
+      "nct_id": "NCT00085566:RAD 001 70 mg",
+      "title": "Everolimus and Gefitinib in Treating Patients With Progressive Glioblastoma Multiforme or Progressive Metastatic Prostate Cancer",
+      "drugs": [
+        "GEFITINIB",
+        "EVEROLIMUS"
+      ],
+      "actual_response_rate": 0.0465,
+      "predicted_rates": [
+        0.0,
+        0.0,
+        0.023255813953488372,
+        0.0,
+        0.023255813953488372,
+        0.023255813953488372,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.023255813953488372,
+        0.0,
+        0.023255813953488372,
+        0.046511627906976744,
+        0.023255813953488372,
+        0.046511627906976744,
+        0.023255813953488372,
+        0.0,
+        0.046511627906976744,
+        0.023255813953488372,
+        0.023255813953488372,
+        0.0,
+        0.023255813953488372,
+        0.0,
+        0.0,
+        0.023255813953488372,
+        0.046511627906976744,
+        0.023255813953488372,
+        0.023255813953488372,
+        0.0,
+        0.023255813953488372,
+        0.0,
+        0.0,
+        0.0,
+        0.023255813953488372,
+        0.046511627906976744,
+        0.023255813953488372,
+        0.0,
+        0.046511627906976744,
+        0.046511627906976744,
+        0.023255813953488372,
+        0.0,
+        0.046511627906976744,
+        0.046511627906976744,
+        0.0,
+        0.023255813953488372,
+        0.0,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.6078,
+        "median": 0.0,
+        "count": 13
+      }
+    },
+    {
+      "nct_id": "NCT02844439:Total",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "actual_response_rate": 0.0625,
+      "predicted_rates": [
+        0.15,
+        0.1,
+        0.2,
+        0.075,
+        0.15,
+        0.075,
+        0.075,
+        0.175,
+        0.125,
+        0.175,
+        0.1,
+        0.05,
+        0.175,
+        0.2,
+        0.075,
+        0.125,
+        0.225,
+        0.2,
+        0.1,
+        0.15,
+        0.15,
+        0.15,
+        0.075,
+        0.15,
+        0.15,
+        0.1,
+        0.15,
+        0.125,
+        0.175,
+        0.1,
+        0.15,
+        0.125,
+        0.075,
+        0.15,
+        0.2,
+        0.1,
+        0.15,
+        0.15,
+        0.1,
+        0.1,
+        0.1,
+        0.15,
+        0.125,
+        0.15,
+        0.075,
+        0.2,
+        0.05,
+        0.15,
+        0.075,
+        0.1
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.025,
+        "median": 0.0125,
+        "count": 2
+      }
+    },
+    {
+      "nct_id": "NCT00335764:Group 2 Phase II Sorafenib and Temsirolimus",
+      "title": "Sorafenib Combined With Erlotinib, Tipifarnib, or Temsirolimus in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "drugs": [
+        "TEMSIROLIMUS",
+        "SORAFENIB TOSYLATE"
+      ],
+      "actual_response_rate": 0.1111,
+      "predicted_rates": [
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.05555555555555555,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.0,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.0,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.0,
+        0.1111111111111111,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.0,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.1111111111111111,
+        0.1111111111111111,
+        0.05555555555555555,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.5,
+        "median": 0.0,
+        "count": 11
+      }
+    },
+    {
+      "nct_id": "NCT00727506:Phase I - Afatinib 40 mg Plus Temozolomide 75mg/m^2",
+      "title": "BIBW 2992 (Afatinib) With or Without Daily Temozolomide in the Treatment of Patients With Recurrent Malignant Glioma",
+      "drugs": [
+        "AFATINIB"
+      ],
+      "actual_response_rate": 0.125,
+      "predicted_rates": [
+        0.0,
+        0.0,
+        0.125,
+        0.125,
+        0.125,
+        0.0,
+        0.125,
+        0.0,
+        0.125,
+        0.125,
+        0.0,
+        0.25,
+        0.125,
+        0.25,
+        0.125,
+        0.0,
+        0.25,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.25,
+        0.25,
+        0.125,
+        0.0,
+        0.0,
+        0.0,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.0,
+        0.125,
+        0.0,
+        0.0,
+        0.0,
+        0.125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.125,
+        0.125,
+        0.125,
+        0.0,
+        0.125,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.04,
+        "median": 0.02,
+        "count": 8
+      }
+    },
+    {
+      "nct_id": "NCT02844439:Sub-population A",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "actual_response_rate": 0.175,
+      "predicted_rates": [
+        0.16666666666666666,
+        0.041666666666666664,
+        0.16666666666666666,
+        0.125,
+        0.125,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.25,
+        0.125,
+        0.20833333333333334,
+        0.125,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.08333333333333333,
+        0.16666666666666666,
+        0.125,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.125,
+        0.08333333333333333,
+        0.16666666666666666,
+        0.125,
+        0.125,
+        0.25,
+        0.16666666666666666,
+        0.08333333333333333,
+        0.125,
+        0.25,
+        0.25,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.041666666666666664,
+        0.125,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.20833333333333334,
+        0.041666666666666664,
+        0.08333333333333333,
+        0.25,
+        0.08333333333333333,
+        0.125,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.125,
+        0.25,
+        0.041666666666666664,
+        0.20833333333333334,
+        0.08333333333333333,
+        0.125,
+        0.16666666666666666
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.025,
+        "median": 0.0125,
+        "count": 2
+      }
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 30 mg, Radiotherapy + Temozolomide - Regimen M",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "drugs": [
+        "AFATINIB"
+      ],
+      "actual_response_rate": 0.5,
+      "predicted_rates": [
+        0.8333333333333334,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.3333333333333333,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.3333333333333333,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.5,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.875,
+        "median": 0.13,
+        "count": 45
+      }
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 20 Milligram, Radiotherapy + Temozolomide - Regimen M",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "drugs": [
+        "AFATINIB"
+      ],
+      "actual_response_rate": 0.7143,
+      "predicted_rates": [
+        0.0,
+        0.0,
+        0.2857142857142857,
+        0.42857142857142855,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.2857142857142857,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.2857142857142857,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.42857142857142855,
+        0.14285714285714285,
+        0.0,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.42857142857142855,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.875,
+        "median": 0.13,
+        "count": 45
+      }
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy + Temozolomide - Regimen M",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "drugs": [
+        "AFATINIB"
+      ],
+      "actual_response_rate": 0.7143,
+      "predicted_rates": [
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.2857142857142857,
+        0.0,
+        0.42857142857142855,
+        0.0,
+        0.42857142857142855,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.2857142857142857,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.42857142857142855
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.875,
+        "median": 0.13,
+        "count": 45
+      }
+    },
+    {
+      "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy - Regimen U",
+      "title": "Open Label Trial to Explore Safety of Combining Afatinib (BIBW 2992) and Radiotherapy With or Without Temozolomide in Newly Diagnosed Glioblastoma Multiform",
+      "drugs": [
+        "AFATINIB"
+      ],
+      "actual_response_rate": 0.7692,
+      "predicted_rates": [
+        0.15384615384615385,
+        0.0,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.0,
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.3076923076923077,
+        0.23076923076923078,
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.0,
+        0.07692307692307693,
+        0.0,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.23076923076923078,
+        0.15384615384615385,
+        0.0,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.07692307692307693,
+        0.23076923076923078,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.15384615384615385,
+        0.0,
+        0.07692307692307693,
+        0.0,
+        0.0,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.15384615384615385,
+        0.07692307692307693,
+        0.15384615384615385,
+        0.46153846153846156,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.875,
+        "median": 0.13,
+        "count": 45
+      }
+    },
+    {
+      "nct_id": "NCT02844439:Sub-population B",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "actual_response_rate": 0.8273,
+      "predicted_rates": [
+        0.18181818181818182,
+        0.0,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.0,
+        0.18181818181818182,
+        0.18181818181818182,
+        0.0,
+        0.18181818181818182,
+        0.2727272727272727,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.18181818181818182,
+        0.36363636363636365,
+        0.2727272727272727,
+        0.36363636363636365,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.36363636363636365,
+        0.18181818181818182,
+        0.2727272727272727,
+        0.0,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.0,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.2727272727272727,
+        0.2727272727272727,
+        0.0,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.2727272727272727,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.09090909090909091
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.025,
+        "median": 0.0125,
+        "count": 2
+      }
+    }
+  ],
+  "analyses": {
+    "mae": {
+      "value": 0.198,
+      "per_trial": [
+        {
+          "nct_id": "NCT00095940:Recurrent Medulloblastoma",
+          "actual": 0.0,
+          "predicted": 0.08266666666666668,
+          "abs_error": 0.08266666666666668
+        },
+        {
+          "nct_id": "NCT00095940:Recurrent High Grade Glioma",
+          "actual": 0.0,
+          "predicted": 0.08307692307692309,
+          "abs_error": 0.08307692307692309
+        },
+        {
+          "nct_id": "NCT00095940:Recurrent Ependymoma",
+          "actual": 0.0,
+          "predicted": 0.08307692307692306,
+          "abs_error": 0.08307692307692306
+        },
+        {
+          "nct_id": "NCT00672243",
+          "actual": 0.0,
+          "predicted": 0.0125,
+          "abs_error": 0.0125
+        },
+        {
+          "nct_id": "NCT01017653",
+          "actual": 0.0,
+          "predicted": 0.11625,
+          "abs_error": 0.11625
+        },
+        {
+          "nct_id": "NCT00350727:Phase II: Biomarker Positive",
+          "actual": 0.0,
+          "predicted": 0.010526315789473684,
+          "abs_error": 0.010526315789473684
+        },
+        {
+          "nct_id": "NCT00350727:Phase II: Biomarker Negative",
+          "actual": 0.0,
+          "predicted": 0.01,
+          "abs_error": 0.01
+        },
+        {
+          "nct_id": "NCT00112736",
+          "actual": 0.0,
+          "predicted": 0.015652173913043476,
+          "abs_error": 0.015652173913043476
+        },
+        {
+          "nct_id": "NCT00085566:RAD 001 70 mg",
+          "actual": 0.0465,
+          "predicted": 0.01674418604651163,
+          "abs_error": 0.02975581395348837
+        },
+        {
+          "nct_id": "NCT02844439:Total",
+          "actual": 0.0625,
+          "predicted": 0.13,
+          "abs_error": 0.0675
+        },
+        {
+          "nct_id": "NCT00335764:Group 2 Phase II Sorafenib and Temsirolimus",
+          "actual": 0.1111,
+          "predicted": 0.03777777777777778,
+          "abs_error": 0.07332222222222223
+        },
+        {
+          "nct_id": "NCT00727506:Phase I - Afatinib 40 mg Plus Temozolomide 75mg/m^2",
+          "actual": 0.125,
+          "predicted": 0.085,
+          "abs_error": 0.039999999999999994
+        },
+        {
+          "nct_id": "NCT02844439:Sub-population A",
+          "actual": 0.175,
+          "predicted": 0.135,
+          "abs_error": 0.03999999999999998
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 30 mg, Radiotherapy + Temozolomide - Regimen M",
+          "actual": 0.5,
+          "predicted": 0.13666666666666666,
+          "abs_error": 0.36333333333333334
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 20 Milligram, Radiotherapy + Temozolomide - Regimen M",
+          "actual": 0.7143,
+          "predicted": 0.1257142857142857,
+          "abs_error": 0.5885857142857144
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy + Temozolomide - Regimen M",
+          "actual": 0.7143,
+          "predicted": 0.11142857142857142,
+          "abs_error": 0.6028714285714286
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy - Regimen U",
+          "actual": 0.7692,
+          "predicted": 0.10153846153846154,
+          "abs_error": 0.6676615384615384
+        },
+        {
+          "nct_id": "NCT02844439:Sub-population B",
+          "actual": 0.8273,
+          "predicted": 0.1509090909090909,
+          "abs_error": 0.6763909090909092
+        }
+      ]
+    },
+    "bland_altman": {
+      "mean_diff": -0.1445,
+      "std_diff": 0.2888,
+      "upper_loa": 0.4216,
+      "lower_loa": -0.7106,
+      "points": [
+        {
+          "nct_id": "NCT00095940:Recurrent Medulloblastoma",
+          "mean": 0.04133333333333334,
+          "diff": 0.08266666666666668
+        },
+        {
+          "nct_id": "NCT00095940:Recurrent High Grade Glioma",
+          "mean": 0.041538461538461545,
+          "diff": 0.08307692307692309
+        },
+        {
+          "nct_id": "NCT00095940:Recurrent Ependymoma",
+          "mean": 0.04153846153846153,
+          "diff": 0.08307692307692306
+        },
+        {
+          "nct_id": "NCT00672243",
+          "mean": 0.00625,
+          "diff": 0.0125
+        },
+        {
+          "nct_id": "NCT01017653",
+          "mean": 0.058125,
+          "diff": 0.11625
+        },
+        {
+          "nct_id": "NCT00350727:Phase II: Biomarker Positive",
+          "mean": 0.005263157894736842,
+          "diff": 0.010526315789473684
+        },
+        {
+          "nct_id": "NCT00350727:Phase II: Biomarker Negative",
+          "mean": 0.005,
+          "diff": 0.01
+        },
+        {
+          "nct_id": "NCT00112736",
+          "mean": 0.007826086956521738,
+          "diff": 0.015652173913043476
+        },
+        {
+          "nct_id": "NCT00085566:RAD 001 70 mg",
+          "mean": 0.03162209302325582,
+          "diff": -0.02975581395348837
+        },
+        {
+          "nct_id": "NCT02844439:Total",
+          "mean": 0.09625,
+          "diff": 0.0675
+        },
+        {
+          "nct_id": "NCT00335764:Group 2 Phase II Sorafenib and Temsirolimus",
+          "mean": 0.07443888888888889,
+          "diff": -0.07332222222222223
+        },
+        {
+          "nct_id": "NCT00727506:Phase I - Afatinib 40 mg Plus Temozolomide 75mg/m^2",
+          "mean": 0.10500000000000001,
+          "diff": -0.039999999999999994
+        },
+        {
+          "nct_id": "NCT02844439:Sub-population A",
+          "mean": 0.155,
+          "diff": -0.03999999999999998
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 30 mg, Radiotherapy + Temozolomide - Regimen M",
+          "mean": 0.31833333333333336,
+          "diff": -0.36333333333333334
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 20 Milligram, Radiotherapy + Temozolomide - Regimen M",
+          "mean": 0.42000714285714286,
+          "diff": -0.5885857142857144
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy + Temozolomide - Regimen M",
+          "mean": 0.41286428571428574,
+          "diff": -0.6028714285714286
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy - Regimen U",
+          "mean": 0.4353692307692308,
+          "diff": -0.6676615384615384
+        },
+        {
+          "nct_id": "NCT02844439:Sub-population B",
+          "mean": 0.48910454545454546,
+          "diff": -0.6763909090909092
+        }
+      ]
+    },
+    "ci_coverage": {
+      "coverage_rate": 0.7222,
+      "covered_count": 13,
+      "total_trials": 18,
+      "trials": [
+        {
+          "nct_id": "NCT00095940:Recurrent Medulloblastoma",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.2,
+          "covered": true,
+          "predicted_mean": 0.08266666666666668
+        },
+        {
+          "nct_id": "NCT00095940:Recurrent High Grade Glioma",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.2308,
+          "covered": true,
+          "predicted_mean": 0.08307692307692309
+        },
+        {
+          "nct_id": "NCT00095940:Recurrent Ependymoma",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.2308,
+          "covered": true,
+          "predicted_mean": 0.08307692307692306
+        },
+        {
+          "nct_id": "NCT00672243",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0555,
+          "covered": true,
+          "predicted_mean": 0.0125
+        },
+        {
+          "nct_id": "NCT01017653",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.2984,
+          "covered": true,
+          "predicted_mean": 0.11625
+        },
+        {
+          "nct_id": "NCT00350727:Phase II: Biomarker Positive",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0526,
+          "covered": true,
+          "predicted_mean": 0.010526315789473684
+        },
+        {
+          "nct_id": "NCT00350727:Phase II: Biomarker Negative",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0455,
+          "covered": true,
+          "predicted_mean": 0.01
+        },
+        {
+          "nct_id": "NCT00112736",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.029,
+          "covered": true,
+          "predicted_mean": 0.015652173913043476
+        },
+        {
+          "nct_id": "NCT00085566:RAD 001 70 mg",
+          "actual": 0.0465,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0465,
+          "covered": true,
+          "predicted_mean": 0.01674418604651163
+        },
+        {
+          "nct_id": "NCT02844439:Total",
+          "actual": 0.0625,
+          "ci_lower": 0.0556,
+          "ci_upper": 0.2,
+          "covered": true,
+          "predicted_mean": 0.13
+        },
+        {
+          "nct_id": "NCT00335764:Group 2 Phase II Sorafenib and Temsirolimus",
+          "actual": 0.1111,
+          "ci_lower": 0.0,
+          "ci_upper": 0.1111,
+          "covered": true,
+          "predicted_mean": 0.03777777777777778
+        },
+        {
+          "nct_id": "NCT00727506:Phase I - Afatinib 40 mg Plus Temozolomide 75mg/m^2",
+          "actual": 0.125,
+          "ci_lower": 0.0,
+          "ci_upper": 0.25,
+          "covered": true,
+          "predicted_mean": 0.085
+        },
+        {
+          "nct_id": "NCT02844439:Sub-population A",
+          "actual": 0.175,
+          "ci_lower": 0.0417,
+          "ci_upper": 0.25,
+          "covered": true,
+          "predicted_mean": 0.135
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 30 mg, Radiotherapy + Temozolomide - Regimen M",
+          "actual": 0.5,
+          "ci_lower": 0.0,
+          "ci_upper": 0.4625,
+          "covered": false,
+          "predicted_mean": 0.13666666666666666
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 20 Milligram, Radiotherapy + Temozolomide - Regimen M",
+          "actual": 0.7143,
+          "ci_lower": 0.0,
+          "ci_upper": 0.4286,
+          "covered": false,
+          "predicted_mean": 0.1257142857142857
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy + Temozolomide - Regimen M",
+          "actual": 0.7143,
+          "ci_lower": 0.0,
+          "ci_upper": 0.4286,
+          "covered": false,
+          "predicted_mean": 0.11142857142857142
+        },
+        {
+          "nct_id": "NCT00977431:Afatinib 40 mg, Radiotherapy - Regimen U",
+          "actual": 0.7692,
+          "ci_lower": 0.0,
+          "ci_upper": 0.2904,
+          "covered": false,
+          "predicted_mean": 0.10153846153846154
+        },
+        {
+          "nct_id": "NCT02844439:Sub-population B",
+          "actual": 0.8273,
+          "ci_lower": 0.0,
+          "ci_upper": 0.3636,
+          "covered": false,
+          "predicted_mean": 0.1509090909090909
+        }
+      ]
+    }
+  }
+}

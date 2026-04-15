@@ -1,0 +1,70 @@
+{
+  "nct_id": "NCT00000001",
+  "title": "A Phase 2 Study of Temozolomide in Recurrent Glioblastoma Multiforme",
+  "brief_summary": "This study evaluates the efficacy of temozolomide in patients with recurrent GBM.",
+  "status": "COMPLETED",
+  "phase": "Phase 2",
+  "study_type": "INTERVENTIONAL",
+  "enrollment_count": 150,
+  "start_date": "2020-01-15",
+  "completion_date": "2023-06-30",
+  "conditions": [
+    "Glioblastoma Multiforme",
+    "GBM"
+  ],
+  "interventions": [
+    {
+      "name": "Temozolomide 200mg",
+      "type": "DRUG",
+      "description": "Oral temozolomide administered at 200mg/m2 for 5 days every 28-day cycle"
+    },
+    {
+      "name": "Placebo",
+      "type": "DRUG",
+      "description": "Matching placebo capsules"
+    }
+  ],
+  "arms": [
+    {
+      "label": "Temozolomide Arm",
+      "type": "EXPERIMENTAL",
+      "description": "Patients receive temozolomide"
+    },
+    {
+      "label": "Placebo Arm",
+      "type": "PLACEBO_COMPARATOR",
+      "description": "Patients receive placebo"
+    }
+  ],
+  "outcomes": [
+    {
+      "type": "PRIMARY",
+      "measure": "Overall Survival",
+      "time_frame": "24 months"
+    },
+    {
+      "type": "SECONDARY",
+      "measure": "Progression-Free Survival",
+      "time_frame": "12 months"
+    }
+  ],
+  "eligibility": {
+    "criteria_text": "Inclusion Criteria:\n- Age >= 18 years\n- Histologically confirmed GBM\n- ECOG performance status 0-2\n\nExclusion Criteria:\n- Prior treatment with temozolomide\n- Severe hepatic impairment",
+    "min_age": "18 Years",
+    "max_age": "N/A",
+    "sex": "ALL",
+    "healthy_volunteers": false
+  },
+  "sponsor": {
+    "name": "National Cancer Institute",
+    "type": "NIH"
+  },
+  "locations": [
+    {
+      "facility": "MD Anderson Cancer Center",
+      "city": "Houston",
+      "state": "Texas",
+      "country": "United States"
+    }
+  ]
+}

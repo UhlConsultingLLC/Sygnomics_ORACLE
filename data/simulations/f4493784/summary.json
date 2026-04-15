@@ -1,0 +1,437 @@
+{
+  "sim_id": "f4493784",
+  "moa_category": "EGFR inhibitor",
+  "total_drugs": 30,
+  "total_trials": 9,
+  "median_response_rate": 0.0,
+  "overall_learned_threshold": 0.6990992838541666,
+  "threshold_std": 0.15384323559297794,
+  "total_training_thresholds": 30,
+  "training_trials": [
+    {
+      "nct_id": "NCT00085566",
+      "title": "Everolimus and Gefitinib in Treating Patients With Progressive Glioblastoma Multiforme or Progressive Metastatic Prostate Cancer",
+      "enrollment": 61,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "EVEROLIMUS",
+        "GEFITINIB"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 61,
+      "mean_threshold": 0.6429296875,
+      "std_threshold": 0.09154656197943158
+    },
+    {
+      "nct_id": "NCT00335764",
+      "title": "Sorafenib Combined With Erlotinib, Tipifarnib, or Temsirolimus in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "enrollment": 92,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "ERLOTINIB HYDROCHLORIDE",
+        "TIPIFARNIB",
+        "SORAFENIB TOSYLATE",
+        "TEMSIROLIMUS"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 92,
+      "mean_threshold": 0.6069931640625,
+      "std_threshold": 0.10976223586311008
+    },
+    {
+      "nct_id": "NCT00095940",
+      "title": "Lapatinib in Treating Young Patients With Recurrent or Refractory Central Nervous System Tumors",
+      "enrollment": 52,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "LAPATINIB DITOSYLATE"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 52,
+      "mean_threshold": 0.8473749999999999,
+      "std_threshold": 0.13019390586736387
+    }
+  ],
+  "testing_trials": [
+    {
+      "nct_id": "NCT00672243",
+      "title": "Ph II Erlotinib + Sirolimus for Pts w Recurrent Malignant Glioma Multiforme",
+      "enrollment": 32,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "SIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 32,
+      "mean_predicted_rate": 0.01875,
+      "std_predicted_rate": 0.025
+    },
+    {
+      "nct_id": "NCT01017653",
+      "title": "Panitumumab and Irinotecan for Malignant Gliomas",
+      "enrollment": 16,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "PANITUMUMAB",
+        "IRINOTECAN"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 16,
+      "mean_predicted_rate": 0.0875,
+      "std_predicted_rate": 0.09354143466934854
+    },
+    {
+      "nct_id": "NCT00350727",
+      "title": "Pazopanib In Combination With Lapatinib In Adult Patients With Relapsed Malignant Glioma",
+      "enrollment": 75,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "PAZOPANIB",
+        "LAPATINIB"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 75,
+      "mean_predicted_rate": 0.0013333333333333335,
+      "std_predicted_rate": 0.004
+    },
+    {
+      "nct_id": "NCT00112736",
+      "title": "Erlotinib and Temsirolimus in Treating Patients With Recurrent Malignant Glioma",
+      "enrollment": 69,
+      "actual_response_rate": 0.0,
+      "drugs": [
+        "ERLOTINIB",
+        "TEMSIROLIMUS"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 69,
+      "mean_predicted_rate": 0.02463768115942029,
+      "std_predicted_rate": 0.01456503713205926
+    },
+    {
+      "nct_id": "NCT02844439",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "enrollment": 40,
+      "actual_response_rate": 0.025,
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 40,
+      "mean_predicted_rate": 0.11750000000000001,
+      "std_predicted_rate": 0.04190763653560053
+    },
+    {
+      "nct_id": "NCT00387894",
+      "title": "Erlotinib in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "enrollment": 6,
+      "actual_response_rate": 0.04,
+      "drugs": [
+        "ERLOTINIB HYDROCHLORIDE"
+      ],
+      "eligible_patients": 548,
+      "cohort_size": 6,
+      "mean_predicted_rate": 0.1,
+      "std_predicted_rate": 0.13333333333333333
+    }
+  ],
+  "testing_violin_data": [
+    {
+      "nct_id": "NCT00672243",
+      "title": "Ph II Erlotinib + Sirolimus for Pts w Recurrent Malignant Glioma Multiforme",
+      "drugs": [
+        "SIROLIMUS",
+        "ERLOTINIB"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.03125,
+        0.0,
+        0.0,
+        0.0625,
+        0.0,
+        0.0,
+        0.03125,
+        0.0625,
+        0.0,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0,
+        "count": 1
+      }
+    },
+    {
+      "nct_id": "NCT01017653",
+      "title": "Panitumumab and Irinotecan for Malignant Gliomas",
+      "drugs": [
+        "PANITUMUMAB",
+        "IRINOTECAN"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.0625,
+        0.0625,
+        0.0,
+        0.125,
+        0.1875,
+        0.0625,
+        0.0,
+        0.0,
+        0.3125,
+        0.0625
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.714,
+        "median": 0.1815,
+        "count": 12
+      }
+    },
+    {
+      "nct_id": "NCT00350727",
+      "title": "Pazopanib In Combination With Lapatinib In Adult Patients With Relapsed Malignant Glioma",
+      "drugs": [
+        "PAZOPANIB",
+        "LAPATINIB"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.013333333333333334
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0,
+        "count": 6
+      }
+    },
+    {
+      "nct_id": "NCT00112736",
+      "title": "Erlotinib and Temsirolimus in Treating Patients With Recurrent Malignant Glioma",
+      "drugs": [
+        "ERLOTINIB",
+        "TEMSIROLIMUS"
+      ],
+      "actual_response_rate": 0.0,
+      "predicted_rates": [
+        0.043478260869565216,
+        0.028985507246376812,
+        0.014492753623188406,
+        0.028985507246376812,
+        0.0,
+        0.028985507246376812,
+        0.028985507246376812,
+        0.043478260869565216,
+        0.0,
+        0.028985507246376812
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.8889,
+        "median": 0.0125,
+        "count": 54
+      }
+    },
+    {
+      "nct_id": "NCT02844439",
+      "title": "Study of Tesevatinib Monotherapy in Patients With Recurrent Glioblastoma",
+      "drugs": [
+        "TESEVATINIB"
+      ],
+      "actual_response_rate": 0.025,
+      "predicted_rates": [
+        0.15,
+        0.1,
+        0.175,
+        0.1,
+        0.075,
+        0.075,
+        0.125,
+        0.075,
+        0.2,
+        0.1
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.025,
+        "median": 0.0125,
+        "count": 2
+      }
+    },
+    {
+      "nct_id": "NCT00387894",
+      "title": "Erlotinib in Treating Patients With Recurrent Glioblastoma Multiforme or Gliosarcoma",
+      "drugs": [
+        "ERLOTINIB HYDROCHLORIDE"
+      ],
+      "actual_response_rate": 0.04,
+      "predicted_rates": [
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ],
+      "drug_rr_range": {
+        "min": 0.0,
+        "max": 0.04,
+        "median": 0.02,
+        "count": 2
+      }
+    }
+  ],
+  "analyses": {
+    "mae": {
+      "value": 0.0475,
+      "per_trial": [
+        {
+          "nct_id": "NCT00672243",
+          "actual": 0.0,
+          "predicted": 0.01875,
+          "abs_error": 0.01875
+        },
+        {
+          "nct_id": "NCT01017653",
+          "actual": 0.0,
+          "predicted": 0.0875,
+          "abs_error": 0.0875
+        },
+        {
+          "nct_id": "NCT00350727",
+          "actual": 0.0,
+          "predicted": 0.0013333333333333335,
+          "abs_error": 0.0013333333333333335
+        },
+        {
+          "nct_id": "NCT00112736",
+          "actual": 0.0,
+          "predicted": 0.02463768115942029,
+          "abs_error": 0.02463768115942029
+        },
+        {
+          "nct_id": "NCT02844439",
+          "actual": 0.025,
+          "predicted": 0.11750000000000001,
+          "abs_error": 0.0925
+        },
+        {
+          "nct_id": "NCT00387894",
+          "actual": 0.04,
+          "predicted": 0.1,
+          "abs_error": 0.060000000000000005
+        }
+      ]
+    },
+    "bland_altman": {
+      "mean_diff": 0.0475,
+      "std_diff": 0.0381,
+      "upper_loa": 0.1221,
+      "lower_loa": -0.0272,
+      "points": [
+        {
+          "nct_id": "NCT00672243",
+          "mean": 0.009375,
+          "diff": 0.01875
+        },
+        {
+          "nct_id": "NCT01017653",
+          "mean": 0.04375,
+          "diff": 0.0875
+        },
+        {
+          "nct_id": "NCT00350727",
+          "mean": 0.0006666666666666668,
+          "diff": 0.0013333333333333335
+        },
+        {
+          "nct_id": "NCT00112736",
+          "mean": 0.012318840579710146,
+          "diff": 0.02463768115942029
+        },
+        {
+          "nct_id": "NCT02844439",
+          "mean": 0.07125000000000001,
+          "diff": 0.0925
+        },
+        {
+          "nct_id": "NCT00387894",
+          "mean": 0.07,
+          "diff": 0.060000000000000005
+        }
+      ]
+    },
+    "ci_coverage": {
+      "coverage_rate": 0.8333,
+      "covered_count": 5,
+      "total_trials": 6,
+      "trials": [
+        {
+          "nct_id": "NCT00672243",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0625,
+          "covered": true,
+          "predicted_mean": 0.01875
+        },
+        {
+          "nct_id": "NCT01017653",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.2844,
+          "covered": true,
+          "predicted_mean": 0.0875
+        },
+        {
+          "nct_id": "NCT00350727",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0103,
+          "covered": true,
+          "predicted_mean": 0.0013333333333333335
+        },
+        {
+          "nct_id": "NCT00112736",
+          "actual": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0435,
+          "covered": true,
+          "predicted_mean": 0.02463768115942029
+        },
+        {
+          "nct_id": "NCT02844439",
+          "actual": 0.025,
+          "ci_lower": 0.075,
+          "ci_upper": 0.1944,
+          "covered": false,
+          "predicted_mean": 0.11750000000000001
+        },
+        {
+          "nct_id": "NCT00387894",
+          "actual": 0.04,
+          "ci_lower": 0.0,
+          "ci_upper": 0.3333,
+          "covered": true,
+          "predicted_mean": 0.1
+        }
+      ]
+    }
+  }
+}

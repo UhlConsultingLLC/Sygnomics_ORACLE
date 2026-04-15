@@ -1,0 +1,1483 @@
+{
+  "group:DNA Damage inhibitor": {
+    "threshold": 0.6459,
+    "computed_at": "2026-04-13 21:44:21"
+  },
+  "group:VEGF inhibitor": {
+    "threshold": 0.7776,
+    "computed_at": "2026-04-13 21:44:21"
+  },
+  "group:VEGFR inhibitor": {
+    "threshold": 0.484,
+    "computed_at": "2026-04-13 21:44:21"
+  },
+  "Kinase Inhibitor": {
+    "threshold": 0.5210156250000001,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "2fcdde40"
+  },
+  "VEGFR inhibitor": {
+    "threshold": 0.5210625,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "39462b9f"
+  },
+  "EGFR inhibitor": {
+    "threshold": 0.71959375,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "f07218e4"
+  },
+  "PARP1 inhibitor": {
+    "threshold": 0.3713948860677084,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "0e19e158"
+  },
+  "DNA Alkylating/Damaging inhibitor": {
+    "threshold": 0.6438377278645833,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "758e9e73"
+  },
+  "PARP inhibitor": {
+    "threshold": 0.07999999999999999,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "4669bdec"
+  },
+  "PDGFR inhibitor": {
+    "threshold": 0.618699658203125,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "2cb04980"
+  },
+  "Immune Checkpoint inhibitor": {
+    "threshold": 0.0,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "342e646b"
+  },
+  "CDK4/6 inhibitor": {
+    "threshold": 0.3976165625,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "43ef8c43"
+  },
+  "DNA Damage inhibitor": {
+    "threshold": 0.7517261270254629,
+    "computed_at": "2026-04-13 21:45:03",
+    "sim_id": "7bd0133d"
+  },
+  "FGFR inhibitor": {
+    "threshold": 0.43485185546875,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "6264cf04"
+  },
+  "RAF inhibitor": {
+    "threshold": 0.6204596549479167,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "8035f6c1"
+  },
+  "ABL inhibitor": {
+    "threshold": 0.3348069140625,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "0659d7c5"
+  },
+  "HER2 inhibitor": {
+    "threshold": 0.6553826416015625,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "e6e166fb"
+  },
+  "HER4 inhibitor": {
+    "threshold": 0.467859609375,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "8b4c415e"
+  },
+  "Topoisomerase inhibitor": {
+    "threshold": 0.9392969042968751,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "fe6a7a0b"
+  },
+  "TOP1 inhibitor": {
+    "threshold": 0.938198076171875,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "3037cb73"
+  },
+  "Biological vaccine - induces immune response": {
+    "threshold": 0.576651875,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "02002c5a"
+  },
+  "VEGF inhibitor": {
+    "threshold": 0.8195929349459133,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "15aef035"
+  },
+  "KIT inhibitor": {
+    "threshold": 0.6307920382254465,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "6cebb36a"
+  },
+  "FLT3 inhibitor": {
+    "threshold": 0.59462470703125,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "37cc4c8f"
+  },
+  "HDAC inhibitor": {
+    "threshold": 0.137955078125,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "00984150"
+  },
+  "PD-1 inhibitor": {
+    "threshold": 0.48228046875,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "5701d7a2"
+  },
+  "PDGFRb inhibitor": {
+    "threshold": 0.693777041015625,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "5bdd58fd"
+  },
+  "ABL1 inhibitor": {
+    "threshold": 0.34305128906250004,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "3d22ae66"
+  },
+  "BRAF inhibitor": {
+    "threshold": 0.6232985221354167,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "0d6acb7e"
+  },
+  "PI3K inhibitor": {
+    "threshold": 0.45352042968750006,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "04d2fe03"
+  },
+  "PTGS2 inhibitor": {
+    "threshold": 0.9399992187499999,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "ff08abf1"
+  },
+  "RET inhibitor": {
+    "threshold": 0.6247483203124999,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "d9ecbda9"
+  },
+  "CSF1R inhibitor": {
+    "threshold": 0.4407829296875,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "fa6b8ec2"
+  },
+  "ERBB2 inhibitor": {
+    "threshold": 0.6574960107421876,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "6327758d"
+  },
+  "MET inhibitor": {
+    "threshold": 0.44338708984375,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "8ef93a3d"
+  },
+  "FKBP1A inhibitor": {
+    "threshold": 0.5036558561197917,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "46ded784"
+  },
+  "TYMS inhibitor": {
+    "threshold": 0.2710140039062501,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "7810d15b"
+  },
+  "CDK4 inhibitor": {
+    "threshold": 0.391374375,
+    "computed_at": "2026-04-13 21:45:04",
+    "sim_id": "7eceb7a8"
+  },
+  "Stem cell growth factor receptor inhibitor": {
+    "threshold": 0.6845270312499999,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "a91283a9"
+  },
+  "ERBB4 inhibitor": {
+    "threshold": 0.466207421875,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "d44ec18a"
+  },
+  "FGFR1 inhibitor": {
+    "threshold": 0.47622046875,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "34a58ece"
+  },
+  "FGFR3 inhibitor": {
+    "threshold": 0.47359015625,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "067e0896"
+  },
+  "TGFBR1 inhibitor": {
+    "threshold": 0.9979625,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "88a739b4"
+  },
+  "ALDH5A1 inhibitor": {
+    "threshold": 1.0,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "feec36f0"
+  },
+  "CSF2RA agonist": {
+    "threshold": 0.5852106250000001,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "46dce425"
+  },
+  "EPHB4 inhibitor": {
+    "threshold": 0.79464,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "a0d5e925"
+  },
+  "ITK inhibitor": {
+    "threshold": 0.46966500000000005,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "395933bf"
+  },
+  "LCK inhibitor": {
+    "threshold": 0.4719615625,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "e9646fd6"
+  },
+  "XPO1 inhibitor": {
+    "threshold": 0.7909468749999999,
+    "computed_at": "2026-04-13 21:45:05",
+    "sim_id": "8821a596"
+  },
+  "IDH inhibitor": {
+    "threshold": 0.41887000651041667,
+    "computed_at": "2026-04-13 21:45:12",
+    "sim_id": "5c492854"
+  },
+  "Tubulin inhibitor": {
+    "threshold": 0.6626687499999999,
+    "computed_at": "2026-04-13 21:45:12",
+    "sim_id": "a86e77bf"
+  },
+  "WEE1 inhibitor": {
+    "threshold": -0.4509474999999999,
+    "computed_at": "2026-04-13 21:45:12",
+    "sim_id": "17031579"
+  },
+  "Bacterial 70S ribosome inhibitor": {
+    "threshold": 0.47626850325520825,
+    "computed_at": "2026-04-13 21:45:13",
+    "sim_id": "d57bd3fc"
+  },
+  "CDK inhibitor": {
+    "threshold": 0.5199999999999998,
+    "computed_at": "2026-04-13 21:45:13",
+    "sim_id": "7fb61de0"
+  },
+  "CRBN inhibitor": {
+    "threshold": 0.304219375,
+    "computed_at": "2026-04-13 21:45:13",
+    "sim_id": "251a9838"
+  },
+  "GSR inhibitor": {
+    "threshold": 0.6848249479166667,
+    "computed_at": "2026-04-13 21:45:14",
+    "sim_id": "d2c39bb0"
+  },
+  "ITGAV antagonist": {
+    "threshold": 0.5450678124999999,
+    "computed_at": "2026-04-13 21:45:14",
+    "sim_id": "ae94b9c4"
+  },
+  "ITGB3 antagonist": {
+    "threshold": 0.5440699999999999,
+    "computed_at": "2026-04-13 21:45:14",
+    "sim_id": "e3520464"
+  },
+  "JAK inhibitor": {
+    "threshold": 0.5199999999999998,
+    "computed_at": "2026-04-13 21:45:14",
+    "sim_id": "4849affa"
+  },
+  "mTOR activator": {
+    "threshold": 0.9296993749999999,
+    "computed_at": "2026-04-13 21:45:20",
+    "sim_id": "b8aa10e1"
+  },
+  "group:ABL inhibitor": {
+    "threshold": 0.44222378255208333,
+    "computed_at": "2026-04-13 21:46:51"
+  },
+  "group:ACE inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ACHE inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADA exogenous gene": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADORA2A agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADORA2B antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRA1A agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRA1A antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRA2A antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRB1 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRB1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRB2 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ADRB2 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:AGER antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:AGTR1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:AKT inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ALAS1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ALDH2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ALDH5A1 inhibitor": {
+    "threshold": 1.0,
+    "computed_at": "2026-04-13 21:47:13"
+  },
+  "group:ALK inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:ALK tyrosine kinase receptor inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ALOX5 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ANGPT1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ANGPT2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:APH1A inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:APP binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:AR antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ATP1A1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ATP2A3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:AURKA inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:AXL inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Aldehyde dehydrogenase inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:Androgen Receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Angiotensin-converting enzyme inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Antibodies hydrolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Arachidonate 5-lipoxygenase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:B-lymphocyte antigen CD19 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:B-lymphocyte antigen CD20 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:BCL-2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:BDKRB2 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:BIRC5 vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:BRD2 inhibitor": {
+    "error": "Not enough trials after outlier removal (1 remain, need >= 3). 2 trial(s) excluded."
+  },
+  "group:BTK inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:Bacterial 70S ribosome inhibitor": {
+    "threshold": 0.47515830598958325,
+    "computed_at": "2026-04-13 21:48:47"
+  },
+  "group:Bacterial beta-lactamase TEM inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Bacterial dihydrofolate reductase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Bacterial dihydropteroate synthase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Bacterial penicillin-binding protein inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Baculoviral IAP repeat-containing protein 5 vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Bcr/Abl fusion protein inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:Beta-1 adrenergic receptor antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Beta-2 adrenergic receptor antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Bilirubin sequestering agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Biological vaccine - induces immune response": {
+    "threshold": 0.36202750000000006,
+    "computed_at": "2026-04-13 21:49:04"
+  },
+  "group:Bovine colostrum containing protective antibodies": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:C5 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CA1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CA12 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CA2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CA4 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CACNA1B blocker": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CACNA1H blocker": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CACNA1H modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CCND1 inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:CD27 agonist": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:CD38 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CD3E binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CD3E inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CD74 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CD79B binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CDK inhibitor": {
+    "threshold": 0.5199999999999998,
+    "computed_at": "2026-04-13 21:49:50"
+  },
+  "group:CDK4/6 inhibitor": {
+    "threshold": 0.31268171874999995,
+    "computed_at": "2026-04-13 21:49:56"
+  },
+  "group:CHEK1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CHEK2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CHRNA1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CHRNB2 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CNR1 modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CO/O transfer": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:COL1A2 hydrolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CRBN inhibitor": {
+    "threshold": 0.299516875,
+    "computed_at": "2026-04-13 21:50:06"
+  },
+  "group:CRBN modulator": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:CSF1R antagonist": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:CSF1R inhibitor": {
+    "threshold": 0.41766632812499993,
+    "computed_at": "2026-04-13 21:50:20"
+  },
+  "group:CSF2 vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CSF2RA agonist": {
+    "threshold": 0.3458325,
+    "computed_at": "2026-04-13 21:50:36"
+  },
+  "group:CSF3R agonist": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:CSNK2A1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CXCL12 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CXCR4 agonist": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:CYP17A1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CYP19A1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:CYP3A4 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Carbonic anhydrase IX binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Cell wall disrupting agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Cyclooxygenase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Cytochrome P450 51 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Cytochrome b inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:D2-like dopamine receptor inverse agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:DDR2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:DHFR inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:DHODH inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:DLL3 binding agent": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:DNA Damage cross-linking agent": {
+    "error": "No drugs found for MOA category 'DNA Damage cross-linking agent'"
+  },
+  "group:DNA Damage disrupting agent": {
+    "error": "No drugs found for MOA category 'DNA Damage disrupting agent'"
+  },
+  "group:DNA Damage modulator": {
+    "error": "No drugs found for MOA category 'DNA Damage modulator'"
+  },
+  "group:DRD2 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Diagnostic": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Diagnostic agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Diphtheria toxoid vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Disialoganglioside GD2 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Disialoganglioside GD2 other": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EDNRA antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EEF2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EGFR antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EGFR binding agent": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:EGFR inhibitor": {
+    "threshold": 0.7170997642299107,
+    "computed_at": "2026-04-13 21:54:41"
+  },
+  "group:EGFR vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EML4-ALK inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ENG inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:EPAS1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EPHA2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:EPHB4 inhibitor": {
+    "threshold": 0.7910657812499999,
+    "computed_at": "2026-04-13 21:55:02"
+  },
+  "group:ESR1 modulator": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:EZH2 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:Endothelin receptor, ET-A/ET-B antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Ephrin type-A receptor 3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Essential for cellular homeostasis": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Estrogen receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:F10 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FASLG binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FDPS inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FGA exogenous protein": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FGF1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FGFR inhibitor": {
+    "threshold": 0.36406786458333334,
+    "computed_at": "2026-04-13 21:55:11"
+  },
+  "group:FK506-binding protein 1A inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FKBP1A inhibitor": {
+    "threshold": 0.6715447249348958,
+    "computed_at": "2026-04-13 21:55:26"
+  },
+  "group:FLT3 inhibitor": {
+    "threshold": 0.5503903499348958,
+    "computed_at": "2026-04-13 21:55:44"
+  },
+  "group:FN1 proteolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FNTA inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:FOLH1 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:FRK inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Follicle stimulating hormone receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GABRA1 modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GART inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:GNRHR antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GPD2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GRIA1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GRIA2 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GRIA4 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GRIK1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GRIN1 modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GSK3A inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GSK3B inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:GSR inhibitor": {
+    "threshold": 0.6773275325520833,
+    "computed_at": "2026-04-13 21:55:57"
+  },
+  "group:Ganglioside GM3 (NeuGcGM3) inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Glucocorticoid receptor modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Glutamine sequestering agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Glutathione reductase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Granulocyte colony stimulating factor receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HAVCR2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HBA2 modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HBB exogenous gene": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HCK inhibitor": {
+    "error": "Not enough trials after outlier removal (2 remain, need >= 3). 6 trial(s) excluded."
+  },
+  "group:HDAC inhibitor": {
+    "threshold": 0.30809488281249997,
+    "computed_at": "2026-04-13 21:56:13"
+  },
+  "group:HER2 binding agent": {
+    "error": "No drugs found for MOA category 'HER2 binding agent'"
+  },
+  "group:HER2 inhibitor": {
+    "threshold": 0.6424102709960937,
+    "computed_at": "2026-04-13 21:56:23"
+  },
+  "group:HER3 binding agent": {
+    "error": "No drugs found for MOA category 'HER3 binding agent'"
+  },
+  "group:HER4 inhibitor": {
+    "threshold": 0.44431343749999996,
+    "computed_at": "2026-04-13 21:56:27"
+  },
+  "group:HGF inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:HMGCR inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HRH1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HTR1A antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HTR1B antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HTR1D antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HTR2A antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HTR2C antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:HTR3A antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Hemocyanin 1 vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Hemoglobin HbA negative modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Human immunodeficiency virus type 1 protease inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Human immunodeficiency virus type 1 reverse transcriptase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Hyaluronic acid hydrolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ICOS ligand inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IDH inhibitor": {
+    "threshold": 0.41880513671875,
+    "computed_at": "2026-04-13 21:56:42"
+  },
+  "group:IDH1/IDH2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IDO1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IFNAR1 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IFNGR2 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IGF1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IGF1R antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IGF1R inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IGF2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IL12B inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IL13RA2 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IL2RA agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IL2RA inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IL4R binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IL6R inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IMPA1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:IMPDH1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ITGAV antagonist": {
+    "threshold": 0.54355828125,
+    "computed_at": "2026-04-13 21:57:08"
+  },
+  "group:ITGB1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ITGB3 antagonist": {
+    "threshold": 0.54294875,
+    "computed_at": "2026-04-13 21:57:14"
+  },
+  "group:ITK inhibitor": {
+    "threshold": 0.46894101562499996,
+    "computed_at": "2026-04-13 21:57:17"
+  },
+  "group:Immune Checkpoint antagonist": {
+    "error": "No drugs found for MOA category 'Immune Checkpoint antagonist'"
+  },
+  "group:Immune Checkpoint inhibitor": {
+    "threshold": 0.5762526139322918,
+    "computed_at": "2026-04-13 21:57:53"
+  },
+  "group:Immune Checkpoint other": {
+    "error": "No drugs found for MOA category 'Immune Checkpoint other'"
+  },
+  "group:Immunostimulant": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Inosine-5'-monophosphate dehydrogenase (IMPDH) inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Insulin receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Integrin alpha-V/beta-3 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Integrin alpha-V/beta-5 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Interferon alpha/beta receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Isocitrate dehydrogenase [NADP] cytoplasmic inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Isocitrate dehydrogenase [NADP], mitochondrial inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:JAK inhibitor": {
+    "threshold": 0.5199999999999998,
+    "computed_at": "2026-04-13 21:58:33"
+  },
+  "group:KCNN4 blocker": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:KEAP1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:KIF11 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:KIT inhibitor": {
+    "threshold": 0.5879800488281249,
+    "computed_at": "2026-04-13 21:58:53"
+  },
+  "group:L-arginine hydrolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:LAG3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:LAMA1 hydrolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:LCK inhibitor": {
+    "threshold": 0.46961875,
+    "computed_at": "2026-04-13 21:58:58"
+  },
+  "group:LGALS3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:LRP1 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:LYN inhibitor": {
+    "error": "Not enough trials after outlier removal (2 remain, need >= 3). 6 trial(s) excluded."
+  },
+  "group:Leukocyte common antigen binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Luteinizing hormone/Choriogonadotropin receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MAPK1 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:MAPK11 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MAPK14 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MAPK3 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:MEK inhibitor": {
+    "error": "No drugs found for MOA category 'MEK inhibitor'"
+  },
+  "group:MET antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MET inhibitor": {
+    "threshold": 0.5307219824218751,
+    "computed_at": "2026-04-13 21:59:17"
+  },
+  "group:MIF inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MPL agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MS4A1 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MST1R inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:MT-ND6 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Macrophage colony stimulating factor receptor inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Macrophage-stimulating protein receptor inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:May promote synthesis of hyaline-like cartilage repair tissue": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Melatonin receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Mesothelin binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Metalloporphyrin antioxidant (antitumor, radioprotectant)": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Monocyte differentiation antigen CD14 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Muscle-type nicotinic acetylcholine receptor antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:NPM/ALK (Nucleophosmin/ALK tyrosine kinase receptor) inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:NR1H4 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:NR3C1 agonist": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:NR3C2 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:NTRK1 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:NTRK2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:NTRK3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Neuronal acetylcholine receptor; alpha4/beta2 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Norepinephrine transporter substrate": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ODC1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:OPRM1 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:OPRM1 antagonist": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:PARP 1, 2 and 3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PARP inhibitor": {
+    "threshold": 0.39759124999999995,
+    "computed_at": "2026-04-13 21:59:44"
+  },
+  "group:PCSK9 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PDE10A inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PDE3A inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PDE4A inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PDE5A inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:PDGFR antagonist": {
+    "error": "No drugs found for MOA category 'PDGFR antagonist'"
+  },
+  "group:PDGFR inhibitor": {
+    "threshold": 0.5971237578124999,
+    "computed_at": "2026-04-13 22:00:22"
+  },
+  "group:PGF inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:PGR agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PI3K inhibitor": {
+    "threshold": 0.5288856689453125,
+    "computed_at": "2026-04-13 22:00:36"
+  },
+  "group:PLAT exogenous protein": {
+    "error": "Not enough trials after outlier removal (0 remain, need >= 3). 3 trial(s) excluded."
+  },
+  "group:PLG inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PNP inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PPARA agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PPAT inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PPIA modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PPP2CA inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PPP2CB inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PPP5C inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PRKCB inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:PTGS2 inhibitor": {
+    "threshold": 0.697121796875,
+    "computed_at": "2026-04-13 22:01:06"
+  },
+  "group:PTK2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PTK2B inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:PTK6 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Peptidoglycan inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Phosphatidylserine inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Polysaccharide conjugated to Tetanus toxoid vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Progesterone receptor agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Proteasome inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Protein kinase C beta inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Purinergic receptor P2Y12 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:RAF inhibitor": {
+    "threshold": 0.6166666048177083,
+    "computed_at": "2026-04-13 22:01:34"
+  },
+  "group:RARG agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:RET inhibitor": {
+    "threshold": 0.6254811181640625,
+    "computed_at": "2026-04-13 22:01:49"
+  },
+  "group:RNA inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:ROS1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:RRM1 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:Reactive metabolite scavenging agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Reactive nitro radical": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Receptor protein-tyrosine kinase erbB-2 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:Receptor protein-tyrosine kinase erbB-4 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:Ribonucleoside-diphosphate reductase RR1 inhibitor": {
+    "error": "Not enough trials after outlier removal (0 remain, need >= 3). 12 trial(s) excluded."
+  },
+  "group:S1PR5 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:S1PR5 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SCN1A blocker": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SELP blocker": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SERPINC1 activator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC18A2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC6A2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC6A2 releasing agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC6A3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC6A3 releasing agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC6A4 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SLC6A4 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SMO antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SMO inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SRC inhibitor": {
+    "error": "Not enough trials after outlier removal (2 remain, need >= 3). 6 trial(s) excluded."
+  },
+  "group:SRD5A1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SSTR5 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:SV2A modulator": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Serine/threonine-protein kinase PLK1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Serotonin 2a (5-HT2a) receptor antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Somatic cell supplemental therapy": {
+    "error": "Not enough trials after outlier removal (1 remain, need >= 3). 3 trial(s) excluded."
+  },
+  "group:Somatostatin receptor binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Stem cell growth factor receptor inhibitor": {
+    "threshold": 0.6271068750000001,
+    "computed_at": "2026-04-13 22:02:41"
+  },
+  "group:Structural capsid protein inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Succinate semialdehyde dehydrogenase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Supplement": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Synaptosomal nerve-associated protein 25 (SNAP-25) hydrolytic enzyme": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:T cell surface glycoprotein CD3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TACR1 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TACSTD2 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TEK inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TERT inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TGFB1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TGFB2 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:TGFB3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TGFBR1 inhibitor": {
+    "threshold": 0.997525,
+    "computed_at": "2026-04-13 22:02:54"
+  },
+  "group:THRA agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TIGIT antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TIGIT inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TLR7 agonist": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:TLR7 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TLR9 antagonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TNF inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TNF-alpha binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TNFRSF17 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TNFRSF18 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TP53 exogenous gene": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TP53 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TPO inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TXNRD1 inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:TYK2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:TYMS inhibitor": {
+    "threshold": 0.2679569921875001,
+    "computed_at": "2026-04-13 22:03:07"
+  },
+  "group:Tetanus toxoid vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Thioredoxin reductase 1 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Thymidylate synthase inhibitor": {
+    "error": "Not enough trials with response rates (1 found, need >= 3)"
+  },
+  "group:Thyroid peroxidase inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Toll-like receptor 2 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Toll-like receptor 7 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Toll-like receptor 8 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Topoisomerase inhibitor": {
+    "threshold": 0.84249798828125,
+    "computed_at": "2026-04-13 22:03:34"
+  },
+  "group:Tubulin disrupting agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Tubulin inhibitor": {
+    "threshold": 0.662325,
+    "computed_at": "2026-04-13 22:04:29"
+  },
+  "group:Tubulin stabiliser": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Tumor necrosis factor ligand superfamily member 6 binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Tumor necrosis factor receptor superfamily member 18 agonist": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Tyrosine-protein kinase ABL inhibitor": {
+    "error": "Not enough trials with response rates (2 found, need >= 3)"
+  },
+  "group:Tyrosine-protein kinase receptor FLT3 inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Tyrosine-protein kinase receptor RET inhibitor": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Unknown": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:VEGF binding agent": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:Voltage-sensitive sodium channel alpha-subunit blocker": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:WEE1 inhibitor": {
+    "threshold": -0.45062999999999986,
+    "computed_at": "2026-04-13 22:05:31"
+  },
+  "group:WT1 vaccine antigen": {
+    "error": "Not enough trials with response rates (0 found, need >= 3)"
+  },
+  "group:XPO1 inhibitor": {
+    "threshold": 0.690913125,
+    "computed_at": "2026-04-13 22:05:34"
+  },
+  "group:mTOR activator": {
+    "threshold": 0.93025,
+    "computed_at": "2026-04-13 22:05:38"
+  },
+  "group:mTOR inhibitor": {
+    "error": "Not enough trials after outlier removal (2 remain, need >= 3). 2 trial(s) excluded."
+  }
+}

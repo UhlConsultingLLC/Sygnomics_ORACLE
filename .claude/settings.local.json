@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:8000/simulation/moa-status/09eebe73)",
+      "Bash(python -c \":*)",
+      "WebSearch",
+      "Bash(curl -s \"https://euclinicaltrials.eu/ctis-public-api/swagger-ui.html\")",
+      "Bash(curl -sk -X POST \"https://euclinicaltrials.eu/ctis-public-api/search\" -H \"Content-Type: application/json\" -d '{\"\"\"\"searchCriteria\"\"\"\":{\"\"\"\"query\"\"\"\":\"\"\"\"glioblastoma\"\"\"\"},\"\"\"\"pagination\"\"\"\":{\"\"\"\"page\"\"\"\":0,\"\"\"\"size\"\"\"\":2}}')",
+      "Bash(curl -sk \"https://euclinicaltrials.eu/ctis-public-api/v3/api-docs\")",
+      "Bash(curl -sk -X POST \"https://euclinicaltrials.eu/ctis-public-api/search\" -H \"Content-Type: application/json\" -d '{}')",
+      "Bash(python -m json.tool)",
+      "WebFetch(domain:hendrik.codes)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -sk -X POST \"https://euclinicaltrials.eu/ctis-public-api/search\" -H \"Content-Type: application/json\" -d '{\"\"\"\"pagination\"\"\"\":{\"\"\"\"page\"\"\"\":1,\"\"\"\"size\"\"\"\":2},\"\"\"\"sort\"\"\"\":{\"\"\"\"property\"\"\"\":\"\"\"\"decisionDate\"\"\"\",\"\"\"\"direction\"\"\"\":\"\"\"\"DESC\"\"\"\"},\"\"\"\"searchCriteria\"\"\"\":{\"\"\"\"containAll\"\"\"\":\"\"\"\"glioblastoma\"\"\"\"}}')",
+      "Bash(curl -sk -X POST \"https://euclinicaltrials.eu/ctis-public-api/search\" -H \"Content-Type: application/json\" -d '{\"\"\"\"pagination\"\"\"\":{\"\"\"\"page\"\"\"\":1,\"\"\"\"size\"\"\"\":2},\"\"\"\"sort\"\"\"\":{\"\"\"\"property\"\"\"\":\"\"\"\"decisionDate\"\"\"\",\"\"\"\"direction\"\"\"\":\"\"\"\"DESC\"\"\"\"},\"\"\"\"searchCriteria\"\"\"\":{\"\"\"\"containAll\"\"\"\":\"\"\"\"cancer\"\"\"\"}}')",
+      "Bash(curl -sk -X POST \"https://euclinicaltrials.eu/ctis-public-api/search\" -H \"Content-Type: application/json\" -d '{\"\"\"\"pagination\"\"\"\":{\"\"\"\"page\"\"\"\":1,\"\"\"\"size\"\"\"\":2},\"\"\"\"sort\"\"\"\":{\"\"\"\"property\"\"\"\":\"\"\"\"decisionDate\"\"\"\",\"\"\"\"direction\"\"\"\":\"\"\"\"DESC\"\"\"\"},\"\"\"\"searchCriteria\"\"\"\":{}}')",
+      "Bash(curl -sk \"https://euclinicaltrials.eu/ctis-public-api/retrieve/2024-514399-42-00\")",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}

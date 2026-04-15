@@ -1,0 +1,283 @@
+{
+  "_meta": {
+    "description": "Biomarker prevalence in TCGA-GBM cohort (n=596 cases with genomic data)",
+    "source": "TCGA GBM publications (Nature 2008, Cell 2013) and cBioPortal TCGA-GBM dataset",
+    "total_cases": 596,
+    "note": "Counts are approximate and based on published TCGA-GBM analyses. Some markers have data on fewer patients due to assay coverage."
+  },
+
+  "MGMT promoter methylated": {
+    "count": 268,
+    "total": 596,
+    "percent": 45.0,
+    "note": "~45% of GBM show MGMT promoter methylation (associated with better temozolomide response)"
+  },
+  "MGMT methylated": {
+    "count": 268,
+    "total": 596,
+    "percent": 45.0,
+    "note": "~45% of GBM show MGMT promoter methylation"
+  },
+  "MGMT unmethylated": {
+    "count": 328,
+    "total": 596,
+    "percent": 55.0,
+    "note": "~55% of GBM have unmethylated MGMT promoter"
+  },
+  "MGMT status known": {
+    "count": 596,
+    "total": 596,
+    "percent": 100.0,
+    "note": "MGMT methylation status available for most TCGA-GBM cases (~45% methylated, ~55% unmethylated)"
+  },
+  "MGMT mentioned": {
+    "count": 596,
+    "total": 596,
+    "percent": 100.0,
+    "note": "MGMT is referenced but specific methylation status not determined from criteria"
+  },
+
+  "IDH1 R132H mutation": {
+    "count": 30,
+    "total": 596,
+    "percent": 5.0,
+    "note": "~5% of GBM carry IDH1 R132H; most are secondary GBM"
+  },
+  "IDH1 mutation": {
+    "count": 36,
+    "total": 596,
+    "percent": 6.0,
+    "note": "~6% of GBM carry IDH1 mutations (R132H, R132C, etc.)"
+  },
+  "IDH2 mutation": {
+    "count": 3,
+    "total": 596,
+    "percent": 0.5,
+    "note": "<1% of GBM carry IDH2 mutations"
+  },
+  "IDH mutation": {
+    "count": 39,
+    "total": 596,
+    "percent": 6.5,
+    "note": "~6-7% of GBM carry IDH1 or IDH2 mutations"
+  },
+  "IDH wild-type": {
+    "count": 557,
+    "total": 596,
+    "percent": 93.5,
+    "note": "~93% of GBM are IDH wild-type (primary GBM)"
+  },
+
+  "EGFRvIII": {
+    "count": 149,
+    "total": 596,
+    "percent": 25.0,
+    "note": "~25% of GBM express EGFRvIII (constitutively active truncated variant)"
+  },
+  "EGFR amplification": {
+    "count": 262,
+    "total": 596,
+    "percent": 44.0,
+    "note": "~44% of GBM show EGFR gene amplification"
+  },
+  "EGFR mutation": {
+    "count": 166,
+    "total": 596,
+    "percent": 27.8,
+    "note": "~28% of GBM have EGFR mutations (including vIII and point mutations)"
+  },
+  "EGFR overexpression": {
+    "count": 357,
+    "total": 596,
+    "percent": 60.0,
+    "note": "~60% of GBM show EGFR overexpression at protein level"
+  },
+  "EGFR alteration": {
+    "count": 340,
+    "total": 596,
+    "percent": 57.0,
+    "note": "~57% of GBM have some EGFR alteration (mutation, amplification, or overexpression)"
+  },
+
+  "TP53 mutation": {
+    "count": 175,
+    "total": 596,
+    "percent": 29.3,
+    "note": "~29% of GBM carry TP53 mutations"
+  },
+
+  "PTEN loss": {
+    "count": 214,
+    "total": 596,
+    "percent": 36.0,
+    "note": "~36% of GBM show PTEN loss (deletion or reduced expression)"
+  },
+  "PTEN mutation": {
+    "count": 179,
+    "total": 596,
+    "percent": 30.0,
+    "note": "~30% of GBM carry PTEN mutations"
+  },
+
+  "BRAF V600E mutation": {
+    "count": 6,
+    "total": 596,
+    "percent": 1.0,
+    "note": "~1% of adult GBM carry BRAF V600E (more common in pediatric gliomas)"
+  },
+  "BRAF V600E": {
+    "count": 6,
+    "total": 596,
+    "percent": 1.0,
+    "note": "~1% of GBM carry BRAF V600E"
+  },
+  "BRAF mutation": {
+    "count": 12,
+    "total": 596,
+    "percent": 2.0,
+    "note": "~2% of GBM carry any BRAF mutation"
+  },
+
+  "TERT promoter mutation": {
+    "count": 486,
+    "total": 596,
+    "percent": 81.5,
+    "note": "~80-83% of GBM carry TERT promoter mutations (C228T or C250T)"
+  },
+
+  "1p/19q codeletion": {
+    "count": 6,
+    "total": 596,
+    "percent": 1.0,
+    "note": "~1% of GBM show 1p/19q codeletion (characteristic of oligodendroglioma, rare in GBM)"
+  },
+  "1p/19q": {
+    "count": 6,
+    "total": 596,
+    "percent": 1.0,
+    "note": "1p/19q codeletion is rare in GBM (~1%), common in oligodendroglioma"
+  },
+
+  "ATRX loss": {
+    "count": 42,
+    "total": 596,
+    "percent": 7.0,
+    "note": "~7% of GBM show ATRX loss (associated with IDH-mutant and ALT phenotype)"
+  },
+  "ATRX mutation": {
+    "count": 42,
+    "total": 596,
+    "percent": 7.0,
+    "note": "~7% of GBM carry ATRX mutations"
+  },
+
+  "PDGFRA amplification": {
+    "count": 78,
+    "total": 596,
+    "percent": 13.1,
+    "note": "~13% of GBM show PDGFRA amplification (proneural subtype)"
+  },
+
+  "CDKN2A deletion": {
+    "count": 348,
+    "total": 596,
+    "percent": 58.4,
+    "note": "~58% of GBM show CDKN2A homozygous deletion"
+  },
+  "CDK4 amplification": {
+    "count": 89,
+    "total": 596,
+    "percent": 14.9,
+    "note": "~15% of GBM show CDK4 amplification"
+  },
+
+  "MDM2 amplification": {
+    "count": 48,
+    "total": 596,
+    "percent": 8.0,
+    "note": "~8% of GBM show MDM2 amplification"
+  },
+
+  "NTRK fusion": {
+    "count": 6,
+    "total": 596,
+    "percent": 1.0,
+    "note": "<1-2% of GBM harbor NTRK fusions"
+  },
+
+  "ALK fusion": {
+    "count": 3,
+    "total": 596,
+    "percent": 0.5,
+    "note": "<1% of GBM harbor ALK fusions/rearrangements"
+  },
+
+  "ROS1 fusion": {
+    "count": 3,
+    "total": 596,
+    "percent": 0.5,
+    "note": "<1% of GBM harbor ROS1 fusions"
+  },
+
+  "FGFR alteration": {
+    "count": 18,
+    "total": 596,
+    "percent": 3.0,
+    "note": "~3% of GBM have FGFR alterations (mutations, amplifications, or fusions)"
+  },
+
+  "MET amplification": {
+    "count": 24,
+    "total": 596,
+    "percent": 4.0,
+    "note": "~4% of primary GBM show MET amplification (higher in recurrent)"
+  },
+
+  "PIK3CA mutation": {
+    "count": 54,
+    "total": 596,
+    "percent": 9.0,
+    "note": "~9% of GBM carry PIK3CA mutations"
+  },
+
+  "NF1 mutation": {
+    "count": 60,
+    "total": 596,
+    "percent": 10.1,
+    "note": "~10% of GBM carry NF1 mutations/loss (mesenchymal subtype)"
+  },
+
+  "High TMB": {
+    "count": 30,
+    "total": 596,
+    "percent": 5.0,
+    "note": "~5% of GBM are TMB-high (>10 mut/Mb); higher in recurrent post-TMZ"
+  },
+  "MSI-H": {
+    "count": 6,
+    "total": 596,
+    "percent": 1.0,
+    "note": "<1-2% of GBM show microsatellite instability-high"
+  },
+
+  "PD-L1 expression": {
+    "count": 220,
+    "total": 596,
+    "percent": 37.0,
+    "note": "~37% of GBM show PD-L1 expression (variable by assay and cutoff)"
+  },
+
+  "Ki-67 expression": {
+    "count": 596,
+    "total": 596,
+    "percent": 100.0,
+    "note": "Ki-67 is universally expressed in GBM (high proliferation index, typically >10%)"
+  },
+
+  "H3K27M mutation": {
+    "count": 3,
+    "total": 596,
+    "percent": 0.5,
+    "note": "<1% of adult GBM; characteristic of diffuse midline glioma"
+  }
+}
