@@ -1243,7 +1243,7 @@ export default function TrialEligibilityComparison() {
                 />
                 <div style={{ ...tileStyle, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', flex: 1 }}>
                   <div style={{ fontSize: '0.7rem', color: '#60656e', textTransform: 'uppercase', letterSpacing: 0.5, minHeight: '2.2em' }}>
-                    Trial Eligible Predicted Response Rate
+                    Percentage of TCGA patients predicted to respond based on trial criteria
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
