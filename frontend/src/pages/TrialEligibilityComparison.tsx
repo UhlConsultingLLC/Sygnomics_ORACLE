@@ -703,7 +703,6 @@ export default function TrialEligibilityComparison() {
       out += drawTile(tilesX + (row2TileW + tileGap), row2Y, row2TileW, 'Predicted Responders Missed by Trial Criteria', String(result.left_panel.stats.responders_missed), [orangeInelig]);
       out += drawTile(tilesX + (row2TileW + tileGap) * 2, row2Y, row2TileW, 'Predicted Non-responders Spared', String(result.diff.nonresponders_spared), [grayElig]);
 
-      const composite =
       // Provenance stamp — bottom-right corner, plus a stamped filename.
       // Anyone who later opens this file can trace the exact build it came
       // from (e.g. for debugging a number that looks "off" vs. today's run).
@@ -1327,9 +1326,6 @@ export default function TrialEligibilityComparison() {
                         "Compare to 'Observed Clinical Response Rate' on the right: close values = biomarker is well-calibrated for this drug; large gap = either the trial population differs from TCGA, or the DCNA threshold needs re-learning for this MOA."
                       }
                     />
-                <div style={{ ...tileStyle, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', flex: 1 }}>
-                  <div style={{ fontSize: '0.7rem', color: '#60656e', textTransform: 'uppercase', letterSpacing: 0.5, minHeight: '2.2em' }}>
-                    Percentage of TCGA patients predicted to respond based on trial criteria
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
