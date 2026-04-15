@@ -1027,7 +1027,7 @@ export default function TrialEligibilityComparison() {
           <div style={{ ...panelStyle, marginBottom: '1rem' }}>
             <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
               <div><strong>Trial:</strong> {result.nct_id}</div>
-              <div><strong>Trial eligible predicted response rate:</strong> {(result.left_panel.stats.response_rate * 100).toFixed(1)}%</div>
+              <div><strong>Percentage of TCGA patients predicted to respond based on trial criteria:</strong> {(result.left_panel.stats.response_rate * 100).toFixed(1)}%</div>
               <div><strong>Drug:</strong> {result.drug}</div>
               <div><strong>MOA:</strong> {result.moa_category.replace(/^group:/, '')}</div>
               <div><strong>Learned TNAS threshold:</strong> {result.learned_dcna_threshold.toFixed(4)}</div>
@@ -1243,7 +1243,7 @@ export default function TrialEligibilityComparison() {
                 />
                 <div style={{ ...tileStyle, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', flex: 1 }}>
                   <div style={{ fontSize: '0.7rem', color: '#60656e', textTransform: 'uppercase', letterSpacing: 0.5, minHeight: '2.2em' }}>
-                    Trial Eligible Predicted Response Rate
+                    Percentage of TCGA patients predicted to respond based on trial criteria
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
