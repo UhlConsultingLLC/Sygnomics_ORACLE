@@ -1,0 +1,47 @@
+# Normalize line endings. Prevents CRLF warnings on Windows commits and
+# keeps the repo's on-disk bytes identical regardless of contributor OS.
+# Tools that need native endings (Windows batch/PowerShell) get explicit
+# overrides.
+
+* text=auto eol=lf
+
+# Python sources — always LF (PEP 8, portable)
+*.py      text eol=lf
+
+# TypeScript / JavaScript / JSON — always LF
+*.ts      text eol=lf
+*.tsx     text eol=lf
+*.js      text eol=lf
+*.jsx     text eol=lf
+*.mjs     text eol=lf
+*.cjs     text eol=lf
+*.json    text eol=lf
+
+# Configs, docs, shell scripts — always LF
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.toml    text eol=lf
+*.md      text eol=lf
+*.sh      text eol=lf
+*.cfg     text eol=lf
+*.ini     text eol=lf
+
+# Windows-native scripts — CRLF so Windows cmd.exe / PowerShell don't choke
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+*.ps1     text eol=crlf
+
+# Binaries — never munge
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.pdf     binary
+*.zip     binary
+*.tar.gz  binary
+*.h5ad    binary
+*.parquet binary
+*.xlsx    binary
+*.db      binary
+*.sqlite  binary
