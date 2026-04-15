@@ -66,5 +66,7 @@ api:
   host: "0.0.0.0"
   port: 8000
   cors_origins:
-    - "http://localhost:5173"  # Vite dev server
+    - "http://localhost:5173"  # Vite dev server (default)
+    - "http://localhost:5174"  # Vite auto-bumps here when 5173 is taken
+    - "http://localhost:5175"  # spare for parallel dev servers
     - "http://localhost:3000"
