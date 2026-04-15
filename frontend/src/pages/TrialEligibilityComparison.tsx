@@ -1027,7 +1027,7 @@ export default function TrialEligibilityComparison() {
           <div style={{ ...panelStyle, marginBottom: '1rem' }}>
             <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
               <div><strong>Trial:</strong> {result.nct_id}</div>
-              <div><strong>Trial eligible predicted response rate:</strong> {(result.left_panel.stats.response_rate * 100).toFixed(1)}%</div>
+              <div><strong>Percentage of TCGA patients predicted to respond based on trial criteria:</strong> {(result.left_panel.stats.response_rate * 100).toFixed(1)}%</div>
               <div><strong>Drug:</strong> {result.drug}</div>
               <div><strong>MOA:</strong> {result.moa_category.replace(/^group:/, '')}</div>
               <div><strong>Learned TNAS threshold:</strong> {result.learned_dcna_threshold.toFixed(4)}</div>
