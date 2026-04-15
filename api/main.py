@@ -6,7 +6,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.dependencies import get_config, get_engine
-from api.routers import analysis, conditions, ctis_router, export, moa, novel_therapy, simulation, tcga, threshold, trials, validation, who
+from api.routers import analysis, conditions, ctis_router, export, moa, novel_therapy, simulation, tcga, threshold, trials, validation, version as version_router, who
+from config.version import APP_VERSION
 from database.engine import init_db
 
 
@@ -19,9 +20,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="CT Pipeline API",
-    description="Clinical Trial Data Analysis Pipeline - REST API",
-    version="0.1.0",
+    title="ORACLE API",
+    description="ORACLE — Oncology Response & Cohort Learning Engine. "
+                "Clinical Trial Data Analysis Pipeline REST API.",
+    version=APP_VERSION,
     lifespan=lifespan,
 )
 
@@ -48,11 +50,12 @@ app.include_router(ctis_router.router)
 app.include_router(threshold.router)
 app.include_router(who.router)
 app.include_router(validation.router)
+app.include_router(version_router.router)
 
 
 @app.get("/")
 def root():
-    return {"message": "CT Pipeline API", "version": "0.1.0"}
+    return {"message": "ORACLE API", "version": APP_VERSION}
 
 
 @app.get("/health")

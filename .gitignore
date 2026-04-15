@@ -51,3 +51,8 @@ frontend/.env.local
 
 # Temp
 temp_extract/
+
+# Build provenance — written by setup.py at pip install time. Contains the
+# git SHA + UTC build time for the currently-installed copy. Regenerated on
+# every install, never committed.
+config/_build_info.py
