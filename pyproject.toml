@@ -4,8 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-collection-threshold-learning"
-version = "0.1.0"
-description = "Clinical Trial Data Analysis Pipeline with MOA classification, in-silico simulation, and threshold learning"
+# Kept in sync with config/version.py:APP_VERSION and frontend/package.json:version.
+# On every release, bump all three and update CHANGELOG.md.
+version = "1.0.0"
+description = "ORACLE — Oncology Response & Cohort Learning Engine. Clinical trial data analysis pipeline with MOA classification, in-silico simulation, and threshold learning."
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}

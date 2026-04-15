@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import VersionBadge from './VersionBadge';
 
 // Sidebar order mirrors the analysis pipeline: acquire -> organize -> summarize &
 // filter -> score & simulate -> learn & validate -> apply -> forecast impact ->
@@ -94,6 +95,9 @@ export default function Layout() {
           <div><strong style={{ color: '#ffffff' }}>C</strong>ohort</div>
           <div><strong style={{ color: '#ffffff' }}>L</strong>earning</div>
           <div><strong style={{ color: '#ffffff' }}>E</strong>ngine</div>
+          <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-start' }}>
+            <VersionBadge />
+          </div>
         </div>
       </nav>
       <main style={{ flex: 1, padding: '1.5rem 2rem', background: '#f5f7fa', overflowY: 'auto' }}>
