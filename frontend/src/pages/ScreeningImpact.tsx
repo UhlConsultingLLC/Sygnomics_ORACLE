@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';
 import { InterpretBox, InlineHelp } from '../components/Interpretation';
+import { withProvenance, provenanceImageFilename } from '../utils/provenance';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
@@ -130,9 +131,9 @@ export default function ScreeningImpact() {
       showlegend: true,
       legend: { x: -1.35, y: 1.0, xanchor: 'left', yanchor: 'top', bgcolor: 'rgba(255,255,255,0.92)', bordercolor: '#ccc', borderwidth: 1 },
     };
-    Plotly.newPlot(dumbbellRef.current, traces, layout, {
+    Plotly.newPlot(dumbbellRef.current, traces, withProvenance(layout, '/screening-impact/dumbbell'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: 'screening_impact_dumbbell', width: 1280, height: layout.height, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('screening_impact_dumbbell'), width: 1280, height: layout.height, scale: 4 },
     });
     return () => { if (dumbbellRef.current) Plotly.purge(dumbbellRef.current); };
   }, [rows]);
@@ -178,9 +179,9 @@ export default function ScreeningImpact() {
       showlegend: true,
       legend: { x: -0.42, y: 1.0, xanchor: 'left', yanchor: 'top', bgcolor: 'rgba(255,255,255,0.92)', bordercolor: '#ccc', borderwidth: 1 },
     };
-    Plotly.newPlot(liftRef.current, [trace, ...legendTraces], layout, {
+    Plotly.newPlot(liftRef.current, [trace, ...legendTraces], withProvenance(layout, '/screening-impact/lift'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: 'screening_impact_lift', width: 1280, height: layout.height, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('screening_impact_lift'), width: 1280, height: layout.height, scale: 4 },
     });
     return () => { if (liftRef.current) Plotly.purge(liftRef.current); };
   }, [rows]);
@@ -228,9 +229,9 @@ export default function ScreeningImpact() {
       margin: { l: 90, r: 30, t: 80, b: 90 },
       legend: { x: 0.02, y: 0.98, xanchor: 'left', yanchor: 'top', bgcolor: 'rgba(255,255,255,0.9)', bordercolor: '#ccc', borderwidth: 1 },
     };
-    Plotly.newPlot(summaryRef.current, traces, layout, {
+    Plotly.newPlot(summaryRef.current, traces, withProvenance(layout, '/screening-impact/by-moa'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: 'screening_impact_by_moa', width: 900, height: 520, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('screening_impact_by_moa'), width: 900, height: 520, scale: 4 },
     });
     return () => { if (summaryRef.current) Plotly.purge(summaryRef.current); };
   }, [rows]);

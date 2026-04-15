@@ -3,6 +3,13 @@ import Plotly from 'plotly.js/dist/plotly.min.js';
 import { runTrialComparison, fetchTrialDrugOptions } from '../services/api';
 import type { TrialDrugOption, TrialArmOption, TrialSubgroupOption } from '../services/api';
 import { InterpretBox, InlineHelp } from '../components/Interpretation';
+import {
+  buildExportMetadata,
+  provenanceFilename,
+  provenanceImageFilename,
+  svgProvenanceStamp,
+  withProvenance,
+} from '../utils/provenance';
 
 // ── Response types ───────────────────────────────────────────────────────
 type Category =
@@ -415,7 +422,13 @@ export default function TrialEligibilityComparison() {
       const panelPadX = 20;
       const panelPadY = 16;
       const panelGap = 16;
-      const headerH = 170;
+      // headerH reserves vertical space for: ~42 px above first info row,
+      // two info rows (row spacing below), an optional 3rd row for
+      // sub-population / arm, the divider at dividerY, and the
+      // TCGA-matchable criteria block underneath. Bumped from 170 → 182
+      // to absorb the extra 12 px introduced by the taller info grid
+      // (rowSpacing 24 → 28, labelValueGap 14 → 16, dividerY shift +12).
+      const headerH = 182;
       const plotPanelW = panelPadX * 2 + plotW;
       const plotPanelInnerBottomPad = 16;
       const tileH = 68;
@@ -432,39 +445,55 @@ export default function TrialEligibilityComparison() {
       let out = '';
       out += rect(outerPad, outerPad, totalW - outerPad * 2, headerH, '#ffffff');
 
-      // Info fields in a 3-col grid
-      const fields: Array<[string, string]> = [
-        ['Trial:', result.nct_id],
-        ['Percentage of TCGA patients predicted to respond based on trial criteria:', `${(result.left_panel.stats.response_rate * 100).toFixed(1)}%`],
-        ['Drug:', result.drug],
-        ['MOA:', result.moa_category.replace(/^group:/, '')],
-        ['Learned TNAS threshold:', result.learned_dcna_threshold.toFixed(4)],
-        ['Expression threshold:', result.expression_threshold.toFixed(2)],
-        ['Drug targets:', result.drug_targets.join(', ') || '(none in expression data)'],
+      // Info fields in a 4-col, 2-row grid matching the on-screen layout.
+      // Each field specifies its (col, row) position and optional colSpan.
+      // The "Percentage of TCGA patients predicted to respond based on
+      // trial criteria" label is ~72 characters; in a 1/4-column cell it
+      // overflows into the next column, so it spans the last 2 cells of
+      // row 2 (same as the on-screen grid) to stay on a single line.
+      type Field = { label: string; value: string; col: number; row: number; colSpan?: number };
+      const fields: Field[] = [
+        // Row 0: trial identity
+        { label: 'Trial:',       value: result.nct_id,                                          col: 0, row: 0 },
+        { label: 'Drug:',        value: result.drug,                                            col: 1, row: 0 },
+        { label: 'MOA:',         value: result.moa_category.replace(/^group:/, ''),             col: 2, row: 0 },
+        { label: 'Drug targets:', value: result.drug_targets.join(', ') || '(none in expression data)', col: 3, row: 0 },
+        // Row 1: model params + headline prediction (percentage spans cols 2-3)
+        { label: 'Learned TNAS threshold:', value: result.learned_dcna_threshold.toFixed(4),    col: 0, row: 1 },
+        { label: 'Expression threshold:',   value: result.expression_threshold.toFixed(2),      col: 1, row: 1 },
+        { label: 'Percentage of TCGA patients predicted to respond based on trial criteria:',
+          value: `${(result.left_panel.stats.response_rate * 100).toFixed(1)}%`,                col: 2, row: 1, colSpan: 2 },
       ];
       if (result.selected_subgroup) {
-        fields.push(['Sub-population:', `${result.selected_subgroup.group_title}`]);
+        fields.push({ label: 'Sub-population:', value: result.selected_subgroup.group_title, col: 0, row: 2 });
       } else if (result.selected_arm) {
         const armTherapies = result.selected_arm.intervention_names.length > 0
           ? ` (${result.selected_arm.intervention_names.join(', ')})`
           : '';
-        fields.push(['Arm/Group:', `${result.selected_arm.label}${armTherapies}`]);
+        fields.push({ label: 'Arm/Group:', value: `${result.selected_arm.label}${armTherapies}`, col: 0, row: 2 });
       }
       const infoX0 = outerPad + panelPadX;
       const infoY0 = outerPad + 26;
-      const colW = (totalW - outerPad * 2 - panelPadX * 2) / 3;
-      fields.forEach((f, i) => {
-        const row = Math.floor(i / 3);
-        const col = i % 3;
-        const x = infoX0 + col * colW;
-        const y = infoY0 + row * 24;
-        // label (bold) then value on next line for clarity
-        out += text(x, y, f[0], { size: 11, weight: 700, fill: '#1c3e72' });
-        out += text(x, y + 14, f[1], { size: 11, weight: 400, fill: '#333' });
+      const colW = (totalW - outerPad * 2 - panelPadX * 2) / 4;
+      // Spacing tuned to mirror the on-screen grid's airier rowGap / columnGap
+      // (see the grid above the plot in the app). Wider gaps improve
+      // readability of the exported figure; the only cost is headerH below.
+      const rowSpacing = 28;      // vertical distance between row baselines
+      const labelValueGap = 16;   // distance from label baseline to value baseline
+      fields.forEach((f) => {
+        const x = infoX0 + f.col * colW;
+        const y = infoY0 + f.row * rowSpacing;
+        // label (bold) then value on next line for clarity. Cells with
+        // colSpan don't change x/y — the available horizontal space is
+        // simply larger, so long labels no longer overflow neighbours.
+        out += text(x, y, f.label, { size: 11, weight: 700, fill: '#1c3e72' });
+        out += text(x, y + labelValueGap, f.value, { size: 11, weight: 400, fill: '#333' });
       });
 
-      // Divider + TCGA-matchable criteria block
-      const dividerY = outerPad + 96;
+      // Divider + TCGA-matchable criteria block. Pushed down from 96 → 108
+      // to preserve ≥6 px between the bottom of the (optional) 3rd info row
+      // and the divider line.
+      const dividerY = outerPad + 108;
       out += line(outerPad + panelPadX, dividerY, totalW - outerPad - panelPadX, dividerY, '#e3e7ee');
 
       const incl = result.extracted_biomarkers.filter(b => b.mapped && b.context !== 'exclusion');
@@ -537,7 +566,6 @@ export default function TrialEligibilityComparison() {
       // Two rows of stat tiles
       const tilesW = plotW;
       const tileGap = 8;
-      const tileW = (tilesW - tileGap * 3) / 4;
       const tilesX = plotX + panelPadX;
       const row1Y = rowY + panelPadY + plotH + plotPanelInnerBottomPad;
       const row2Y = row1Y + tileH + tileRowGap;
@@ -595,32 +623,52 @@ export default function TrialEligibilityComparison() {
         }
         return s;
       };
-      // Row 1: Trial stats (4 tiles)
-      const tile1W = (tilesW - tileGap * 3) / 4;
+      // Row 1: Trial stats (4 tiles, 1.25:2:3.5:1.25 width ratio = 8 units
+      // + 3 gaps). Still sums to 8 so the overall row width is unchanged.
+      // Rationale per tile:
+      //   - "Trial Eligible" (14 chars) at 1 unit fit, but "Observed
+      //     Clinical Response Rate" (30 chars) at 1 unit wraps to 3 lines
+      //     at the conservative char-width estimator and overflows the
+      //     tile height. Bumping both edge tiles to 1.25 units gives the
+      //     Observed label a clean 2-line wrap and gives Trial Eligible
+      //     a bit more breathing room on either side of its 1-line text.
+      //   - The percentage tile is narrowed slightly from 4 → 3.5 units
+      //     (still 44% of the row). Its label is now rendered from a
+      //     hardcoded 2-line split below (not the word-wrap estimator),
+      //     which guarantees exactly 2 lines that stay within the tile
+      //     regardless of font metrics.
+      const t1Unit        = (tilesW - tileGap * 3) / 8;
+      const w1Eligible    = t1Unit * 1.25;  // "Trial Eligible" (+25%)
+      const w1Responders  = t1Unit * 2;     // "Trial Eligible Predicted Responders"
+      const w1Percentage  = t1Unit * 3.5;   // "Percentage…" (−12.5%, now 2-line hard split)
+      const w1ObservedRR  = t1Unit * 1.25;  // "Observed Clinical Response Rate" (+25%)
       const grayElig  = { fill: GRAY, border: '#000000', bw: 2.5 };
       const orangeElig = { fill: ORANGE, border: '#000000', bw: 2.5 };
       const orangeInelig = { fill: ORANGE, border: ORANGE_DARK, bw: 1 };
-      out += drawTile(tilesX, row1Y, tile1W, 'Trial Eligible', String(result.left_panel.stats.enrolled ?? 0), [orangeElig, grayElig], true);
-      out += drawTile(tilesX + (tile1W + tileGap), row1Y, tile1W, 'Trial Eligible Predicted Responders', String(result.left_panel.stats.responders), [orangeElig]);
+      // Tile x-positions built left-to-right from the row start.
+      const tile0X = tilesX;
+      const tile1X = tile0X + w1Eligible   + tileGap;
+      const tile2X = tile1X + w1Responders + tileGap;   // wide percentage tile
+      const tile3X = tile2X + w1Percentage + tileGap;
+      out += drawTile(tile0X, row1Y, w1Eligible,   'Trial Eligible', String(result.left_panel.stats.enrolled ?? 0), [orangeElig, grayElig], true);
+      out += drawTile(tile1X, row1Y, w1Responders, 'Trial Eligible Predicted Responders', String(result.left_panel.stats.responders), [orangeElig]);
       // Response rate tile: fraction layout (numerator / denominator with dividing line)
       {
-        const tx = tilesX + (tile1W + tileGap) * 2;
-        const w = tile1W;
+        const tx = tile2X;
+        const w = w1Percentage;
         const val = `${(result.left_panel.stats.response_rate * 100).toFixed(1)}%`;
         let s = rect(tx, row1Y, w, tileH, '#f5f7fa', '#dee3ea', 5);
-        // Word-wrap label same as drawTile
-        const rrLabel = 'Trial Eligible Predicted Response Rate';
-        const rrCharW = 8 * 0.58;
-        const rrMax = Math.floor((w - 12) / rrCharW);
-        const rrWords = rrLabel.split(' ');
-        const rrLines: string[] = [];
-        let rrCur = '';
-        for (const word of rrWords) {
-          const test = rrCur ? rrCur + ' ' + word : word;
-          if (test.length > rrMax && rrCur) { rrLines.push(rrCur); rrCur = word; }
-          else { rrCur = test; }
-        }
-        if (rrCur) rrLines.push(rrCur);
+        // Hardcoded 2-line split. The character-count word-wrap used for
+        // the other tiles under-estimates uppercase glyph widths (font-size
+        // × 0.58 ignores letter-spacing + per-letter variance), which let
+        // the first line of this long label overflow the tile boundary.
+        // Splitting at a natural phrase boundary guarantees exactly 2
+        // lines and a rendered width that stays inside the tile regardless
+        // of the font-metric quirk.
+        const rrLines: string[] = [
+          'Percentage of TCGA patients predicted to',
+          'respond based on trial criteria',
+        ];
         const rrLineH = 11;
         const rrLabelStartY = row1Y + 10 + rrLineH;
         rrLines.forEach((ln, li) => {
@@ -645,23 +693,35 @@ export default function TrialEligibilityComparison() {
         s += text(fracCX + 20, rrValueY + 2, val, { size: 18, weight: 700, fill: '#1c3e72', anchor: 'start' });
         out += s;
       }
-      out += drawTile(tilesX + (tile1W + tileGap) * 3, row1Y, tile1W, 'Observed Clinical Response Rate', result.observed_response_rate != null ? `${(result.observed_response_rate * 100).toFixed(1)}%` : 'N/A');
-      // Row 2: SATGBM stats (3 tiles)
-      out += drawTile(tilesX, row2Y, tileW, 'SATGBM Predicted Responders', String(result.right_panel.stats.responders ?? 0), [orangeInelig, orangeElig], true);
-      out += drawTile(tilesX + (tileW + tileGap), row2Y, tileW, 'Predicted Responders Missed by Trial Criteria', String(result.left_panel.stats.responders_missed), [orangeInelig]);
-      out += drawTile(tilesX + (tileW + tileGap) * 2, row2Y, tileW, 'Predicted Non-responders Spared', String(result.diff.nonresponders_spared), [grayElig]);
+      out += drawTile(tile3X, row1Y, w1ObservedRR, 'Observed Clinical Response Rate', result.observed_response_rate != null ? `${(result.observed_response_rate * 100).toFixed(1)}%` : 'N/A');
+      // Row 2: SATGBM stats (3 tiles evenly filling the same total width as
+      // row 1). With 2 gaps between 3 tiles, each gets (tilesW - 2*tileGap)/3.
+      // Previously these used the 4-tile `tileW`, which left the last quarter
+      // of the row empty and made the layout look unbalanced next to row 1.
+      const row2TileW = (tilesW - tileGap * 2) / 3;
+      out += drawTile(tilesX, row2Y, row2TileW, 'SATGBM Predicted Responders', String(result.right_panel.stats.responders ?? 0), [orangeInelig, orangeElig], true);
+      out += drawTile(tilesX + (row2TileW + tileGap), row2Y, row2TileW, 'Predicted Responders Missed by Trial Criteria', String(result.left_panel.stats.responders_missed), [orangeInelig]);
+      out += drawTile(tilesX + (row2TileW + tileGap) * 2, row2Y, row2TileW, 'Predicted Non-responders Spared', String(result.diff.nonresponders_spared), [grayElig]);
+
+      const composite =
+      // Provenance stamp — bottom-right corner, plus a stamped filename.
+      // Anyone who later opens this file can trace the exact build it came
+      // from (e.g. for debugging a number that looks "off" vs. today's run).
+      const provMeta = buildExportMetadata(`/trial-comparison/${result.nct_id}`);
+      const stampSvg = svgProvenanceStamp(totalW, totalH, provMeta);
 
       const composite =
         `<?xml version="1.0" encoding="UTF-8"?>` +
         `<svg xmlns="http://www.w3.org/2000/svg" width="${totalW}" height="${totalH}" viewBox="0 0 ${totalW} ${totalH}">` +
         out +
+        stampSvg +
         `</svg>`;
 
       const blob = new Blob([composite], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${result.nct_id}_comparison_snapshot.svg`;
+      a.download = provenanceFilename(`${result.nct_id}_comparison_snapshot`, 'svg', provMeta);
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (e) {
@@ -732,7 +792,7 @@ export default function TrialEligibilityComparison() {
         'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian',
         'toggleSpikelines',
       ],
-      toImageButtonOptions: { format: 'svg' as const, filename: `${result.nct_id}_comparison`, width: 800, height: 680, scale: 2 },
+      toImageButtonOptions: { format: 'svg' as const, filename: provenanceImageFilename(`${result.nct_id}_comparison`), width: 800, height: 680, scale: 2 },
     };
     if (plotRef.current) {
       const { traces, layout } = buildPanelTraces(
@@ -743,7 +803,7 @@ export default function TrialEligibilityComparison() {
         'left',
       );
       layout.title.text = 'TCGA-GBM Cohort (N=548)';
-      Plotly.newPlot(plotRef.current, traces, layout, exportConfig);
+      Plotly.newPlot(plotRef.current, traces, withProvenance(layout, `/trial-comparison/${result.nct_id}`), exportConfig);
     }
   }, [result]);
 
@@ -1025,14 +1085,28 @@ export default function TrialEligibilityComparison() {
         <>
           <div ref={captureRef}>
           <div style={{ ...panelStyle, marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
-              <div><strong>Trial:</strong> {result.nct_id}</div>
-              <div><strong>Percentage of TCGA patients predicted to respond based on trial criteria:</strong> {(result.left_panel.stats.response_rate * 100).toFixed(1)}%</div>
-              <div><strong>Drug:</strong> {result.drug}</div>
-              <div><strong>MOA:</strong> {result.moa_category.replace(/^group:/, '')}</div>
-              <div><strong>Learned TNAS threshold:</strong> {result.learned_dcna_threshold.toFixed(4)}</div>
-              <div><strong>Expression threshold:</strong> {result.expression_threshold.toFixed(2)}</div>
-              <div style={{ whiteSpace: 'normal', minWidth: 0 }}><strong>Targets:</strong> {result.drug_targets.join(', ') || '(none)'}</div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                rowGap: '0.9rem',
+                columnGap: '2.25rem',
+                fontSize: '0.9rem',
+                lineHeight: 1.55,
+              }}
+            >
+              {/* Row 1: trial identity */}
+              <div><strong style={{ marginRight: 6 }}>Trial:</strong>{result.nct_id}</div>
+              <div><strong style={{ marginRight: 6 }}>Drug:</strong>{result.drug}</div>
+              <div><strong style={{ marginRight: 6 }}>MOA:</strong>{result.moa_category.replace(/^group:/, '')}</div>
+              <div><strong style={{ marginRight: 6 }}>Targets:</strong>{result.drug_targets.join(', ') || '(none)'}</div>
+              {/* Row 2: model params + headline prediction */}
+              <div><strong style={{ marginRight: 6 }}>Learned TNAS threshold:</strong>{result.learned_dcna_threshold.toFixed(4)}</div>
+              <div><strong style={{ marginRight: 6 }}>Expression threshold:</strong>{result.expression_threshold.toFixed(2)}</div>
+              <div style={{ gridColumn: '3 / -1' }}>
+                <strong style={{ marginRight: 6 }}>Percentage of TCGA patients predicted to respond based on trial criteria:</strong>
+                {(result.left_panel.stats.response_rate * 100).toFixed(1)}%
+              </div>
             </div>
             {(result.selected_arm || result.selected_subgroup) && (
               <div style={{ marginTop: '0.5rem', padding: '0.4rem 0.7rem', background: '#f0f4fa', borderRadius: 4, fontSize: '0.82rem', color: '#1c3e72' }}>
@@ -1241,6 +1315,18 @@ export default function TrialEligibilityComparison() {
                   markers={[DOT_ORANGE_ELIGIBLE]}
                   tooltip="Patients both eligible AND predicted responders by SATGBM. These are the patients the trial enrolls who would likely respond."
                 />
+                <div style={{ ...tileStyle, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', flex: 2 }}>
+                  <div style={{ fontSize: '0.7rem', color: '#60656e', textTransform: 'uppercase', letterSpacing: 0.5, minHeight: '2.2em', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', gap: 4 }}>
+                    <span>Percentage of TCGA patients predicted to respond based on trial criteria</span>
+                    <InlineHelp
+                      size={11}
+                      text={
+                        "Of the TCGA patients who satisfy this trial's written eligibility criteria, the fraction predicted to respond by the SATGBM biomarker rule (DCNA > learned threshold AND target expression > 0). " +
+                        "Numerator = eligible AND predicted-responder; denominator = eligible (responders + non-responders). " +
+                        "This is the model's expectation for the observed response rate if the trial were run on a TCGA-like population. " +
+                        "Compare to 'Observed Clinical Response Rate' on the right: close values = biomarker is well-calibrated for this drug; large gap = either the trial population differs from TCGA, or the DCNA threshold needs re-learning for this MOA."
+                      }
+                    />
                 <div style={{ ...tileStyle, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', flex: 1 }}>
                   <div style={{ fontSize: '0.7rem', color: '#60656e', textTransform: 'uppercase', letterSpacing: 0.5, minHeight: '2.2em' }}>
                     Percentage of TCGA patients predicted to respond based on trial criteria

@@ -3,6 +3,7 @@ import { useTCGASummary, useDCNADetail, useExpressionDetail, usePatientProfile }
 import { fetchTCGADrugs, fetchTCGAGenes, fetchScatterData, fetchDrugTargets, fetchExpressionHeatmap } from '../services/api';
 import { usePersistentState, clearPersistentKeys } from '../hooks/usePersistentState';
 import { Metric, InterpretBox, InlineHelp } from '../components/Interpretation';
+import { withProvenance, provenanceImageFilename } from '../utils/provenance';
 
 const tabResetBtnStyle: React.CSSProperties = {
   padding: '0.3rem 0.9rem', background: '#6c757d', color: '#fff',
@@ -402,7 +403,7 @@ function ExpressionHeatmap({ genes, includeAverage, title }: {
       xaxis: { showticklabels: false, title: { text: `Patients sorted by ${includeAverage ? 'target-avg' : 'mean'} z-score (n=${data.patients?.length || 0})` } },
       yaxis: { automargin: true, tickfont: { size: 10 } },
     };
-    Plotly.newPlot(plotRef.current, [trace], layout, { responsive: true, displayModeBar: false });
+    Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/tcga/summary'), { responsive: true, displayModeBar: false });
     return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
   }, [data]);
 
@@ -695,11 +696,11 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
       hovermode: 'closest' as const,
     };
 
-    Plotly.newPlot(plotRef.current, [trace, trendLine], layout, {
+    Plotly.newPlot(plotRef.current, [trace, trendLine], withProvenance(layout, '/tcga/scatter'), {
       responsive: true,
       displayModeBar: true,
       modeBarButtonsToRemove: ['lasso2d', 'select2d', 'autoScale2d'],
-      toImageButtonOptions: { format: 'svg', filename: 'tcga_cohort_scatter', scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('tcga_cohort_scatter'), scale: 4 },
     });
 
     return () => {

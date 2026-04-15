@@ -3,6 +3,7 @@ import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { Metric, InterpretBox } from '../components/Interpretation';
+import { withProvenance, provenanceImageFilename } from '../utils/provenance';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
@@ -937,9 +938,9 @@ function ViolinPlot({ data, learnedThreshold, drugLookup, moaDrugNames }: { data
       boxgroupgap: 0.1,
     };
 
-    Plotly.newPlot(plotRef.current, traces, layout, {
+    Plotly.newPlot(plotRef.current, traces, withProvenance(layout, '/simulation/simulated-vs-observed'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: 'simulated_vs_observed', width: plotWidth, height: 700, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('simulated_vs_observed'), width: plotWidth, height: 700, scale: 4 },
     });
     return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
   }, [data, plotWidth, learnedThreshold, drugLookup, moaDrugNames]);
@@ -1685,11 +1686,11 @@ function PerTherapyBoxPlot({
       boxmode: 'group',
     };
 
-    Plotly.newPlot(plotRef.current, traces, layout, {
+    Plotly.newPlot(plotRef.current, traces, withProvenance(layout, '/simulation/per-therapy'), {
       responsive: false,
       toImageButtonOptions: {
         format: 'svg',
-        filename: 'per_therapy_predictions',
+        filename: provenanceImageFilename('per_therapy_predictions'),
         width: plotWidth,
         height: plotHeight,
         scale: 4,
@@ -2130,7 +2131,7 @@ function PerTherapyCorrelationPlot({
     Plotly.newPlot(
       plotRef.current,
       traces,
-      {
+      withProvenance({
         title: { text: 'Predicted vs Observed Response Rates' },
         annotations: [
           {
@@ -2177,13 +2178,13 @@ function PerTherapyCorrelationPlot({
         },
         hovermode: 'closest',
         plot_bgcolor: '#fff',
-      } as any,
+      } as any, '/simulation/per-therapy-correlation'),
       {
         displayModeBar: true,
         responsive: true,
         toImageButtonOptions: {
           format: 'svg',
-          filename: 'per_therapy_correlation',
+          filename: provenanceImageFilename('per_therapy_correlation'),
           width: 800,
           height: 800,
           scale: 4,
@@ -2279,9 +2280,9 @@ function MAEPlot({ mae, drugLookup, moaDrugNames }: { mae: any; drugLookup?: Rec
       }],
     };
 
-    Plotly.newPlot(plotRef.current, [trace], layout, {
+    Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/simulation/mae'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: 'mae_analysis', width: plotWidth, height: 440, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('mae_analysis'), width: plotWidth, height: 440, scale: 4 },
     });
     return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
   }, [mae, plotWidth, drugLookup, moaDrugNames]);
@@ -2355,9 +2356,9 @@ function BlandAltmanPlot({ ba, drugLookup, moaDrugNames, confidenceLevel = 95 }:
       ],
     };
 
-    Plotly.newPlot(plotRef.current, [trace], layout, {
+    Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/simulation/bland-altman'), {
       responsive: true,
-      toImageButtonOptions: { format: 'svg', filename: 'bland_altman', width: 1100, height: 560, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('bland_altman'), width: 1100, height: 560, scale: 4 },
     });
     return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
   }, [ba, drugLookup, moaDrugNames, confidenceLevel]);
@@ -2499,9 +2500,9 @@ function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, te
       },
     };
 
-    Plotly.newPlot(plotRef.current, traces, layout, {
+    Plotly.newPlot(plotRef.current, traces, withProvenance(layout, '/simulation/ci-coverage'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: 'ci_coverage', width: plotWidth, height: 490, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('ci_coverage'), width: plotWidth, height: 490, scale: 4 },
     });
     return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
   }, [ci, plotWidth, drugLookup, moaDrugNames, confidenceLevel, testingViolinData]);
@@ -3556,9 +3557,9 @@ function ProposedDrugSimulation({
       },
       shapes,
     };
-    Plotly.newPlot(boxRef.current, traces, layout, {
+    Plotly.newPlot(boxRef.current, traces, withProvenance(layout, `/simulation/proposed-rr/${drug}`), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: `${drug}_proposed_rr`, width: 820, height: 560, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename(`${drug}_proposed_rr`), width: 820, height: 560, scale: 4 },
     });
     return () => { if (boxRef.current) Plotly.purge(boxRef.current); };
   }, [result, allResponseRates, moaCategory]);
@@ -3727,9 +3728,9 @@ function ProposedDrugSimulation({
         line: { color: '#000', width: 2, dash: 'solid' },
       }],
     };
-    Plotly.newPlot(scatterRef.current, traces, layout, {
+    Plotly.newPlot(scatterRef.current, traces, withProvenance(layout, `/simulation/patient-classification/${drug}`), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: `${drug}_patient_classification`, width: 960, height: 400, scale: 4 },
+      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename(`${drug}_patient_classification`), width: 960, height: 400, scale: 4 },
     });
     return () => { if (scatterRef.current) Plotly.purge(scatterRef.current); };
   }, [result]);

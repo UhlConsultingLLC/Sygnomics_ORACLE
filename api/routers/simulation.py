@@ -277,8 +277,9 @@ def get_responder_similarity(sim_id: str, rule: str = "majority", q_cutoff: floa
 
 @router.get("/moa-responder-similarity/{sim_id}/download")
 def download_responder_similarity(sim_id: str, rule: str = "majority", q_cutoff: float = 0.1):
-    """Download full responder-similarity feature table as CSV."""
+    """Download full responder-similarity feature table as CSV with provenance header."""
     from analysis.responder_similarity import compute_responder_similarity, features_to_csv
+    from api.provenance import build_export_metadata, csv_header_lines, provenance_filename
     from fastapi.responses import Response
 
     summary = _load_sim_summary(sim_id)
@@ -289,10 +290,20 @@ def download_responder_similarity(sim_id: str, rule: str = "majority", q_cutoff:
     engine = _get_cached_engine()
     result = compute_responder_similarity(engine, matrix, rule=rule, q_cutoff=q_cutoff)
     csv_text = features_to_csv(result["features"])
+
+    meta = build_export_metadata(
+        endpoint="/simulation/moa-responder-similarity/{sim_id}/download",
+        params={"sim_id": sim_id, "rule": rule, "q_cutoff": q_cutoff},
+        row_count=csv_text.count("\n") - 1 if csv_text else 0,
+    )
+    filename = provenance_filename(f"responder_similarity_{sim_id}_{rule}", "csv", meta)
     return Response(
-        content=csv_text,
+        content=csv_header_lines(meta) + csv_text,
         media_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename=responder_similarity_{sim_id}_{rule}.csv"},
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}",
+            "X-Oracle-Build-Id": meta["build_id"],
+        },
     )
 
 

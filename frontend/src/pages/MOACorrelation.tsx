@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useSyncExternalStore, useMemo } from 'reac
 import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';
 import { InterpretBox, InlineHelp } from '../components/Interpretation';
+import { withProvenance, provenanceImageFilename } from '../utils/provenance';
 import {
   pearson, spearman,
   runBootstrap, materializeBand, makeRng, gaussian,
@@ -46,6 +47,19 @@ interface LeaveKOutUIConfig {
   seed: string;
 }
 
+// Keys for the annotation-box metrics users can toggle on/off
+// independently. Each corresponds to one line drawn below the
+// correlation plot.
+type AnnotationKey =
+  | 'n'
+  | 'omitted'
+  | 'pearson'
+  | 'spearman'
+  | 'permutation'
+  | 'calibration'
+  | 'bootstrap'
+  | 'avgUnique';
+
 interface StoreState {
   selected: string[];
   nIterations: number;
@@ -69,6 +83,11 @@ interface StoreState {
   showFitLine: boolean;
   showBand: boolean;
   showRefLine: boolean;
+  // Which lines to include in the annotation box below the correlation plot.
+  // Lines still appear only when their upstream data exists (e.g., the
+  // calibration line is skipped when no bootstrap has been run) — toggles
+  // only gate the decision once data is available.
+  annotationVisibility: Record<AnnotationKey, boolean>;
   // Points the user has clicked to exclude from all stats (r, ρ, CIs,
   // per-MOA table, fit line, CI band). Stored as compound IDs built by
   // `pointId()`; persisted as an array so sessionStorage works.
@@ -99,6 +118,30 @@ const defaultLkoConfig: LeaveKOutUIConfig = {
   seed: '',
 };
 
+const defaultAnnotationVisibility: Record<AnnotationKey, boolean> = {
+  n: true,
+  omitted: true,
+  pearson: true,
+  spearman: true,
+  permutation: true,
+  calibration: true,
+  bootstrap: true,
+  avgUnique: true,
+};
+
+// Human-readable labels for each annotation line, used by the toggle UI
+// and nowhere else. Order defines render order in the toggle row.
+const ANNOTATION_LABELS: Array<{ key: AnnotationKey; label: string; hint: string }> = [
+  { key: 'n',           label: 'n',                hint: 'Number of points contributing to the stats.' },
+  { key: 'omitted',     label: '(# omitted)',      hint: "User-omitted point count. When both 'n' and this are on, the count is shown in parentheses after n (e.g., 'n = 42 (3 omitted)'). When only this is on, it appears on its own line. Nothing is shown when zero points are omitted." },
+  { key: 'pearson',     label: 'Pearson r',        hint: 'Linear correlation, its bootstrap CI (when available), and its permutation p-value.' },
+  { key: 'spearman',    label: 'Spearman ρ',       hint: 'Rank correlation, its bootstrap CI (when available), and its permutation p-value.' },
+  { key: 'permutation', label: 'permutation test', hint: 'One-line note about the permutation B and two-sided nature (appears only when permutation p-values are present).' },
+  { key: 'calibration', label: 'calibration',      hint: 'OLS slope, intercept, and bootstrap-Wald p vs the y = x null. Appears only when an OLS bootstrap has been run.' },
+  { key: 'bootstrap',   label: 'bootstrap config', hint: 'Resampling configuration: B × scheme, CI level, CI method. Appears only when a bootstrap has been run.' },
+  { key: 'avgUnique',   label: 'avg unique',       hint: 'Mean distinct original points per bootstrap replicate (≈63% of n for case bootstraps, 100% for "simulation").' },
+];
+
 const defaultState: StoreState = {
   selected: [],
   nIterations: 500,
@@ -119,6 +162,7 @@ const defaultState: StoreState = {
   showFitLine: true,
   showBand: true,
   showRefLine: true,
+  annotationVisibility: defaultAnnotationVisibility,
   omitted: [],
 };
 
@@ -520,8 +564,19 @@ export default function MOACorrelation() {
     lkoConfig, jackknife, leaveKOut, robustnessRunning, showInfluencePlot,
     showCalibrationPlot,
     showPoints, showFitLine, showBand, showRefLine,
+    annotationVisibility,
     omitted,
   } = useStore();
+
+  // Backfill any missing annotation keys when loading old stored state.
+  // Guarantees every AnnotationKey resolves to a boolean even if the user's
+  // sessionStorage was written before a key was added. Memoized on the raw
+  // persisted object so useEffect dep arrays that reference `annotVis` stay
+  // stable across renders.
+  const annotVis = useMemo<Record<AnnotationKey, boolean>>(
+    () => ({ ...defaultAnnotationVisibility, ...(annotationVisibility || {}) }),
+    [annotationVisibility],
+  );
 
   // Membership check for filtering points. Built fresh each render — cheap
   // for typical sizes (<100 omitted).
@@ -838,6 +893,10 @@ export default function MOACorrelation() {
             marker: { size: 10, color, line: { color: '#fff', width: 1 } },
             text: active.map((p) => p.hover),
             hoverinfo: 'text',
+            // Per-MOA traces use 'legendonly' when hidden so clicking their
+            // legend entry can re-enable them — the checkbox is a shortcut,
+            // not the only path. y = x and the fit line use `false` to
+            // disappear from the legend entirely (see below).
             visible: showPoints ? true : 'legendonly',
           });
         }
@@ -857,6 +916,10 @@ export default function MOACorrelation() {
             marker: { size: 10, color, symbol: 'x-thin-open', line: { color, width: 2 }, opacity: 0.45 },
             text: omit.map((p) => p.hover),
             hoverinfo: 'text',
+            // Per-MOA traces use 'legendonly' when hidden so clicking their
+            // legend entry can re-enable them — the checkbox is a shortcut,
+            // not the only path. y = x and the fit line use `false` to
+            // disappear from the legend entirely (see below).
             visible: showPoints ? true : 'legendonly',
           });
         }
@@ -899,6 +962,10 @@ export default function MOACorrelation() {
             marker: { size: 9, color, line: { color: '#fff', width: 1 } },
             text: active.map((p) => p.hover),
             hoverinfo: 'text',
+            // Per-MOA traces use 'legendonly' when hidden so clicking their
+            // legend entry can re-enable them — the checkbox is a shortcut,
+            // not the only path. y = x and the fit line use `false` to
+            // disappear from the legend entirely (see below).
             visible: showPoints ? true : 'legendonly',
           });
         }
@@ -916,6 +983,10 @@ export default function MOACorrelation() {
             marker: { size: 9, color, symbol: 'x-thin-open', line: { color, width: 2 }, opacity: 0.45 },
             text: omit.map((p) => p.hover),
             hoverinfo: 'text',
+            // Per-MOA traces use 'legendonly' when hidden so clicking their
+            // legend entry can re-enable them — the checkbox is a shortcut,
+            // not the only path. y = x and the fit line use `false` to
+            // disappear from the legend entirely (see below).
             visible: showPoints ? true : 'legendonly',
           });
         }
@@ -933,7 +1004,7 @@ export default function MOACorrelation() {
       name: 'y = x (perfect)',
       line: { color: '#999', dash: 'dash', width: 1.5 },
       hoverinfo: 'skip',
-      visible: showRefLine ? true : 'legendonly',
+      visible: showRefLine,
     });
 
     // Bootstrap CI band + OLS fit line
@@ -991,21 +1062,33 @@ export default function MOACorrelation() {
       return `  p = ${p.toFixed(3)}`;
     };
     const omittedCount = omittedSet.size;
-    const statsLines = [
-      `n = ${allActual.length}${omittedCount > 0 ? `  (${omittedCount} omitted)` : ''}`,
-    ];
-    if (r != null) {
+    // Each line is gated by (a) upstream data existing AND (b) the user
+    // leaving that annotation toggle on. Turning a toggle off collapses
+    // that line out of the box without affecting any computation.
+    const statsLines: string[] = [];
+    // n and (# omitted) toggle independently. When both are on and at
+    // least one point is omitted, they combine on a single line for
+    // compactness; otherwise each renders alone.
+    const showOmitted = annotVis.omitted && omittedCount > 0;
+    if (annotVis.n && showOmitted) {
+      statsLines.push(`n = ${allActual.length}  (${omittedCount} omitted)`);
+    } else if (annotVis.n) {
+      statsLines.push(`n = ${allActual.length}`);
+    } else if (showOmitted) {
+      statsLines.push(`${omittedCount} omitted`);
+    }
+    if (annotVis.pearson && r != null) {
       const ci = bootResult ? bootResult.rCI : null;
       statsLines.push(`Pearson r = ${fmt(r)}${fmtCI(ci)}${fmtP(permOverall?.pR)}`);
     }
-    if (rho != null) {
+    if (annotVis.spearman && rho != null) {
       const ci = bootResult ? bootResult.rhoCI : null;
       statsLines.push(`Spearman ρ = ${fmt(rho)}${fmtCI(ci)}${fmtP(permOverall?.pRho)}`);
     }
-    if (permOverall && (permOverall.pR != null || permOverall.pRho != null)) {
+    if (annotVis.permutation && permOverall && (permOverall.pR != null || permOverall.pRho != null)) {
       statsLines.push(`permutation test: B = ${permOverall.B.toLocaleString()}, two-sided`);
     }
-    if (calibration && calibration.p != null) {
+    if (annotVis.calibration && calibration && calibration.p != null) {
       // Calibration test: does the OLS fit match y = x?
       // Report the bootstrap-Wald p and the OLS point estimates so the user
       // can see whether any miscalibration is slope-driven, offset-driven,
@@ -1018,19 +1101,23 @@ export default function MOACorrelation() {
       );
     }
     if (bootResult) {
-      const pct = Math.round(bootResult.config.ciLevel * 100);
-      statsLines.push(
-        `bootstrap: ${bootResult.config.B} × ${bootResult.config.scheme}, ${pct}% ${bootResult.config.ciMethod === 'bca' ? 'BCa' : 'pctl'}`
-      );
-      // Mean number of distinct original points appearing in each resample.
-      // For "simulation" this is always nPoints (no resampling); for the
-      // case bootstraps it converges to ≈ 0.632 · n.
-      const avg = bootResult.meanUniqueCount;
-      const nPts = bootResult.nPoints;
-      const avgPct = nPts > 0 ? Math.round((avg / nPts) * 100) : 0;
-      statsLines.push(
-        `avg unique: ${avg.toFixed(1)} / ${nPts} (${avgPct}%)`
-      );
+      if (annotVis.bootstrap) {
+        const pct = Math.round(bootResult.config.ciLevel * 100);
+        statsLines.push(
+          `bootstrap: ${bootResult.config.B} × ${bootResult.config.scheme}, ${pct}% ${bootResult.config.ciMethod === 'bca' ? 'BCa' : 'pctl'}`
+        );
+      }
+      if (annotVis.avgUnique) {
+        // Mean number of distinct original points appearing in each resample.
+        // For "simulation" this is always nPoints (no resampling); for the
+        // case bootstraps it converges to ≈ 0.632 · n.
+        const avg = bootResult.meanUniqueCount;
+        const nPts = bootResult.nPoints;
+        const avgPct = nPts > 0 ? Math.round((avg / nPts) * 100) : 0;
+        statsLines.push(
+          `avg unique: ${avg.toFixed(1)} / ${nPts} (${avgPct}%)`
+        );
+      }
     }
 
     // Size the stats-annotation box explicitly from the longest line's
@@ -1074,7 +1161,9 @@ export default function MOACorrelation() {
     const layout: Partial<Plotly.Layout> = {
       title: { text: 'Predicted vs Observed Response Rates', font: { size: PLOT_FONTS.title } },
       font: { size: PLOT_FONTS.body },
-      annotations: [
+      // Omit the annotation entirely when the user toggles every line off.
+      // An empty annotation would render as a tiny border-only box.
+      annotations: statsLines.length > 0 ? [
         {
           xref: 'paper',
           yref: 'paper',
@@ -1093,7 +1182,7 @@ export default function MOACorrelation() {
           width: annotWidth,
           height: annotHeight,
         },
-      ],
+      ] : [],
       xaxis: {
         title: {
           text:
@@ -1136,14 +1225,19 @@ export default function MOACorrelation() {
       plot_bgcolor: '#fff',
     };
 
-    Plotly.newPlot(plotRef.current, traces, layout, {
+    Plotly.newPlot(plotRef.current, traces, withProvenance(layout, '/moa-correlation'), {
       displayModeBar: true,
       responsive: true,
       toImageButtonOptions: {
         format: 'svg',
-        filename: 'moa_correlation',
+        filename: provenanceImageFilename('moa_correlation'),
         width: 800,
-        height: 800,
+        // IMPORTANT: match the export height to the layout's computed
+        // figHeight. The annotation is placed with a paper-coord y offset
+        // calibrated for PLOT_AREA_H = 400 px; forcing a different export
+        // height would stretch the plot area, drag the annotation below
+        // the figure bottom, and clip the last stats line.
+        height: figHeight,
         scale: 4,
       },
     }).then(() => {
@@ -1162,7 +1256,7 @@ export default function MOACorrelation() {
     });
   }, [results, trialSet, aggregation, showXErrors, showYErrors,
       bootResult, showPoints, showFitLine, showBand, showRefLine,
-      omittedSet, permOverall, calibration]);
+      omittedSet, permOverall, calibration, annotVis]);
 
   // Influence plot: Δr per point when removed, sorted by |Δr| descending.
   // Positive bars mean removing that point makes r go up (the point was a
@@ -1262,12 +1356,12 @@ export default function MOACorrelation() {
       ],
     };
 
-    Plotly.newPlot(influenceRef.current, traces, layout, {
+    Plotly.newPlot(influenceRef.current, traces, withProvenance(layout, '/moa-correlation/influence'), {
       displayModeBar: true,
       responsive: true,
       toImageButtonOptions: {
         format: 'svg',
-        filename: 'moa_influence',
+        filename: provenanceImageFilename('moa_influence'),
         scale: 4,
       },
     });
@@ -1430,12 +1524,12 @@ export default function MOACorrelation() {
       hovermode: 'closest',
     };
 
-    Plotly.newPlot(calibrationRef.current, traces, layout, {
+    Plotly.newPlot(calibrationRef.current, traces, withProvenance(layout, '/moa-correlation/calibration'), {
       displayModeBar: true,
       responsive: true,
       toImageButtonOptions: {
         format: 'svg',
-        filename: 'moa_calibration_ellipse',
+        filename: provenanceImageFilename('moa_calibration_ellipse'),
         width: 800,
         height: 800,
         scale: 4,
@@ -2291,6 +2385,71 @@ export default function MOACorrelation() {
               </div>
             </div>
           </div>
+
+          {/* Annotation-line visibility toggles — gate which metrics render
+              in the stats box below the plot. */}
+          <div
+            style={{
+              display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.75rem',
+              padding: '0.5rem 0.75rem', marginBottom: '0.5rem',
+              background: '#f7faf9', border: '1px solid #e0ece9', borderRadius: 6,
+              fontSize: '0.78rem',
+            }}
+          >
+            <span style={{ color: '#555', fontWeight: 600 }}>Show in stats box:</span>
+            {ANNOTATION_LABELS.map(({ key, label, hint }) => (
+              <label
+                key={key}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}
+                title={hint}
+              >
+                <input
+                  type="checkbox"
+                  checked={annotVis[key]}
+                  onChange={(e) =>
+                    store.setState({
+                      annotationVisibility: { ...annotVis, [key]: e.target.checked },
+                    })
+                  }
+                />
+                <span style={{ color: '#333' }}>{label}</span>
+              </label>
+            ))}
+            <div style={{ flex: 1 }} />
+            <button
+              onClick={() =>
+                store.setState({
+                  annotationVisibility: Object.fromEntries(
+                    ANNOTATION_LABELS.map(({ key }) => [key, true]),
+                  ) as Record<AnnotationKey, boolean>,
+                })
+              }
+              style={{
+                padding: '0.2rem 0.6rem', fontSize: '0.72rem', borderRadius: 4,
+                border: '1px solid #00897b', background: '#fff', color: '#00897b',
+                cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              All on
+            </button>
+            <button
+              onClick={() =>
+                store.setState({
+                  annotationVisibility: Object.fromEntries(
+                    ANNOTATION_LABELS.map(({ key }) => [key, false]),
+                  ) as Record<AnnotationKey, boolean>,
+                })
+              }
+              style={{
+                padding: '0.2rem 0.6rem', fontSize: '0.72rem', borderRadius: 4,
+                border: '1px solid #999', background: '#fff', color: '#555',
+                cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              All off
+            </button>
+          </div>
+
           <div ref={plotRef} style={{ width: '100%' }} />
 
           <InterpretBox id="moa-correlation-plot-metrics" title="Interpreting the stats box below the plot">
