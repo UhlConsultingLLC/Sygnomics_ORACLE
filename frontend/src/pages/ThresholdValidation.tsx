@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';
 import { InterpretBox, InlineHelp } from '../components/Interpretation';
+import { withProvenance, provenanceImageFilename } from '../utils/provenance';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
@@ -498,7 +499,7 @@ export default function ThresholdValidation() {
       plot_bgcolor: '#fff',
     };
 
-    Plotly.newPlot(forestRef.current, traces as any, layout, { displayModeBar: true, responsive: true, toImageButtonOptions: { format: 'svg', filename: 'threshold_validation', scale: 4 } });
+    Plotly.newPlot(forestRef.current, traces as any, withProvenance(layout, '/threshold-validation'), { displayModeBar: true, responsive: true, toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('threshold_validation'), scale: 4 } });
   }, [result]);
 
   const isRunning = status.status === 'running' || status.status === 'queued';
