@@ -1,0 +1,94 @@
+name: CI
+
+# Runs on every push to main + every pull request. Three parallel jobs:
+# typecheck-frontend (fast, catches TS errors), lint-backend (ruff, fast),
+# and test-backend (pytest, medium). Jobs are independent so a failure in
+# one doesn't mask problems in the others.
+#
+# Deliberately minimal — this file should add signal, not noise. When you
+# find yourself disabling rules to make CI green, think twice before
+# merging the disable.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs on the same branch when a new push comes in.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck-frontend:
+    name: Frontend typecheck
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint
+
+  lint-backend:
+    name: Backend lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install ruff
+        run: pip install "ruff>=0.1"
+
+      - name: Ruff lint
+        run: ruff check .
+
+      - name: Ruff format (check only)
+        run: ruff format --check .
+
+  test-backend:
+    name: Backend tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install package + dev deps
+        # `pip install -e .` runs setup.py which writes config/_build_info.py
+        # so the /version endpoint tests can verify a baked SHA is present.
+        run: pip install -e ".[dev]"
+
+      - name: Run pytest
+        run: pytest -q
+
+      - name: Verify /version endpoint is importable
+        # Smoke-test: the provenance module must import and return a dict
+        # with the expected keys. Catches regressions to the resolver.
+        run: |
+          python -c "from config.version import get_version_info; info = get_version_info(); assert 'build_id' in info and 'git_sha' in info, info; print(info)"
