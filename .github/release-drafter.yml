@@ -1,0 +1,59 @@
+# Configuration for the release-drafter GitHub Action.
+# On every push to main, the action auto-generates a draft GitHub Release
+# from merged PR titles, grouped by label. Maintainers review the draft,
+# edit if needed, then publish to create the actual release.
+#
+# See: https://github.com/release-drafter/release-drafter
+
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+# Map PR labels → changelog sections. PRs without a matching label go
+# under "Other Changes".
+categories:
+  - title: 'Added'
+    labels:
+      - 'enhancement'
+      - 'feature'
+  - title: 'Fixed'
+    labels:
+      - 'bug'
+      - 'fix'
+  - title: 'Changed'
+    labels:
+      - 'refactor'
+      - 'improvement'
+  - title: 'Documentation'
+    labels:
+      - 'docs'
+      - 'documentation'
+  - title: 'Infrastructure'
+    labels:
+      - 'ci'
+      - 'infra'
+      - 'dependencies'
+  - title: 'Other Changes'
+    labels:
+      - '*'
+
+# Version resolver: bump patch by default; label PRs with `major` or
+# `minor` to bump those instead.
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+  default: patch
+
+# Release body template
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

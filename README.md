@@ -1,6 +1,6 @@
 # ORACLE — Oncology Response & Cohort Learning Engine
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/) [![Node](https://img.shields.io/badge/node-20%2B-green)](https://nodejs.org/) [![License](https://img.shields.io/badge/license-MIT-lightgrey)](#license)
+[![CI](https://github.com/UhlConsultingLLC/Sygnomics_ORACLE/actions/workflows/ci.yml/badge.svg)](https://github.com/UhlConsultingLLC/Sygnomics_ORACLE/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md) [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/) [![Node](https://img.shields.io/badge/node-20%2B-green)](https://nodejs.org/) [![License](https://img.shields.io/badge/license-MIT-lightgrey)](#license)
 
 ORACLE is an end-to-end translational pipeline that turns public clinical-trial data into decision-ready biomarker thresholds and simulated next-generation trials. It ingests every trial relevant to a disease from **ClinicalTrials.gov** and the **EU CTIS registry**, classifies every drug intervention by mechanism-of-action via **ChEMBL**, scores **TCGA** patients with a Drug-Constrained Network Activity (DCNA) biomarker, learns the responder threshold that best separates outcomes, validates it on held-out trials, and projects the result onto a next-generation trial — all through a single web UI.
 
