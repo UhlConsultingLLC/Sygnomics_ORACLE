@@ -20,6 +20,7 @@ import Plotly from 'plotly.js/dist/plotly.min.js';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { Metric, InterpretBox } from '../components/Interpretation';
 import { withProvenance, provenanceImageFilename } from '../utils/provenance';
+import { downloadSheetsAsXlsx } from '../utils/xlsxExport';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
@@ -1221,97 +1222,94 @@ function ViolinPlot({
   }, [data, plotWidth, learnedThreshold, drugLookup, moaDrugNames]);
 
   const handleExport = () => {
-    import('xlsx').then((XLSX) => {
-      const toPct = (v: number) => (v == null || isNaN(v) ? null : v * 100);
-      const pctl = (sorted: number[], p: number): number => {
-        if (!sorted.length) return NaN;
-        return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
-      };
+    const toPct = (v: number) => (v == null || isNaN(v) ? null : v * 100);
+    const pctl = (sorted: number[], p: number): number => {
+      if (!sorted.length) return NaN;
+      return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
+    };
 
-      // Build per-trial column data
-      type TrialCol = {
-        label: string;
-        predicted: number[];
-        stats: Record<string, any>;
-      };
-      const allTrials: TrialCol[] = [];
+    // Build per-trial column data
+    type TrialCol = {
+      label: string;
+      predicted: number[];
+      stats: Record<string, any>;
+    };
+    const allTrials: TrialCol[] = [];
 
-      for (const trial of data) {
-        const drugs = (trial.drugs || drugLookup?.[trial.nct_id] || []).join('; ');
-        const rates: number[] = Array.isArray(trial.predicted_rates) ? trial.predicted_rates : [];
-        const sorted = [...rates].sort((a, b) => a - b);
-        const n = sorted.length;
-        const mean = n ? sorted.reduce((a, b) => a + b, 0) / n : 0;
-        const median = n ? (n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : 0;
-        const q1 = n ? pctl(sorted, 0.25) : 0;
-        const q3 = n ? pctl(sorted, 0.75) : 0;
-        const min = n ? sorted[0] : 0;
-        const max = n ? sorted[n - 1] : 0;
-        const variance = n > 1 ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
-        const sd = Math.sqrt(variance);
-        const obs = trial.actual_response_rate;
+    for (const trial of data) {
+      const drugs = (trial.drugs || drugLookup?.[trial.nct_id] || []).join('; ');
+      const rates: number[] = Array.isArray(trial.predicted_rates) ? trial.predicted_rates : [];
+      const sorted = [...rates].sort((a, b) => a - b);
+      const n = sorted.length;
+      const mean = n ? sorted.reduce((a, b) => a + b, 0) / n : 0;
+      const median = n ? (n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : 0;
+      const q1 = n ? pctl(sorted, 0.25) : 0;
+      const q3 = n ? pctl(sorted, 0.75) : 0;
+      const min = n ? sorted[0] : 0;
+      const max = n ? sorted[n - 1] : 0;
+      const variance = n > 1 ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
+      const sd = Math.sqrt(variance);
+      const obs = trial.actual_response_rate;
 
-        const label = `${drugs || trial.nct_id} (${trial.nct_id})`;
-        allTrials.push({
-          label,
-          predicted: rates,
-          stats: {
-            nct_id: trial.nct_id,
-            arm_group: trial.arm_group || '',
-            drugs,
-            mean_predicted_rr: toPct(mean),
-            median_predicted_rr: toPct(median),
-            q1_predicted_rr: toPct(q1),
-            q3_predicted_rr: toPct(q3),
-            min_predicted_rr: toPct(min),
-            max_predicted_rr: toPct(max),
-            sd_predicted_rr: toPct(sd),
-            n_predictions: n,
-            observed_rr: toPct(obs ?? NaN),
-            drug_rr_range_min: toPct(trial.drug_rr_range?.min ?? NaN),
-            drug_rr_range_max: toPct(trial.drug_rr_range?.max ?? NaN),
-          },
-        });
-      }
+      const label = `${drugs || trial.nct_id} (${trial.nct_id})`;
+      allTrials.push({
+        label,
+        predicted: rates,
+        stats: {
+          nct_id: trial.nct_id,
+          arm_group: trial.arm_group || '',
+          drugs,
+          mean_predicted_rr: toPct(mean),
+          median_predicted_rr: toPct(median),
+          q1_predicted_rr: toPct(q1),
+          q3_predicted_rr: toPct(q3),
+          min_predicted_rr: toPct(min),
+          max_predicted_rr: toPct(max),
+          sd_predicted_rr: toPct(sd),
+          n_predictions: n,
+          observed_rr: toPct(obs ?? NaN),
+          drug_rr_range_min: toPct(trial.drug_rr_range?.min ?? NaN),
+          drug_rr_range_max: toPct(trial.drug_rr_range?.max ?? NaN),
+        },
+      });
+    }
 
-      // ── Sheet 1: Summary (transposed) ──
-      const metricKeys = [
-        'nct_id',
-        'arm_group',
-        'drugs',
-        'mean_predicted_rr',
-        'median_predicted_rr',
-        'q1_predicted_rr',
-        'q3_predicted_rr',
-        'min_predicted_rr',
-        'max_predicted_rr',
-        'sd_predicted_rr',
-        'n_predictions',
-        'observed_rr',
-        'drug_rr_range_min',
-        'drug_rr_range_max',
-      ];
-      const summaryData: any[][] = [['metric', ...allTrials.map((t) => t.label)]];
-      for (const key of metricKeys) {
-        summaryData.push([key, ...allTrials.map((t) => t.stats[key] ?? '')]);
-      }
+    // ── Sheet 1: Summary (transposed) ──
+    const metricKeys = [
+      'nct_id',
+      'arm_group',
+      'drugs',
+      'mean_predicted_rr',
+      'median_predicted_rr',
+      'q1_predicted_rr',
+      'q3_predicted_rr',
+      'min_predicted_rr',
+      'max_predicted_rr',
+      'sd_predicted_rr',
+      'n_predictions',
+      'observed_rr',
+      'drug_rr_range_min',
+      'drug_rr_range_max',
+    ];
+    const summaryData: any[][] = [['metric', ...allTrials.map((t) => t.label)]];
+    for (const key of metricKeys) {
+      summaryData.push([key, ...allTrials.map((t) => t.stats[key] ?? '')]);
+    }
 
-      // ── Sheet 2: Predicted Rates — trial labels as columns, rates down rows ──
-      const maxPred = Math.max(...allTrials.map((t) => t.predicted.length), 0);
-      const predData: any[][] = [allTrials.map((t) => t.label)];
-      for (let i = 0; i < maxPred; i++) {
-        predData.push(allTrials.map((t) => (t.predicted[i] != null ? t.predicted[i] * 100 : '')));
-      }
+    // ── Sheet 2: Predicted Rates — trial labels as columns, rates down rows ──
+    const maxPred = Math.max(...allTrials.map((t) => t.predicted.length), 0);
+    const predData: any[][] = [allTrials.map((t) => t.label)];
+    for (let i = 0; i < maxPred; i++) {
+      predData.push(allTrials.map((t) => (t.predicted[i] != null ? t.predicted[i] * 100 : '')));
+    }
 
-      // Build workbook
-      const wb = XLSX.utils.book_new();
-      const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
-      XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
-      const ws2 = XLSX.utils.aoa_to_sheet(predData);
-      XLSX.utils.book_append_sheet(wb, ws2, 'Predicted Rates');
-
-      XLSX.writeFile(wb, 'simulated_vs_observed.xlsx');
-    });
+    void downloadSheetsAsXlsx(
+      [
+        { name: 'Summary', rows: summaryData },
+        { name: 'Predicted Rates', rows: predData },
+      ],
+      'simulated_vs_observed.xlsx',
+    );
   };
 
   return (
@@ -2117,169 +2115,166 @@ function PerTherapyBoxPlot({
   if (groups.length === 0) return null;
 
   const handleExport = () => {
-    import('xlsx').then((XLSX) => {
-      const alpha = 1 - confidenceLevel / 100;
-      const alphaTier1 = alpha;
-      const alphaTier2 = alpha / 5;
-      const alphaTier3 = alpha / 50;
-      const sigStars = (p: number): string => {
-        if (p < alphaTier3) return '***';
-        if (p < alphaTier2) return '**';
-        if (p < alphaTier1) return '*';
-        return 'ns';
-      };
-      const empiricalP = (predicted: number[], meanObs: number): number => {
-        const n = predicted.length;
-        if (n === 0) return NaN;
-        let nLess = 0,
-          nMore = 0;
-        for (const v of predicted) {
-          if (v <= meanObs) nLess++;
-          if (v >= meanObs) nMore++;
-        }
-        return Math.max((2 * Math.min(nLess, nMore)) / n, 1 / n);
-      };
-      const pctl = (sorted: number[], p: number): number => {
-        if (!sorted.length) return NaN;
-        return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
-      };
-      const fmtN = (v: number) => (isNaN(v) ? null : v);
-      const toPct = (v: number) => (isNaN(v) ? null : v * 100);
+    const alpha = 1 - confidenceLevel / 100;
+    const alphaTier1 = alpha;
+    const alphaTier2 = alpha / 5;
+    const alphaTier3 = alpha / 50;
+    const sigStars = (p: number): string => {
+      if (p < alphaTier3) return '***';
+      if (p < alphaTier2) return '**';
+      if (p < alphaTier1) return '*';
+      return 'ns';
+    };
+    const empiricalP = (predicted: number[], meanObs: number): number => {
+      const n = predicted.length;
+      if (n === 0) return NaN;
+      let nLess = 0,
+        nMore = 0;
+      for (const v of predicted) {
+        if (v <= meanObs) nLess++;
+        if (v >= meanObs) nMore++;
+      }
+      return Math.max((2 * Math.min(nLess, nMore)) / n, 1 / n);
+    };
+    const pctl = (sorted: number[], p: number): number => {
+      if (!sorted.length) return NaN;
+      return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
+    };
+    const fmtN = (v: number) => (isNaN(v) ? null : v);
+    const toPct = (v: number) => (isNaN(v) ? null : v * 100);
 
-      // Collect therapy data
-      type TherapyData = {
-        label: string;
-        bucket: string;
-        predicted: number[];
-        observedRates: number[];
-        stats: Record<string, any>;
-      };
-      const allTherapies: TherapyData[] = [];
+    // Collect therapy data
+    type TherapyData = {
+      label: string;
+      bucket: string;
+      predicted: number[];
+      observedRates: number[];
+      stats: Record<string, any>;
+    };
+    const allTherapies: TherapyData[] = [];
 
-      const collect = (gs: Group[], bucket: string) => {
-        for (const g of gs) {
-          const sorted = [...g.predicted].sort((a, b) => a - b);
-          const n = sorted.length;
-          const mean = n ? sorted.reduce((a, b) => a + b, 0) / n : 0;
-          const median = n ? (n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : 0;
-          const q1 = n ? pctl(sorted, 0.25) : 0;
-          const q3 = n ? pctl(sorted, 0.75) : 0;
-          const min = n ? sorted[0] : 0;
-          const max = n ? sorted[n - 1] : 0;
-          const variance = n > 1 ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
-          const sd = Math.sqrt(variance);
+    const collect = (gs: Group[], bucket: string) => {
+      for (const g of gs) {
+        const sorted = [...g.predicted].sort((a, b) => a - b);
+        const n = sorted.length;
+        const mean = n ? sorted.reduce((a, b) => a + b, 0) / n : 0;
+        const median = n ? (n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : 0;
+        const q1 = n ? pctl(sorted, 0.25) : 0;
+        const q3 = n ? pctl(sorted, 0.75) : 0;
+        const min = n ? sorted[0] : 0;
+        const max = n ? sorted[n - 1] : 0;
+        const variance = n > 1 ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
+        const sd = Math.sqrt(variance);
 
-          const nObs = g.observedRates.length;
-          const meanObs = nObs ? g.observedRates.reduce((a, b) => a + b, 0) / nObs : NaN;
-          const sdObs =
-            nObs >= 2 ? Math.sqrt(g.observedRates.reduce((acc, v) => acc + (v - meanObs) ** 2, 0) / (nObs - 1)) : NaN;
-          const pVal = nObs && n ? empiricalP(g.predicted, meanObs) : NaN;
-          const sig = !isNaN(pVal) ? sigStars(pVal) : '';
-          const ciLo = n ? pctl(sorted, alpha / 2) : NaN;
-          const ciHi = n ? pctl(sorted, 1 - alpha / 2) : NaN;
-          const covered = nObs && !isNaN(ciLo) ? meanObs >= ciLo && meanObs <= ciHi : null;
+        const nObs = g.observedRates.length;
+        const meanObs = nObs ? g.observedRates.reduce((a, b) => a + b, 0) / nObs : NaN;
+        const sdObs =
+          nObs >= 2 ? Math.sqrt(g.observedRates.reduce((acc, v) => acc + (v - meanObs) ** 2, 0) / (nObs - 1)) : NaN;
+        const pVal = nObs && n ? empiricalP(g.predicted, meanObs) : NaN;
+        const sig = !isNaN(pVal) ? sigStars(pVal) : '';
+        const ciLo = n ? pctl(sorted, alpha / 2) : NaN;
+        const ciHi = n ? pctl(sorted, 1 - alpha / 2) : NaN;
+        const covered = nObs && !isNaN(ciLo) ? meanObs >= ciLo && meanObs <= ciHi : null;
 
-          allTherapies.push({
-            label: g.label,
+        allTherapies.push({
+          label: g.label,
+          bucket,
+          predicted: g.predicted,
+          observedRates: g.observedRates,
+          stats: {
+            moa_category: moaCategory || '',
             bucket,
-            predicted: g.predicted,
-            observedRates: g.observedRates,
-            stats: {
-              moa_category: moaCategory || '',
-              bucket,
-              therapy: g.label,
-              trial_nct_ids: [...g.trials].join('; '),
-              arm_count: g.armCount,
-              unique_trials: g.trials.size,
-              mean_predicted_rr: toPct(mean),
-              median_predicted_rr: toPct(median),
-              q1_predicted_rr: toPct(q1),
-              q3_predicted_rr: toPct(q3),
-              min_predicted_rr: toPct(min),
-              max_predicted_rr: toPct(max),
-              sd_predicted_rr: toPct(sd),
-              n_predictions: n,
-              mean_observed_rr: toPct(meanObs),
-              sd_observed_rr: toPct(sdObs),
-              n_observed: nObs,
-              empirical_p_value: fmtN(pVal),
-              significance: sig,
-              ci_lower: toPct(ciLo),
-              ci_upper: toPct(ciHi),
-              observed_in_ci: covered,
-              confidence_level: confidenceLevel,
-              moa_orr_band_min: toPct(bandMin ?? NaN),
-              moa_orr_band_max: toPct(bandMax ?? NaN),
-            },
-          });
-        }
-      };
-      collect(trainingGroups, 'training');
-      collect(testingGroups, 'testing');
-
-      // ── Sheet 1: Summary (transposed) — no raw predicted/observed arrays ──
-      const metricKeys = [
-        'moa_category',
-        'bucket',
-        'therapy',
-        'trial_nct_ids',
-        'arm_count',
-        'unique_trials',
-        'mean_predicted_rr',
-        'median_predicted_rr',
-        'q1_predicted_rr',
-        'q3_predicted_rr',
-        'min_predicted_rr',
-        'max_predicted_rr',
-        'sd_predicted_rr',
-        'n_predictions',
-        'mean_observed_rr',
-        'sd_observed_rr',
-        'n_observed',
-        'empirical_p_value',
-        'significance',
-        'ci_lower',
-        'ci_upper',
-        'observed_in_ci',
-        'confidence_level',
-        'moa_orr_band_min',
-        'moa_orr_band_max',
-      ];
-      const summaryData: any[][] = [['metric', ...allTherapies.map((t) => t.label)]];
-      for (const key of metricKeys) {
-        summaryData.push([key, ...allTherapies.map((t) => t.stats[key] ?? '')]);
+            therapy: g.label,
+            trial_nct_ids: [...g.trials].join('; '),
+            arm_count: g.armCount,
+            unique_trials: g.trials.size,
+            mean_predicted_rr: toPct(mean),
+            median_predicted_rr: toPct(median),
+            q1_predicted_rr: toPct(q1),
+            q3_predicted_rr: toPct(q3),
+            min_predicted_rr: toPct(min),
+            max_predicted_rr: toPct(max),
+            sd_predicted_rr: toPct(sd),
+            n_predictions: n,
+            mean_observed_rr: toPct(meanObs),
+            sd_observed_rr: toPct(sdObs),
+            n_observed: nObs,
+            empirical_p_value: fmtN(pVal),
+            significance: sig,
+            ci_lower: toPct(ciLo),
+            ci_upper: toPct(ciHi),
+            observed_in_ci: covered,
+            confidence_level: confidenceLevel,
+            moa_orr_band_min: toPct(bandMin ?? NaN),
+            moa_orr_band_max: toPct(bandMax ?? NaN),
+          },
+        });
       }
-      // Append observed rates as rows beneath the summary
-      const maxObs = Math.max(...allTherapies.map((t) => t.observedRates.length), 0);
-      if (maxObs > 0) {
-        summaryData.push([]); // blank separator row
-        summaryData.push(['observed_rates', ...allTherapies.map(() => '')]);
-        for (let i = 0; i < maxObs; i++) {
-          summaryData.push([
-            `observed_rate_${i + 1}`,
-            ...allTherapies.map((t) => (t.observedRates[i] != null ? t.observedRates[i] * 100 : '')),
-          ]);
-        }
+    };
+    collect(trainingGroups, 'training');
+    collect(testingGroups, 'testing');
+
+    // ── Sheet 1: Summary (transposed) — no raw predicted/observed arrays ──
+    const metricKeys = [
+      'moa_category',
+      'bucket',
+      'therapy',
+      'trial_nct_ids',
+      'arm_count',
+      'unique_trials',
+      'mean_predicted_rr',
+      'median_predicted_rr',
+      'q1_predicted_rr',
+      'q3_predicted_rr',
+      'min_predicted_rr',
+      'max_predicted_rr',
+      'sd_predicted_rr',
+      'n_predictions',
+      'mean_observed_rr',
+      'sd_observed_rr',
+      'n_observed',
+      'empirical_p_value',
+      'significance',
+      'ci_lower',
+      'ci_upper',
+      'observed_in_ci',
+      'confidence_level',
+      'moa_orr_band_min',
+      'moa_orr_band_max',
+    ];
+    const summaryData: any[][] = [['metric', ...allTherapies.map((t) => t.label)]];
+    for (const key of metricKeys) {
+      summaryData.push([key, ...allTherapies.map((t) => t.stats[key] ?? '')]);
+    }
+    // Append observed rates as rows beneath the summary
+    const maxObs = Math.max(...allTherapies.map((t) => t.observedRates.length), 0);
+    if (maxObs > 0) {
+      summaryData.push([]); // blank separator row
+      summaryData.push(['observed_rates', ...allTherapies.map(() => '')]);
+      for (let i = 0; i < maxObs; i++) {
+        summaryData.push([
+          `observed_rate_${i + 1}`,
+          ...allTherapies.map((t) => (t.observedRates[i] != null ? t.observedRates[i] * 100 : '')),
+        ]);
       }
+    }
 
-      // ── Sheet 2: Predicted Rates — drug names as columns, rates down rows ──
-      const maxPred = Math.max(...allTherapies.map((t) => t.predicted.length), 0);
-      const predData: any[][] = [
-        allTherapies.map((t) => t.label), // header row: drug names
-      ];
-      for (let i = 0; i < maxPred; i++) {
-        predData.push(allTherapies.map((t) => (t.predicted[i] != null ? t.predicted[i] * 100 : '')));
-      }
+    // ── Sheet 2: Predicted Rates — drug names as columns, rates down rows ──
+    const maxPred = Math.max(...allTherapies.map((t) => t.predicted.length), 0);
+    const predData: any[][] = [
+      allTherapies.map((t) => t.label), // header row: drug names
+    ];
+    for (let i = 0; i < maxPred; i++) {
+      predData.push(allTherapies.map((t) => (t.predicted[i] != null ? t.predicted[i] * 100 : '')));
+    }
 
-      // Build workbook
-      const wb = XLSX.utils.book_new();
-      const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
-      XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
-      const ws2 = XLSX.utils.aoa_to_sheet(predData);
-      XLSX.utils.book_append_sheet(wb, ws2, 'Predicted Rates');
-
-      XLSX.writeFile(wb, 'per_therapy_predictions.xlsx');
-    });
+    void downloadSheetsAsXlsx(
+      [
+        { name: 'Summary', rows: summaryData },
+        { name: 'Predicted Rates', rows: predData },
+      ],
+      'per_therapy_predictions.xlsx',
+    );
   };
 
   return (
@@ -4922,64 +4917,62 @@ function ProposedDrugSimulation({
             </div>
             <button
               onClick={() => {
-                import('xlsx').then((XLSX) => {
-                  const toPct = (v: number) => (v == null || isNaN(v) ? null : v * 100);
-                  const rates = (result.predicted_rates as number[]) || [];
-                  const sorted = [...rates].sort((a, b) => a - b);
-                  const pctl = (s: number[], p: number): number => {
-                    if (!s.length) return NaN;
-                    return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))];
-                  };
-                  const mean = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : NaN;
-                  const median = pctl(sorted, 0.5);
-                  const q1 = pctl(sorted, 0.25);
-                  const q3 = pctl(sorted, 0.75);
-                  const minV = sorted.length ? sorted[0] : NaN;
-                  const maxV = sorted.length ? sorted[sorted.length - 1] : NaN;
-                  const sd =
-                    rates.length > 1
-                      ? Math.sqrt(rates.reduce((s, v) => s + (v - mean) ** 2, 0) / (rates.length - 1))
-                      : NaN;
+                const toPct = (v: number) => (v == null || isNaN(v) ? null : v * 100);
+                const rates = (result.predicted_rates as number[]) || [];
+                const sorted = [...rates].sort((a, b) => a - b);
+                const pctl = (s: number[], p: number): number => {
+                  if (!s.length) return NaN;
+                  return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))];
+                };
+                const mean = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : NaN;
+                const median = pctl(sorted, 0.5);
+                const q1 = pctl(sorted, 0.25);
+                const q3 = pctl(sorted, 0.75);
+                const minV = sorted.length ? sorted[0] : NaN;
+                const maxV = sorted.length ? sorted[sorted.length - 1] : NaN;
+                const sd =
+                  rates.length > 1
+                    ? Math.sqrt(rates.reduce((s, v) => s + (v - mean) ** 2, 0) / (rates.length - 1))
+                    : NaN;
 
-                  const rrAll = (allResponseRates || []).filter((v) => typeof v === 'number' && !isNaN(v));
-                  const moaBandMin = rrAll.length >= 2 ? Math.min(...rrAll) : NaN;
-                  const moaBandMax = rrAll.length >= 2 ? Math.max(...rrAll) : NaN;
+                const rrAll = (allResponseRates || []).filter((v) => typeof v === 'number' && !isNaN(v));
+                const moaBandMin = rrAll.length >= 2 ? Math.min(...rrAll) : NaN;
+                const moaBandMax = rrAll.length >= 2 ? Math.max(...rrAll) : NaN;
 
-                  // Summary sheet (transposed: metrics as rows)
-                  const summaryRows: (string | number | null)[][] = [
-                    ['Metric', result.drug_name],
-                    ['MOA Category', moaCategory || ''],
-                    ['Trial Size (N patients)', result.trial_size],
-                    ['N Iterations', result.n_iterations],
-                    ['Eligible TCGA Patients', result.eligible_count],
-                    ['Learned DCNA Threshold', result.learned_threshold],
-                    ['Eligibility Criteria', (result.criteria || []).join('; ')],
-                    ['Mean Predicted RR (%)', toPct(mean)],
-                    ['Median Predicted RR (%)', toPct(median)],
-                    ['Q1 Predicted RR (%)', toPct(q1)],
-                    ['Q3 Predicted RR (%)', toPct(q3)],
-                    ['Min Predicted RR (%)', toPct(minV)],
-                    ['Max Predicted RR (%)', toPct(maxV)],
-                    ['SD Predicted RR (%)', toPct(sd)],
-                    ['MOA Band Min (%)', toPct(moaBandMin)],
-                    ['MOA Band Max (%)', toPct(moaBandMax)],
-                  ];
+                // Summary sheet (transposed: metrics as rows)
+                const summaryRows: (string | number | null)[][] = [
+                  ['Metric', result.drug_name],
+                  ['MOA Category', moaCategory || ''],
+                  ['Trial Size (N patients)', result.trial_size],
+                  ['N Iterations', result.n_iterations],
+                  ['Eligible TCGA Patients', result.eligible_count],
+                  ['Learned DCNA Threshold', result.learned_threshold],
+                  ['Eligibility Criteria', (result.criteria || []).join('; ')],
+                  ['Mean Predicted RR (%)', toPct(mean)],
+                  ['Median Predicted RR (%)', toPct(median)],
+                  ['Q1 Predicted RR (%)', toPct(q1)],
+                  ['Q3 Predicted RR (%)', toPct(q3)],
+                  ['Min Predicted RR (%)', toPct(minV)],
+                  ['Max Predicted RR (%)', toPct(maxV)],
+                  ['SD Predicted RR (%)', toPct(sd)],
+                  ['MOA Band Min (%)', toPct(moaBandMin)],
+                  ['MOA Band Max (%)', toPct(moaBandMax)],
+                ];
 
-                  // Predicted Rates sheet
-                  const predHeader = [result.drug_name];
-                  const predRows: (string | number | null)[][] = [predHeader];
-                  for (const r of rates) {
-                    predRows.push([toPct(r)]);
-                  }
+                // Predicted Rates sheet
+                const predHeader = [result.drug_name];
+                const predRows: (string | number | null)[][] = [predHeader];
+                for (const r of rates) {
+                  predRows.push([toPct(r)]);
+                }
 
-                  const wb = XLSX.utils.book_new();
-                  const ws1 = XLSX.utils.aoa_to_sheet(summaryRows);
-                  XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
-                  const ws2 = XLSX.utils.aoa_to_sheet(predRows);
-                  XLSX.utils.book_append_sheet(wb, ws2, 'Predicted Rates');
-
-                  XLSX.writeFile(wb, `${result.drug_name || 'proposed_drug'}_simulation.xlsx`);
-                });
+                void downloadSheetsAsXlsx(
+                  [
+                    { name: 'Summary', rows: summaryRows },
+                    { name: 'Predicted Rates', rows: predRows },
+                  ],
+                  `${result.drug_name || 'proposed_drug'}_simulation.xlsx`,
+                );
               }}
               style={csvButtonStyle}
             >
