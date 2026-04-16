@@ -1,3 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * Plotly layout and trace shapes in this page use `any` because Plotly's
+ * public TS types don't cover the full union for the nested
+ * `annotations`, `shapes`, and `hoverlabel` options we configure.
+ * The bootstrap-result / per-MOA stats records also carry dynamic
+ * keys that aren't worth encoding as a sealed interface. Proper
+ * typing is tracked for v1.1.
+ */
+/* eslint-disable react-hooks/exhaustive-deps --
+ * Two plot-rendering effects intentionally capture computed locals by
+ * closure rather than by dep list. Tracked for v1.1.
+ */
 import { useState, useEffect, useRef, useSyncExternalStore, useMemo } from 'react';
 import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';

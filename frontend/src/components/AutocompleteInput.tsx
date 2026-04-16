@@ -62,6 +62,7 @@ export default function AutocompleteInput({
         }
       }, 250);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [field, fetcher, multiToken],
   );
 

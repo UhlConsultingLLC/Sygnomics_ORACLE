@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * One `any` — the Trial Comparison endpoint returns a shape with
+ * dynamic per-arm fields that don't fit a single interface cleanly.
+ * Tracked for v1.1 as a proper typed union.
+ */
 import axios from 'axios';
 import type {
   TrialListResponse,

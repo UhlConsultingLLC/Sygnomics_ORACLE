@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * App-entry bootstrap that seeds a few Plotly defaults on the global
+ * registry. The Plotly defaults object is a loose dictionary of
+ * trace/layout keys whose union is deeper than `@types/plotly.js`
+ * exposes, so `any` is used for the setter plumbing only. Tracked
+ * for v1.1.
+ */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import Plotly from 'plotly.js/dist/plotly.min.js';

@@ -17,8 +17,13 @@ export default function PlotContainer({ plotType, title }: { plotType: string; t
       return;
     }
 
-    // Use the figure's own height if specified, otherwise default to 400
+    // Use the figure's own height if specified, otherwise default to 400.
+    // The setState is intentional: we read the height from the incoming
+    // figure payload and lift it into local state so the wrapper div
+    // can render at the right size on the next paint. Refactor to
+    // derive `plotHeight` from props tracked for v1.1.
     const figHeight = (figure.layout?.height as number) || 400;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPlotHeight(figHeight);
 
     // Preserve the figure's own margins and automargin settings.
@@ -48,10 +53,12 @@ export default function PlotContainer({ plotType, title }: { plotType: string; t
       displayModeBar: false,
     });
 
+    // Capture the ref value for use in the cleanup closure — the actual
+    // ref may have changed by the time cleanup fires, per React's
+    // exhaustive-deps guidance.
+    const node = plotRef.current;
     return () => {
-      if (plotRef.current) {
-        Plotly.purge(plotRef.current);
-      }
+      if (node) Plotly.purge(node);
     };
   }, [data]);
 

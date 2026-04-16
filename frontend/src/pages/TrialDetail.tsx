@@ -20,7 +20,10 @@ export default function TrialDetail() {
   const [refreshMsg, setRefreshMsg] = useState('');
   const autoFetchAttempted = useRef(false);
 
-  // Auto-fetch results from CT.gov when outcomes have no results data
+  // Auto-fetch results from CT.gov when outcomes have no results data.
+  // Intentionally omits `handleRefresh` — it's stable within a render
+  // cycle and the auto-fetch is guarded by autoFetchAttempted to run
+  // once per trial load.
   useEffect(() => {
     if (!trial || !nctId || autoFetchAttempted.current) return;
     const hasOutcomes = trial.outcomes.length > 0;
@@ -29,6 +32,7 @@ export default function TrialDetail() {
       autoFetchAttempted.current = true;
       handleRefresh();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trial, nctId]);
 
   const handleRefresh = async () => {

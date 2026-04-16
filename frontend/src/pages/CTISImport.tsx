@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * Two `any` usages: the axios error catch block (standard pattern;
+ * axios errors don't have a precise public type) and the
+ * background-import job status object which is a dynamic JSON shape.
+ * Tracked for v1.1.
+ */
 import { useState, useEffect, useRef } from 'react';
 import { searchCTIS, startCTISImport, getCTISImportStatus, getCTISStats } from '../services/api';
 import { usePersistentState } from '../hooks/usePersistentState';

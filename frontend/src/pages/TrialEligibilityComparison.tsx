@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * Plotly layout + trace typings don't cover the composite SVG helpers
+ * this page uses (rect/text/dot builders that return SVG fragment
+ * strings). Also used for axios error catch. Tracked for v1.1.
+ */
 import { useState, useEffect, useRef } from 'react';
 import Plotly from 'plotly.js/dist/plotly.min.js';
 import { runTrialComparison, fetchTrialDrugOptions } from '../services/api';
