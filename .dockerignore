@@ -1,0 +1,38 @@
+# Excluded from Docker build context to keep the image small + fast.
+
+# Version control
+.git
+.github
+
+# Virtual environments + caches
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Frontend node_modules (reinstalled inside the container)
+frontend/node_modules/
+frontend/dist/
+
+# Data (mounted as a volume, not baked into the image)
+data/tcga_cache/
+data/simulations/
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE + OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Docs + CI (not needed at runtime)
+docs/
+.claude/
+*.md
+!README.md

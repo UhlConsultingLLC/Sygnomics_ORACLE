@@ -89,9 +89,20 @@ start. When you add a column:
 3. Test locally: delete `clinical_trials.db`, restart uvicorn, confirm the
    new column appears in `sqlite3 clinical_trials.db '.schema <table>'`.
 
+### Set up pre-commit hooks (once)
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+After this, `ruff check`, `ruff format`, TypeScript typecheck, and
+file-hygiene checks run automatically on every `git commit`. If a hook
+fails, the commit is blocked and you fix the issue before retrying.
+
 ### Before you push
 
-Run the checks that CI will also run:
+The hooks catch most issues, but also run the full suite manually:
 
 ```bash
 # Python
@@ -103,10 +114,11 @@ pytest
 cd frontend
 npx tsc --noEmit
 npm run lint
+npm test
 ```
 
-All four must exit cleanly. If any of them don't, fix the offending code
-rather than disabling the check.
+All must exit cleanly. If any don't, fix the offending code rather than
+disabling the check.
 
 ### UI / visual changes
 

@@ -82,6 +82,9 @@ class APIConfig(BaseModel):
     cors_origins: list[str] = Field(
         default=["http://localhost:5173", "http://localhost:3000"]
     )
+    # Optional Sentry DSN for error reporting. Leave empty to disable.
+    # Can also be set via the SENTRY_DSN environment variable.
+    sentry_dsn: str = ""
 
 
 class PipelineConfig(BaseModel):
@@ -101,14 +104,29 @@ class PipelineConfig(BaseModel):
 def load_config(config_path: str | Path | None = None) -> PipelineConfig:
     """Load and validate pipeline configuration from a YAML file.
 
+    Resolution order for the config path:
+    1. Explicit ``config_path`` argument (used by tests and CLI scripts).
+    2. ``CONFIG_PATH`` environment variable (used by deployments that
+       override the default without modifying the repo).
+    3. ``config/default_config.yaml`` in the repo root (development default).
+
+    If the resolved path doesn't exist, returns a ``PipelineConfig()``
+    with all-defaults so the app can still start.
+
     Args:
-        config_path: Path to YAML config file. Defaults to config/default_config.yaml.
+        config_path: Path to YAML config file. Overrides all other sources.
 
     Returns:
         Validated PipelineConfig instance.
     """
+    import os
+
     if config_path is None:
-        config_path = Path(__file__).parent / "default_config.yaml"
+        env_path = os.getenv("CONFIG_PATH")
+        if env_path:
+            config_path = Path(env_path)
+        else:
+            config_path = Path(__file__).parent / "default_config.yaml"
     else:
         config_path = Path(config_path)
 

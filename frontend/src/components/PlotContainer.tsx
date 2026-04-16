@@ -67,7 +67,16 @@ export default function PlotContainer({ plotType, title }: { plotType: string; t
   if (!data) return null;
 
   return (
-    <div style={{ background: '#fff', borderRadius: 8, padding: '1rem', marginBottom: '1rem', border: '1px solid #ddd', overflow: 'hidden' }}>
+    <div
+      style={{
+        background: '#fff',
+        borderRadius: 8,
+        padding: '1rem',
+        marginBottom: '1rem',
+        border: '1px solid #ddd',
+        overflow: 'hidden',
+      }}
+    >
       {title && <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', color: '#333' }}>{title}</h3>}
       <div ref={plotRef} style={{ width: '100%', height: plotHeight }} />
     </div>

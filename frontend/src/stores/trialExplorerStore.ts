@@ -62,10 +62,18 @@ export function getTrialExplorerFilters(): TrialExplorerFilters {
 
 export function setTrialExplorerFilters(filters: Partial<TrialExplorerFilters>) {
   stored = { ...stored, ...filters };
-  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stored)); } catch { /* noop */ }
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+  } catch {
+    /* noop */
+  }
 }
 
 export function clearTrialExplorerFilters() {
   stored = { ...defaults };
-  try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* noop */
+  }
 }

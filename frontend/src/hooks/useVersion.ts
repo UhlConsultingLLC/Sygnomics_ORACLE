@@ -25,10 +25,16 @@ export function useVersion(): VersionInfo | null {
     // has the version ID without waiting for a micro-task. Refactor
     // to a suspense boundary tracked for v1.1.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (_cache) { setInfo(_cache); return; }
+    if (_cache) {
+      setInfo(_cache);
+      return;
+    }
     if (!_inflight) {
       _inflight = fetchVersion()
-        .then((v) => { _cache = v; return v; })
+        .then((v) => {
+          _cache = v;
+          return v;
+        })
         .catch((e) => {
           // Swallow and surface as null. Export-stamping code will label
           // artifacts "version unknown" instead of failing the download.

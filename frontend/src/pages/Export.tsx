@@ -46,7 +46,9 @@ export default function Export() {
         </div>
       </div>
 
-      <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginTop: '1rem' }}>
+      <div
+        style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginTop: '1rem' }}
+      >
         <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Export Formats</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
           <thead>

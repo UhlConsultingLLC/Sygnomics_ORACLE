@@ -28,14 +28,7 @@ describe('Layout', () => {
         <Layout />
       </MemoryRouter>,
     );
-    const expectedItems = [
-      'Welcome',
-      'Disease Search',
-      'Trial Explorer',
-      'MOA Overview',
-      'Simulation',
-      'Export',
-    ];
+    const expectedItems = ['Welcome', 'Disease Search', 'Trial Explorer', 'MOA Overview', 'Simulation', 'Export'];
     for (const label of expectedItems) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }

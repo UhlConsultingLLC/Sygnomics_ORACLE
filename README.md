@@ -371,6 +371,28 @@ ORACLE follows **semantic versioning**: `MAJOR.MINOR.PATCH`. `1.0.0` is the firs
 
 ---
 
+## Docker
+
+Run the whole stack (backend + pre-built frontend) in a single container:
+
+```bash
+docker compose build
+docker compose up -d
+# Browse to http://localhost:8000
+```
+
+The image uses a multi-stage build: Node 20 compiles the React frontend, then the built `dist/` folder is copied into a Python 3.11 slim image that runs uvicorn. The SQLite database and TCGA cache are persisted in a named Docker volume (`oracle-data`) so data survives container restarts.
+
+Environment overrides (see `.env.example`):
+
+```yaml
+environment:
+  CONFIG_PATH: /app/config/production.yaml   # custom config
+  SENTRY_DSN: https://...@sentry.io/...      # error reporting
+```
+
+---
+
 ## Testing
 
 **Backend** — pytest is configured in `pyproject.toml`:

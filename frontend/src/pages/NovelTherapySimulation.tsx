@@ -16,7 +16,10 @@ const api = axios.create({
 const fetchGeneSuggestions = async (q: string): Promise<string[]> => {
   try {
     const genes = await fetchTCGAGenes(q);
-    return genes.map((g) => g.symbol).filter(Boolean).slice(0, 15);
+    return genes
+      .map((g) => g.symbol)
+      .filter(Boolean)
+      .slice(0, 15);
   } catch {
     return [];
   }
@@ -84,7 +87,10 @@ export default function NovelTherapySimulation() {
   // user types (debounced) so they can see synonyms before submitting.
   useEffect(() => {
     const term = condition.trim();
-    if (term.length < 2) { setConditionPreview([]); return; }
+    if (term.length < 2) {
+      setConditionPreview([]);
+      return;
+    }
     const handle = setTimeout(async () => {
       try {
         const { data } = await api.get('/analysis/expand-condition', { params: { q: term } });
@@ -104,7 +110,10 @@ export default function NovelTherapySimulation() {
     setResult(null);
     try {
       const payload = {
-        gene_targets: geneTargets.split(/[,;\s]+/).map((s) => s.trim()).filter(Boolean),
+        gene_targets: geneTargets
+          .split(/[,;\s]+/)
+          .map((s) => s.trim())
+          .filter(Boolean),
         condition: condition.trim(),
         disease_stage: stage.trim() || null,
         trial_size: size,
@@ -125,34 +134,47 @@ export default function NovelTherapySimulation() {
     <div style={{ padding: '1.5rem', maxWidth: 1200 }}>
       <h2 style={{ marginTop: 0 }}>Novel Therapy Simulation</h2>
       <p style={{ fontSize: '0.9rem', color: '#555', marginTop: 0 }}>
-        Describe a proposed new drug and trial. The simulator estimates the expected response
-        rate by pooling evidence from historical trials that used drugs hitting the same gene
-        targets in the same condition, surfaces the most similar past trials, and retrieves
-        supporting PubMed literature.
+        Describe a proposed new drug and trial. The simulator estimates the expected response rate by pooling evidence
+        from historical trials that used drugs hitting the same gene targets in the same condition, surfaces the most
+        similar past trials, and retrieves supporting PubMed literature.
       </p>
 
       <InterpretBox id="novel-therapy-intro" title="How this simulation works">
         <p style={{ margin: '0 0 0.5rem' }}>
-          A fast, evidence-based sanity check for a trial you're designing — <em>before</em> you've
-          enrolled anyone. Given one or more gene targets and a condition, ORACLE finds historical
-          trials whose drugs hit the same targets for the same disease, weights them by similarity,
-          and returns a pooled response-rate estimate with a 95% CI.
+          A fast, evidence-based sanity check for a trial you're designing — <em>before</em> you've enrolled anyone.
+          Given one or more gene targets and a condition, ORACLE finds historical trials whose drugs hit the same
+          targets for the same disease, weights them by similarity, and returns a pooled response-rate estimate with a
+          95% CI.
         </p>
         <ul style={{ margin: '0 0 0.4rem 1.1rem', padding: 0 }}>
-          <li><strong>Predicted Response Rate</strong> — a weighted average of observed RRs across the similar trials. The CI reflects how much those trials disagree and how many there are.</li>
-          <li><strong>Supporting trials (n)</strong> — count of historical trials that actually contributed to the estimate. Fewer than ~5 means treat the prediction as exploratory.</li>
-          <li><strong>Similarity score</strong> (0–1) — per-trial overlap on gene targets + disease stage + phase. Higher = more comparable; the top 3–5 carry most of the signal.</li>
-          <li><strong>Observed RR column</strong> — the actual historical RR for each similar trial. Wide variance across these rows is a warning sign; tight clustering is confirmatory.</li>
-          <li><strong>Literature</strong> — PubMed matches for the target+condition combination, for additional human context (not used in the numeric prediction).</li>
+          <li>
+            <strong>Predicted Response Rate</strong> — a weighted average of observed RRs across the similar trials. The
+            CI reflects how much those trials disagree and how many there are.
+          </li>
+          <li>
+            <strong>Supporting trials (n)</strong> — count of historical trials that actually contributed to the
+            estimate. Fewer than ~5 means treat the prediction as exploratory.
+          </li>
+          <li>
+            <strong>Similarity score</strong> (0–1) — per-trial overlap on gene targets + disease stage + phase. Higher
+            = more comparable; the top 3–5 carry most of the signal.
+          </li>
+          <li>
+            <strong>Observed RR column</strong> — the actual historical RR for each similar trial. Wide variance across
+            these rows is a warning sign; tight clustering is confirmatory.
+          </li>
+          <li>
+            <strong>Literature</strong> — PubMed matches for the target+condition combination, for additional human
+            context (not used in the numeric prediction).
+          </li>
         </ul>
         <p style={{ margin: '0 0 0.3rem' }}>
-          <strong>When to trust the prediction:</strong> ≥5 supporting trials with top similarity
-          scores &gt; 0.4 and a narrow CI (&lt; 10 pp wide). Warnings under the prediction flag low
-          evidence quality — take them seriously.
+          <strong>When to trust the prediction:</strong> ≥5 supporting trials with top similarity scores &gt; 0.4 and a
+          narrow CI (&lt; 10 pp wide). Warnings under the prediction flag low evidence quality — take them seriously.
         </p>
         <p style={{ margin: 0, color: '#555', fontSize: '0.8rem' }}>
-          Use <em>Threshold Validation</em> once the predicted RR looks believable — that page takes
-          the MOA's learned biomarker threshold and projects what the screened RR would be.
+          Use <em>Threshold Validation</em> once the predicted RR looks believable — that page takes the MOA's learned
+          biomarker threshold and projects what the screened RR would be.
         </p>
       </InterpretBox>
 
@@ -182,15 +204,17 @@ export default function NovelTherapySimulation() {
             field="conditions"
           />
           {conditionPreview.length > 0 && (
-            <div style={{
-              marginTop: 4,
-              padding: '6px 10px',
-              background: '#e3f2fd',
-              border: '1px solid #bbdefb',
-              borderRadius: 4,
-              fontSize: '0.78rem',
-              color: '#1565c0',
-            }}>
+            <div
+              style={{
+                marginTop: 4,
+                padding: '6px 10px',
+                background: '#e3f2fd',
+                border: '1px solid #bbdefb',
+                borderRadius: 4,
+                fontSize: '0.78rem',
+                color: '#1565c0',
+              }}
+            >
               <strong>Condition matched via MeSH:</strong> {conditionPreview.join(', ')}
             </div>
           )}
@@ -260,7 +284,9 @@ export default function NovelTherapySimulation() {
       </button>
 
       {error && (
-        <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#fdecea', color: '#c62828', borderRadius: 4 }}>
+        <div
+          style={{ marginTop: '1rem', padding: '0.75rem', background: '#fdecea', color: '#c62828', borderRadius: 4 }}
+        >
           {error}
         </div>
       )}
@@ -268,7 +294,15 @@ export default function NovelTherapySimulation() {
       {result && (
         <div style={{ marginTop: '1.5rem' }}>
           {/* Prediction card */}
-          <div style={{ padding: '1rem', border: '1px solid #cfd8dc', borderRadius: 6, background: '#fafafa', marginBottom: '1rem' }}>
+          <div
+            style={{
+              padding: '1rem',
+              border: '1px solid #cfd8dc',
+              borderRadius: 6,
+              background: '#fafafa',
+              marginBottom: '1rem',
+            }}
+          >
             <h3 style={{ margin: '0 0 0.5rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               Predicted Response Rate
               <InlineHelp text="Similarity-weighted average of observed response rates across historical trials matching your target + condition. The CI widens when supporting trials disagree or are few." />
@@ -279,21 +313,25 @@ export default function NovelTherapySimulation() {
             <div style={{ fontSize: '0.9rem', color: '#555', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
               95% CI: [{(result.ci_low * 100).toFixed(1)}%, {(result.ci_high * 100).toFixed(1)}%] ·{' '}
               {result.n_supporting_trials} supporting trial{result.n_supporting_trials === 1 ? '' : 's'}
-              <InlineHelp size={12} text="95% confidence interval on the pooled estimate. Narrow (<10 pp) with ≥5 supporting trials is solid; wide (>20 pp) or <3 trials is exploratory only." />
+              <InlineHelp
+                size={12}
+                text="95% confidence interval on the pooled estimate. Narrow (<10 pp) with ≥5 supporting trials is solid; wide (>20 pp) or <3 trials is exploratory only."
+              />
             </div>
             <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#37474f' }}>
               <b>Basis:</b> {result.basis}
             </div>
             {result.matched_drugs.length > 0 && (
               <div style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
-                <b>Matched drugs ({result.matched_drugs.length}):</b>{' '}
-                {result.matched_drugs.slice(0, 20).join(', ')}
+                <b>Matched drugs ({result.matched_drugs.length}):</b> {result.matched_drugs.slice(0, 20).join(', ')}
                 {result.matched_drugs.length > 20 && ` (+${result.matched_drugs.length - 20} more)`}
               </div>
             )}
             {result.warnings.length > 0 && (
               <ul style={{ marginTop: '0.5rem', color: '#e65100', fontSize: '0.8rem' }}>
-                {result.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                {result.warnings.map((w, i) => (
+                  <li key={i}>{w}</li>
+                ))}
               </ul>
             )}
           </div>
@@ -315,20 +353,29 @@ export default function NovelTherapySimulation() {
                       <th style={thStyle}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           Matched drugs / targets
-                          <InlineHelp size={11} text="Drugs and gene targets from this historical trial that overlap with what you entered. More overlap → higher similarity score."/>
+                          <InlineHelp
+                            size={11}
+                            text="Drugs and gene targets from this historical trial that overlap with what you entered. More overlap → higher similarity score."
+                          />
                         </span>
                       </th>
                       <th style={thStyle}>Interventions</th>
                       <th style={thStyle}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           Observed RR
-                          <InlineHelp size={11} text="Actual reported response rate for this historical trial. The predicted RR is a similarity-weighted average of these values."/>
+                          <InlineHelp
+                            size={11}
+                            text="Actual reported response rate for this historical trial. The predicted RR is a similarity-weighted average of these values."
+                          />
                         </span>
                       </th>
                       <th style={thStyle}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           Similarity
-                          <InlineHelp size={11} text="0–1. Combines overlap on gene targets, disease stage, and phase. Anything above ~0.4 is meaningfully comparable."/>
+                          <InlineHelp
+                            size={11}
+                            text="0–1. Combines overlap on gene targets, disease stage, and phase. Anything above ~0.4 is meaningfully comparable."
+                          />
                         </span>
                       </th>
                     </tr>
@@ -337,11 +384,7 @@ export default function NovelTherapySimulation() {
                     {result.similar_trials.map((t) => (
                       <tr key={t.nct_id} style={{ borderTop: '1px solid #eee' }}>
                         <td style={tdStyle}>
-                          <a
-                            href={`https://clinicaltrials.gov/study/${t.nct_id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
+                          <a href={`https://clinicaltrials.gov/study/${t.nct_id}`} target="_blank" rel="noreferrer">
                             {t.nct_id}
                           </a>
                         </td>
@@ -350,12 +393,16 @@ export default function NovelTherapySimulation() {
                         <td style={tdStyle}>{t.enrollment ?? '—'}</td>
                         <td style={tdStyle}>
                           {t.matched_drugs.length > 0 && (
-                            <div><b>{t.matched_drugs.join(', ')}</b></div>
+                            <div>
+                              <b>{t.matched_drugs.join(', ')}</b>
+                            </div>
                           )}
                           <div style={{ color: '#607d8b' }}>{t.matched_targets.join(', ')}</div>
                         </td>
                         <td style={{ ...tdStyle, maxWidth: 200 }}>{t.interventions.join('; ')}</td>
-                        <td style={tdStyle}>{t.response_rate != null ? `${(t.response_rate * 100).toFixed(1)}%` : '—'}</td>
+                        <td style={tdStyle}>
+                          {t.response_rate != null ? `${(t.response_rate * 100).toFixed(1)}%` : '—'}
+                        </td>
                         <td style={tdStyle}>{t.similarity_score.toFixed(2)}</td>
                       </tr>
                     ))}
@@ -376,7 +423,9 @@ export default function NovelTherapySimulation() {
               <ul style={{ paddingLeft: '1.2rem' }}>
                 {result.literature.map((lit) => (
                   <li key={lit.pmid} style={{ marginBottom: '0.4rem', fontSize: '0.85rem' }}>
-                    <a href={lit.url} target="_blank" rel="noreferrer"><b>{lit.title}</b></a>
+                    <a href={lit.url} target="_blank" rel="noreferrer">
+                      <b>{lit.title}</b>
+                    </a>
                     <div style={{ color: '#607d8b', fontSize: '0.75rem' }}>
                       {lit.journal || ''} {lit.year ? `· ${lit.year}` : ''} · PMID {lit.pmid}
                     </div>

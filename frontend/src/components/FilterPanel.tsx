@@ -14,26 +14,42 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
   const [spec, setSpec, resetSpec] = usePersistentState<FilterSpec>('filter_panel_spec', {});
 
   // Search bars for filter groups
-  const [filterSearch, setFilterSearch, resetFilterSearch] = usePersistentState<Record<string, string>>('filter_panel_search', {});
+  const [filterSearch, setFilterSearch, resetFilterSearch] = usePersistentState<Record<string, string>>(
+    'filter_panel_search',
+    {},
+  );
 
   // Intervention filter state
-  const [interventionInput, setInterventionInput, resetIntervention] = usePersistentState<string>('filter_panel_intervention', '');
+  const [interventionInput, setInterventionInput, resetIntervention] = usePersistentState<string>(
+    'filter_panel_intervention',
+    '',
+  );
 
   // Outcome expansion state
-  const [outcomeInput, setOutcomeInput, resetOutcomeInput] = usePersistentState<string>('filter_panel_outcome_input', '');
-  const [expandedOutcomes, setExpandedOutcomes, resetExpandedOutcomes] = usePersistentState<string[]>('filter_panel_expanded_outcomes', []);
-  const [selectedOutcomesArr, setSelectedOutcomesArr, resetSelectedOutcomes] = usePersistentState<string[]>('filter_panel_selected_outcomes', []);
+  const [outcomeInput, setOutcomeInput, resetOutcomeInput] = usePersistentState<string>(
+    'filter_panel_outcome_input',
+    '',
+  );
+  const [expandedOutcomes, setExpandedOutcomes, resetExpandedOutcomes] = usePersistentState<string[]>(
+    'filter_panel_expanded_outcomes',
+    [],
+  );
+  const [selectedOutcomesArr, setSelectedOutcomesArr, resetSelectedOutcomes] = usePersistentState<string[]>(
+    'filter_panel_selected_outcomes',
+    [],
+  );
   const selectedOutcomes = new Set(selectedOutcomesArr);
   const updateSelectedOutcomes = (next: Set<string>) => setSelectedOutcomesArr(Array.from(next));
   const [expanding, setExpanding] = useState(false);
-  const [expandOriginal, setExpandOriginal, resetExpandOriginal] = usePersistentState<string>('filter_panel_expand_original', '');
+  const [expandOriginal, setExpandOriginal, resetExpandOriginal] = usePersistentState<string>(
+    'filter_panel_expand_original',
+    '',
+  );
 
   const handleMultiSelect = (field: keyof FilterSpec, value: string) => {
     setSpec((prev) => {
       const current = (prev[field] as string[] | undefined) || [];
-      const updated = current.includes(value)
-        ? current.filter((v) => v !== value)
-        : [...current, value];
+      const updated = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
       return { ...prev, [field]: updated.length ? updated : undefined };
     });
   };
@@ -57,7 +73,8 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
 
   const toggleOutcome = (term: string) => {
     const next = new Set(selectedOutcomes);
-    if (next.has(term)) next.delete(term); else next.add(term);
+    if (next.has(term)) next.delete(term);
+    else next.add(term);
     updateSelectedOutcomes(next);
   };
 
@@ -79,13 +96,19 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
     const finalSpec = { ...spec };
     // Parse comma-separated intervention keywords
     if (interventionInput.trim()) {
-      finalSpec.intervention_keywords = interventionInput.split(',').map((k) => k.trim()).filter(Boolean);
+      finalSpec.intervention_keywords = interventionInput
+        .split(',')
+        .map((k) => k.trim())
+        .filter(Boolean);
     }
     // Use the selected expanded outcomes as the keyword list
     if (selectedOutcomes.size > 0) {
       finalSpec.outcome_keywords = Array.from(selectedOutcomes);
     } else if (outcomeInput.trim()) {
-      finalSpec.outcome_keywords = outcomeInput.split(',').map((k) => k.trim()).filter(Boolean);
+      finalSpec.outcome_keywords = outcomeInput
+        .split(',')
+        .map((k) => k.trim())
+        .filter(Boolean);
     }
     onApply(finalSpec);
   };
@@ -105,16 +128,16 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
   ];
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem' }}>Filters</h3>
 
       {/* Checkbox-based filter groups */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
         {filterGroups.map(({ label, field, values }) => {
           const searchTerm = (filterSearch[field] || '').toLowerCase();
-          const matched = searchTerm
-            ? values.filter((v) => v.toLowerCase().includes(searchTerm))
-            : values;
+          const matched = searchTerm ? values.filter((v) => v.toLowerCase().includes(searchTerm)) : values;
           // Show all matches when searching, otherwise cap at MAX_VISIBLE
           const filtered = searchTerm ? matched : matched.slice(0, MAX_VISIBLE);
           const hiddenCount = matched.length - filtered.length;
@@ -125,9 +148,7 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
                 type="text"
                 placeholder={`Search ${label.toLowerCase()}...`}
                 value={filterSearch[field] || ''}
-                onChange={(e) =>
-                  setFilterSearch((prev) => ({ ...prev, [field]: e.target.value }))
-                }
+                onChange={(e) => setFilterSearch((prev) => ({ ...prev, [field]: e.target.value }))}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -147,7 +168,10 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
                 {filtered.map((v) => {
                   const selected = ((spec[field] as string[] | undefined) || []).includes(v);
                   return (
-                    <label key={v} style={{ display: 'block', fontSize: '0.78rem', cursor: 'pointer', padding: '2px 0' }}>
+                    <label
+                      key={v}
+                      style={{ display: 'block', fontSize: '0.78rem', cursor: 'pointer', padding: '2px 0' }}
+                    >
                       <input
                         type="checkbox"
                         checked={selected}
@@ -185,7 +209,9 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
 
       {/* Has Results filter */}
       <div style={{ marginTop: '1rem' }}>
-        <strong style={{ fontSize: '0.8rem', color: '#555', display: 'block', marginBottom: 4 }}>Reported Results</strong>
+        <strong style={{ fontSize: '0.8rem', color: '#555', display: 'block', marginBottom: 4 }}>
+          Reported Results
+        </strong>
         <select
           value={spec.has_results === undefined ? '' : spec.has_results ? 'true' : 'false'}
           onChange={(e) => {
@@ -204,18 +230,21 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
       </div>
 
       {/* Outcome keyword expansion */}
-      <div style={{
-        marginTop: '1rem',
-        padding: '0.75rem',
-        background: '#f8f9fa',
-        borderRadius: 6,
-        border: '1px solid #e9ecef',
-      }}>
+      <div
+        style={{
+          marginTop: '1rem',
+          padding: '0.75rem',
+          background: '#f8f9fa',
+          borderRadius: 6,
+          border: '1px solid #e9ecef',
+        }}
+      >
         <strong style={{ fontSize: '0.8rem', color: '#555', display: 'block', marginBottom: 6 }}>
           Outcome Keyword Expansion
         </strong>
         <p style={{ fontSize: '0.75rem', color: '#888', margin: '0 0 8px' }}>
-          Enter an outcome term and click Expand to find all related variations (e.g., &quot;PFS&quot; expands to &quot;progression-free survival&quot;, &quot;time to progression&quot;, etc.)
+          Enter an outcome term and click Expand to find all related variations (e.g., &quot;PFS&quot; expands to
+          &quot;progression-free survival&quot;, &quot;time to progression&quot;, etc.)
         </p>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <AutocompleteInput
@@ -223,7 +252,9 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
             value={outcomeInput}
             onChange={setOutcomeInput}
             field="outcomes"
-            onKeyDown={(e) => { if (e.key === 'Enter') handleExpandOutcomes(); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleExpandOutcomes();
+            }}
             style={{ fontSize: '0.8rem' }}
           />
           <button
@@ -249,17 +280,34 @@ export default function FilterPanel({ onApply }: FilterPanelProps) {
           <div style={{ marginTop: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 6 }}>
               <span style={{ fontSize: '0.75rem', color: '#555' }}>
-                Expanded from <strong>&quot;{expandOriginal}&quot;</strong> — {selectedOutcomes.size} of {expandedOutcomes.length} selected
+                Expanded from <strong>&quot;{expandOriginal}&quot;</strong> — {selectedOutcomes.size} of{' '}
+                {expandedOutcomes.length} selected
               </span>
               <button
                 onClick={selectAllOutcomes}
-                style={{ fontSize: '0.7rem', color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
+                style={{
+                  fontSize: '0.7rem',
+                  color: '#007bff',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: 0,
+                }}
               >
                 Select all
               </button>
               <button
                 onClick={deselectAllOutcomes}
-                style={{ fontSize: '0.7rem', color: '#dc3545', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
+                style={{
+                  fontSize: '0.7rem',
+                  color: '#dc3545',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: 0,
+                }}
               >
                 Deselect all
               </button>

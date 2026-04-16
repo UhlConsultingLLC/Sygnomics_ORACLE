@@ -5,10 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
  * survive React Router unmounts. Returns a [state, setter, reset] triple
  * matching React.useState semantics, plus a reset that clears the entry.
  */
-export function usePersistentState<T>(
-  key: string,
-  initial: T,
-): [T, (v: T | ((prev: T) => T)) => void, () => void] {
+export function usePersistentState<T>(key: string, initial: T): [T, (v: T | ((prev: T) => T)) => void, () => void] {
   const [state, setState] = useState<T>(() => {
     try {
       const raw = sessionStorage.getItem(key);
@@ -29,7 +26,11 @@ export function usePersistentState<T>(
   }, [key, state]);
 
   const reset = useCallback(() => {
-    try { sessionStorage.removeItem(key); } catch { /* noop */ }
+    try {
+      sessionStorage.removeItem(key);
+    } catch {
+      /* noop */
+    }
     setState(initial);
     // We intentionally exclude `initial` from deps to keep reset stable;
     // callers should pass a stable initial value (object literal in module
@@ -43,6 +44,10 @@ export function usePersistentState<T>(
 /** Convenience: clear several persistent keys at once. */
 export function clearPersistentKeys(...keys: string[]) {
   for (const k of keys) {
-    try { sessionStorage.removeItem(k); } catch { /* noop */ }
+    try {
+      sessionStorage.removeItem(k);
+    } catch {
+      /* noop */
+    }
   }
 }

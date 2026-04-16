@@ -35,15 +35,7 @@ export interface MetricProps {
   style?: CSSProperties;
 }
 
-export function Metric({
-  label,
-  value,
-  hint,
-  tooltip,
-  valueColor = '#1c3e72',
-  minWidth = 160,
-  style,
-}: MetricProps) {
+export function Metric({ label, value, hint, tooltip, valueColor = '#1c3e72', minWidth = 160, style }: MetricProps) {
   return (
     <div
       style={{
@@ -56,9 +48,7 @@ export function Metric({
         ...style,
       }}
     >
-      <div style={{ fontSize: '1.55rem', fontWeight: 700, color: valueColor, lineHeight: 1.15 }}>
-        {value}
-      </div>
+      <div style={{ fontSize: '1.55rem', fontWeight: 700, color: valueColor, lineHeight: 1.15 }}>{value}</div>
       <div
         style={{
           fontSize: '0.78rem',
@@ -106,9 +96,16 @@ export interface InterpretBoxProps {
   style?: CSSProperties;
 }
 
-const tonePalettes: Record<'info' | 'tip', {
-  border: string; bg: string; headerBg: string; title: string; accent: string;
-}> = {
+const tonePalettes: Record<
+  'info' | 'tip',
+  {
+    border: string;
+    bg: string;
+    headerBg: string;
+    title: string;
+    accent: string;
+  }
+> = {
   info: {
     border: '#d5dff0',
     bg: '#f5f8fd',

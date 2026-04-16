@@ -98,8 +98,8 @@ jobs:
         # so the /version endpoint tests can verify a baked SHA is present.
         run: pip install -e ".[dev]"
 
-      - name: Run pytest
-        run: pytest -q
+      - name: Run pytest with coverage
+        run: pytest --cov -q
 
       - name: Verify /version endpoint is importable
         # Smoke-test: the provenance module must import and return a dict

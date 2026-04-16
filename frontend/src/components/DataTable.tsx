@@ -45,9 +45,7 @@ export default function DataTable<T>({ columns, data, keyField }: DataTableProps
           ))}
         </tbody>
       </table>
-      {data.length === 0 && (
-        <p style={{ textAlign: 'center', color: '#888', padding: '1.5rem' }}>No data available.</p>
-      )}
+      {data.length === 0 && <p style={{ textAlign: 'center', color: '#888', padding: '1.5rem' }}>No data available.</p>}
     </div>
   );
 }

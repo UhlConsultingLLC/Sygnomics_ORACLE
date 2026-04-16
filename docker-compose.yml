@@ -1,0 +1,25 @@
+# docker compose up -d
+# Browse: http://localhost:8000
+#
+# The single service runs FastAPI (backend) and serves the pre-built
+# React frontend from /app/frontend/dist. SQLite DB + TCGA cache are
+# persisted in a named volume so data survives container restarts.
+
+services:
+  oracle:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - oracle-data:/app/data
+    environment:
+      # Override config path if you need a production-specific YAML:
+      # CONFIG_PATH: /app/config/production.yaml
+      #
+      # Enable Sentry error reporting (optional):
+      # SENTRY_DSN: https://examplePublicKey@o0.ingest.sentry.io/0
+      PYTHONUNBUFFERED: "1"
+    restart: unless-stopped
+
+volumes:
+  oracle-data:

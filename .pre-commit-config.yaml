@@ -1,0 +1,39 @@
+# Pre-commit hooks — run `pre-commit install` once after cloning, then
+# these checks fire automatically on every `git commit`. They mirror
+# (a subset of) what CI enforces, so bad commits never leave the
+# developer's machine.
+#
+# To run manually on all files: `pre-commit run --all-files`
+# To skip hooks for a one-off: `git commit --no-verify` (use sparingly)
+
+repos:
+  # ── General file hygiene ──────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+
+  # ── Python: ruff lint + format ────────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # ── Frontend: TypeScript typecheck ────────────────────────────────
+  - repo: local
+    hooks:
+      - id: tsc-noEmit
+        name: TypeScript typecheck
+        entry: bash -c 'cd frontend && npx tsc --noEmit'
+        language: system
+        files: ^frontend/.*\.(ts|tsx)$
+        pass_filenames: false

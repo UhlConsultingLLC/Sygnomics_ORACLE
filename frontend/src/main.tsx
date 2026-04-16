@@ -19,12 +19,7 @@ import App from './App';
 // unless the caller explicitly overrides it.
 const TRANSPARENT = 'rgba(0,0,0,0)';
 const _origNewPlot = (Plotly as any).newPlot;
-(Plotly as any).newPlot = function (
-  div: any,
-  data: any,
-  layout: any,
-  config?: any,
-) {
+(Plotly as any).newPlot = function (div: any, data: any, layout: any, config?: any) {
   const merged = {
     paper_bgcolor: TRANSPARENT,
     plot_bgcolor: TRANSPARENT,

@@ -11,8 +11,8 @@ export interface VersionInfo {
   name: string;
   version: string;
   git_sha: string;
-  build_id: string;          // "1.0.0+d160ce3" — canonical stamp
-  build_time: string;        // ISO 8601 UTC
+  build_id: string; // "1.0.0+d160ce3" — canonical stamp
+  build_time: string; // ISO 8601 UTC
   python_version?: string;
   platform?: string;
 }

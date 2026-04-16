@@ -61,7 +61,9 @@ function loadSimState(): PersistedSimState | null {
   try {
     const raw = localStorage.getItem(SIM_STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 function clearSimState() {
@@ -72,7 +74,10 @@ export default function Simulation() {
   const [categories, setCategories] = useState<MOACategory[]>([]);
   const [selectedMOA, setSelectedMOA, resetSelectedMOA] = usePersistentState<string>('sim_selected_moa', '');
   const [nIterations, setNIterations, resetNIterations] = usePersistentState<number>('sim_n_iterations', 1000);
-  const [confidenceLevel, setConfidenceLevel, resetConfidenceLevel] = usePersistentState<number>('sim_confidence_level', 95);
+  const [confidenceLevel, setConfidenceLevel, resetConfidenceLevel] = usePersistentState<number>(
+    'sim_confidence_level',
+    95,
+  );
   const [simId, setSimId] = useState('');
   const [progress, setProgress] = useState<SimProgress | null>(null);
   const [result, setResult] = useState<any>(null);
@@ -91,7 +96,9 @@ export default function Simulation() {
       sessionStorage.removeItem('sim_rsim_rule');
       sessionStorage.removeItem('sim_rsim_q_cutoff');
       sessionStorage.removeItem('sim_rsim_type_filter');
-    } catch { /* noop */ }
+    } catch {
+      /* noop */
+    }
   };
 
   // Load MOA categories on mount
@@ -113,21 +120,24 @@ export default function Simulation() {
   useEffect(() => {
     if (!simId) return;
     const poll = () => {
-      api.get(`/simulation/moa-status/${simId}`).then(({ data }) => {
-        setProgress(data);
-        if (data.status === 'complete' && data.result) {
-          setResult(data.result);
+      api
+        .get(`/simulation/moa-status/${simId}`)
+        .then(({ data }) => {
+          setProgress(data);
+          if (data.status === 'complete' && data.result) {
+            setResult(data.result);
+            clearInterval(pollRef.current);
+          } else if (data.status === 'error') {
+            clearInterval(pollRef.current);
+          }
+        })
+        .catch(() => {
+          // Server may have restarted — simulation lost
           clearInterval(pollRef.current);
-        } else if (data.status === 'error') {
-          clearInterval(pollRef.current);
-        }
-      }).catch(() => {
-        // Server may have restarted — simulation lost
-        clearInterval(pollRef.current);
-        clearSimState();
-        setProgress(null);
-        setSimId('');
-      });
+          clearSimState();
+          setProgress(null);
+          setSimId('');
+        });
     };
     poll();
     pollRef.current = setInterval(poll, 2000);
@@ -163,40 +173,54 @@ export default function Simulation() {
 
       <InterpretBox id="simulation-intro" title="How this simulation works">
         <p style={{ margin: '0 0 0.5rem' }}>
-          For a chosen MOA, ORACLE takes all historical trials of drugs in that category, splits them
-          into <strong>training</strong> and <strong>testing</strong> sets, and for each trial asks:
-          "which DCNA threshold on TCGA patients best recovers the trial's reported response rate?"
-          The training-trial thresholds are aggregated into a single <em>learned threshold</em>, which
-          is then applied unchanged to each testing trial to predict a response rate. Comparing predicted
-          vs. observed is how we measure whether the biomarker holds up.
+          For a chosen MOA, ORACLE takes all historical trials of drugs in that category, splits them into{' '}
+          <strong>training</strong> and <strong>testing</strong> sets, and for each trial asks: "which DCNA threshold on
+          TCGA patients best recovers the trial's reported response rate?" The training-trial thresholds are aggregated
+          into a single <em>learned threshold</em>, which is then applied unchanged to each testing trial to predict a
+          response rate. Comparing predicted vs. observed is how we measure whether the biomarker holds up.
         </p>
         <ul style={{ margin: '0 0 0.4rem 1.1rem', padding: 0 }}>
-          <li><strong>Iterations per trial</strong> — how many times to bootstrap-resample the TCGA cohort when learning each trial's per-run threshold. More iterations tighten the CIs (diminishing returns past ~1,000).</li>
-          <li><strong>Confidence level</strong> — used everywhere downstream: per-trial CI bars, Bland-Altman limits of agreement, CI coverage bars. You can edit it after the run; figures update without rerunning.</li>
-          <li><strong>Learned threshold</strong> — the single DCNA cutoff this simulation produced. Patients with DCNA above it are predicted responders.</li>
-          <li><strong>Threshold Std</strong> — spread of thresholds across training trials. Small = consistent / generalizable. Large = different training trials disagree, so the biomarker may not be stable.</li>
-          <li><strong>Median RR</strong> — the middle reported response rate among the trials in this MOA. A useful baseline for interpreting predicted lifts.</li>
+          <li>
+            <strong>Iterations per trial</strong> — how many times to bootstrap-resample the TCGA cohort when learning
+            each trial's per-run threshold. More iterations tighten the CIs (diminishing returns past ~1,000).
+          </li>
+          <li>
+            <strong>Confidence level</strong> — used everywhere downstream: per-trial CI bars, Bland-Altman limits of
+            agreement, CI coverage bars. You can edit it after the run; figures update without rerunning.
+          </li>
+          <li>
+            <strong>Learned threshold</strong> — the single DCNA cutoff this simulation produced. Patients with DCNA
+            above it are predicted responders.
+          </li>
+          <li>
+            <strong>Threshold Std</strong> — spread of thresholds across training trials. Small = consistent /
+            generalizable. Large = different training trials disagree, so the biomarker may not be stable.
+          </li>
+          <li>
+            <strong>Median RR</strong> — the middle reported response rate among the trials in this MOA. A useful
+            baseline for interpreting predicted lifts.
+          </li>
         </ul>
         <p style={{ margin: 0, color: '#555', fontSize: '0.8rem' }}>
-          After the run, scroll through the violin / box / calibration / Bland-Altman plots — each
-          section has its own interpretation note explaining what "good" looks like for that figure.
+          After the run, scroll through the violin / box / calibration / Bland-Altman plots — each section has its own
+          interpretation note explaining what "good" looks like for that figure.
         </p>
       </InterpretBox>
 
       {/* Configuration Panel */}
-      <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+      <div
+        style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+      >
         <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem' }}>Simulation Configuration</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: 4 }}>MOA Category</label>
-            <MOAAutocomplete
-              categories={categories}
-              value={selectedMOA}
-              onChange={setSelectedMOA}
-            />
+            <MOAAutocomplete categories={categories} value={selectedMOA} onChange={setSelectedMOA} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: 4 }}>Iterations per Trial</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: 4 }}>
+              Iterations per Trial
+            </label>
             <input
               type="number"
               min={10}
@@ -204,11 +228,20 @@ export default function Simulation() {
               step={100}
               value={nIterations}
               onChange={(e) => setNIterations(Number(e.target.value))}
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: 4, fontSize: '0.85rem', boxSizing: 'border-box' }}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                border: '1px solid #ccc',
+                borderRadius: 4,
+                fontSize: '0.85rem',
+                boxSizing: 'border-box',
+              }}
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: 4 }}>Confidence Level (%)</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: 4 }}>
+              Confidence Level (%)
+            </label>
             <input
               type="number"
               min={1}
@@ -219,18 +252,31 @@ export default function Simulation() {
                 const v = parseFloat(e.target.value);
                 if (!isNaN(v) && v > 0 && v < 100) setConfidenceLevel(v);
               }}
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: 4, fontSize: '0.85rem', boxSizing: 'border-box' }}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                border: '1px solid #ccc',
+                borderRadius: 4,
+                fontSize: '0.85rem',
+                boxSizing: 'border-box',
+              }}
               title="Used by all downstream statistics: Per-Therapy box plot footer, Bland-Altman LoA, and CI Coverage analysis. Editable any time — figures update automatically."
             />
           </div>
         </div>
         <button
           onClick={handleStart}
-          disabled={!selectedMOA || starting || (progress?.status === 'running')}
+          disabled={!selectedMOA || starting || progress?.status === 'running'}
           style={{
-            marginTop: '1rem', padding: '0.5rem 2rem', fontSize: '0.9rem', fontWeight: 600,
-            background: !selectedMOA ? '#ccc' : '#1a1a2e', color: !selectedMOA ? '#888' : '#00d4ff',
-            border: 'none', borderRadius: 6, cursor: !selectedMOA ? 'not-allowed' : 'pointer',
+            marginTop: '1rem',
+            padding: '0.5rem 2rem',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            background: !selectedMOA ? '#ccc' : '#1a1a2e',
+            color: !selectedMOA ? '#888' : '#00d4ff',
+            border: 'none',
+            borderRadius: 6,
+            cursor: !selectedMOA ? 'not-allowed' : 'pointer',
           }}
         >
           {starting ? 'Starting...' : progress?.status === 'running' ? 'Simulation Running...' : 'Run Simulation'}
@@ -238,10 +284,16 @@ export default function Simulation() {
         <button
           onClick={handleReset}
           style={{
-            marginTop: '1rem', marginLeft: '0.5rem', padding: '0.5rem 1.5rem',
-            fontSize: '0.9rem', fontWeight: 600,
-            background: '#6c757d', color: '#fff',
-            border: 'none', borderRadius: 6, cursor: 'pointer',
+            marginTop: '1rem',
+            marginLeft: '0.5rem',
+            padding: '0.5rem 1.5rem',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            background: '#6c757d',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 6,
+            cursor: 'pointer',
           }}
         >
           Reset
@@ -250,16 +302,32 @@ export default function Simulation() {
 
       {/* Progress Panel */}
       {progress && progress.status === 'running' && (
-        <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+        <div
+          style={{
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 8,
+            padding: '1rem',
+            marginBottom: '1rem',
+          }}
+        >
           <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Simulation Progress</h3>
           <div style={{ background: '#e9ecef', borderRadius: 8, height: 24, overflow: 'hidden', marginBottom: 8 }}>
-            <div style={{
-              height: '100%', background: 'linear-gradient(90deg, #1a1a2e, #00d4ff)',
-              width: `${progress.progress_pct}%`, borderRadius: 8,
-              transition: 'width 0.5s ease',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.72rem', color: '#fff', fontWeight: 600,
-            }}>
+            <div
+              style={{
+                height: '100%',
+                background: 'linear-gradient(90deg, #1a1a2e, #00d4ff)',
+                width: `${progress.progress_pct}%`,
+                borderRadius: 8,
+                transition: 'width 0.5s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.72rem',
+                color: '#fff',
+                fontWeight: 600,
+              }}
+            >
               {progress.progress_pct > 10 ? `${Math.round(progress.progress_pct)}%` : ''}
             </div>
           </div>
@@ -271,15 +339,22 @@ export default function Simulation() {
 
       {/* Error */}
       {progress?.status === 'error' && (
-        <div style={{ padding: '0.75rem', background: '#f8d7da', borderRadius: 8, color: '#721c24', marginBottom: '1rem', fontSize: '0.85rem' }}>
+        <div
+          style={{
+            padding: '0.75rem',
+            background: '#f8d7da',
+            borderRadius: 8,
+            color: '#721c24',
+            marginBottom: '1rem',
+            fontSize: '0.85rem',
+          }}
+        >
           <strong>Simulation Error:</strong> {progress.error}
         </div>
       )}
 
       {/* Results */}
-      {result && !result.error && (
-        <SimulationResults data={result} confidenceLevel={confidenceLevel} />
-      )}
+      {result && !result.error && <SimulationResults data={result} confidenceLevel={confidenceLevel} />}
     </div>
   );
 }
@@ -300,22 +375,40 @@ function formatAgeRange(minAge?: string, maxAge?: string): string {
 // Bland-Altman limits-of-agreement.
 function zForConfidence(cl: number): number {
   const p = (1 + cl / 100) / 2;
-  const a = [-3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.383577518672690e2, -3.066479806614716e1, 2.506628277459239];
-  const b = [-5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1, -1.328068155288572e1];
-  const c = [-7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+  const a = [
+    -3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.38357751867269e2, -3.066479806614716e1,
+    2.506628277459239,
+  ];
+  const b = [
+    -5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1, -1.328068155288572e1,
+  ];
+  const c = [
+    -7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734, 4.374664141464968,
+    2.938163982698783,
+  ];
   const d = [7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996, 3.754408661907416];
   const pLow = 0.02425;
   const pHigh = 1 - pLow;
   let q: number, r: number;
   if (p < pLow) {
     q = Math.sqrt(-2 * Math.log(p));
-    return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+    return (
+      (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+      ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+    );
   } else if (p <= pHigh) {
-    q = p - 0.5; r = q*q;
-    return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q / (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+    q = p - 0.5;
+    r = q * q;
+    return (
+      ((((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q) /
+      (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+    );
   } else {
     q = Math.sqrt(-2 * Math.log(1 - p));
-    return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+    return (
+      -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+      ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+    );
   }
 }
 
@@ -324,7 +417,9 @@ function SimulationResults({ data, confidenceLevel = 95 }: { data: any; confiden
   return (
     <div>
       {/* Summary Cards */}
-      <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+      <div
+        style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+      >
         <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem' }}>Simulation Summary — {data.moa_category}</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '0.75rem' }}>
           <Metric
@@ -383,9 +478,7 @@ function SimulationResults({ data, confidenceLevel = 95 }: { data: any; confiden
       <TestingTrialsTable data={data} />
 
       {/* Excluded Trials (Outlier Detection) */}
-      {data.excluded_trials && data.excluded_trials.length > 0 && (
-        <ExcludedTrialsTable data={data} />
-      )}
+      {data.excluded_trials && data.excluded_trials.length > 0 && <ExcludedTrialsTable data={data} />}
 
       {/* Build a per-trial drug lookup so every plot can render the MOA-drug
           name as the bold first row of its x-axis label. */}
@@ -404,12 +497,17 @@ function SimulationResults({ data, confidenceLevel = 95 }: { data: any; confiden
       {/* Per-Therapy Aggregated Box Plot */}
       {data.testing_violin_data && data.testing_violin_data.length > 0 && (
         <div>
-          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: '#444', margin: '0.25rem 0 0.5rem' }}>
-            <input
-              type="checkbox"
-              checked={showStatAnalysis}
-              onChange={(e) => setShowStatAnalysis(e.target.checked)}
-            />
+          <label
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: '0.8rem',
+              color: '#444',
+              margin: '0.25rem 0 0.5rem',
+            }}
+          >
+            <input type="checkbox" checked={showStatAnalysis} onChange={(e) => setShowStatAnalysis(e.target.checked)} />
             Include "Statistical Analysis" section in Per-Therapy annotation box
           </label>
           <PerTherapyBoxPlot
@@ -442,10 +540,21 @@ function SimulationResults({ data, confidenceLevel = 95 }: { data: any; confiden
             <MAEPlot mae={data.analyses.mae} drugLookup={buildDrugLookup(data)} moaDrugNames={data.moa_drug_names} />
           )}
           {data.analyses.bland_altman && (
-            <BlandAltmanPlot ba={data.analyses.bland_altman} drugLookup={buildDrugLookup(data)} moaDrugNames={data.moa_drug_names} confidenceLevel={confidenceLevel} />
+            <BlandAltmanPlot
+              ba={data.analyses.bland_altman}
+              drugLookup={buildDrugLookup(data)}
+              moaDrugNames={data.moa_drug_names}
+              confidenceLevel={confidenceLevel}
+            />
           )}
           {data.analyses.ci_coverage && (
-            <CICoveragePlot ci={data.analyses.ci_coverage} drugLookup={buildDrugLookup(data)} moaDrugNames={data.moa_drug_names} confidenceLevel={confidenceLevel} testingViolinData={data.testing_violin_data || []} />
+            <CICoveragePlot
+              ci={data.analyses.ci_coverage}
+              drugLookup={buildDrugLookup(data)}
+              moaDrugNames={data.moa_drug_names}
+              confidenceLevel={confidenceLevel}
+              testingViolinData={data.testing_violin_data || []}
+            />
           )}
         </>
       )}
@@ -458,10 +567,10 @@ function SimulationResults({ data, confidenceLevel = 95 }: { data: any; confiden
           moaDrugNames={data.moa_drug_names}
           allResponseRates={(() => {
             const rates: number[] = [];
-            for (const t of (data.training_trials || [])) {
+            for (const t of data.training_trials || []) {
               if (typeof t.actual_response_rate === 'number') rates.push(t.actual_response_rate);
             }
-            for (const t of (data.testing_violin_data || [])) {
+            for (const t of data.testing_violin_data || []) {
               if (typeof t.actual_response_rate === 'number') rates.push(t.actual_response_rate);
               if (t.drug_rr_range?.min != null) rates.push(t.drug_rr_range.min);
               if (t.drug_rr_range?.max != null) rates.push(t.drug_rr_range.max);
@@ -494,10 +603,18 @@ function ResponderSimilarity({ simId }: { simId: string }) {
     setError(null);
     api
       .get(`/simulation/moa-responder-similarity/${simId}`, { params: { rule, q_cutoff: qCutoff } })
-      .then(({ data }) => { if (!cancelled) setResult(data); })
-      .catch((e) => { if (!cancelled) setError(e?.response?.data?.detail || e.message); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .then(({ data }) => {
+        if (!cancelled) setResult(data);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e?.response?.data?.detail || e.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [simId, rule, qCutoff]);
 
   const features = (() => {
@@ -508,42 +625,62 @@ function ResponderSimilarity({ simId }: { simId: string }) {
   })();
 
   return (
-    <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #cfd8dc', borderRadius: 6, background: '#fafafa' }}>
+    <div
+      style={{
+        marginTop: '2rem',
+        padding: '1rem',
+        border: '1px solid #cfd8dc',
+        borderRadius: 6,
+        background: '#fafafa',
+      }}
+    >
       <h3 style={{ marginTop: 0 }}>Responder Similarity Analysis</h3>
       <InterpretationNote>
-        <div><b>What this does:</b> Every TCGA patient in this MOA cohort is sorted into two
-        groups — <i>predicted responders</i> (likely to benefit from drugs in this MOA) and{' '}
-        <i>predicted non-responders</i>. We then look at each patient feature (age, gender,
-        mutations, copy-number changes, gene expression levels, etc.) and ask: "Is this feature
-        noticeably different between the two groups?"</div>
-        <div style={{ marginTop: 4 }}><b>How to read the table:</b></div>
+        <div>
+          <b>What this does:</b> Every TCGA patient in this MOA cohort is sorted into two groups —{' '}
+          <i>predicted responders</i> (likely to benefit from drugs in this MOA) and <i>predicted non-responders</i>. We
+          then look at each patient feature (age, gender, mutations, copy-number changes, gene expression levels, etc.)
+          and ask: "Is this feature noticeably different between the two groups?"
+        </div>
+        <div style={{ marginTop: 4 }}>
+          <b>How to read the table:</b>
+        </div>
         <ul style={{ margin: '2px 0 4px 16px', padding: 0 }}>
-          <li><b>Responder / Non-Responder columns:</b> a quick summary of that feature in each group
-            (e.g. "62% present" for a mutation, or "mean 54.3" for age). Compare the two to see
-            which group is higher or more common.</li>
-          <li><b>Effect:</b> how big the difference is. For mutations/CNV it's an
-            <i> odds ratio</i> (&gt;1 means more common in responders, &lt;1 means more common in
-            non-responders). For numeric features it's a <i>rank-biserial</i> score from −1 to +1
-            (positive = higher in responders, negative = higher in non-responders). Bigger absolute
-            numbers = stronger differences.</li>
-          <li><b>p-value:</b> the chance the difference happened by luck alone. Smaller = more
-            convincing.</li>
-          <li><b>q-value:</b> the p-value adjusted for the fact that we tested thousands of features
-            at once. <b>This is the number to trust.</b> A q of 0.10 means roughly 10% of entries at
-            that cutoff could be false alarms. Lower = more reliable.</li>
+          <li>
+            <b>Responder / Non-Responder columns:</b> a quick summary of that feature in each group (e.g. "62% present"
+            for a mutation, or "mean 54.3" for age). Compare the two to see which group is higher or more common.
+          </li>
+          <li>
+            <b>Effect:</b> how big the difference is. For mutations/CNV it's an
+            <i> odds ratio</i> (&gt;1 means more common in responders, &lt;1 means more common in non-responders). For
+            numeric features it's a <i>rank-biserial</i> score from −1 to +1 (positive = higher in responders, negative
+            = higher in non-responders). Bigger absolute numbers = stronger differences.
+          </li>
+          <li>
+            <b>p-value:</b> the chance the difference happened by luck alone. Smaller = more convincing.
+          </li>
+          <li>
+            <b>q-value:</b> the p-value adjusted for the fact that we tested thousands of features at once.{' '}
+            <b>This is the number to trust.</b> A q of 0.10 means roughly 10% of entries at that cutoff could be false
+            alarms. Lower = more reliable.
+          </li>
         </ul>
-        <div><b>Comparing entries:</b> rows are sorted by q-value, so the most reliable findings
-        sit at the top. To decide which features matter most, look for entries with <i>both</i> a
-        low q-value <i>and</i> a large effect size — those are the strongest candidates for
-        enrollment criteria. The <b>Suggested Eligibility Criteria</b> panel above already
-        distills the top signals into plain-language rules.</div>
+        <div>
+          <b>Comparing entries:</b> rows are sorted by q-value, so the most reliable findings sit at the top. To decide
+          which features matter most, look for entries with <i>both</i> a low q-value <i>and</i> a large effect size —
+          those are the strongest candidates for enrollment criteria. The <b>Suggested Eligibility Criteria</b> panel
+          above already distills the top signals into plain-language rules.
+        </div>
       </InterpretationNote>
 
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.8rem' }}>
         <div>
-          <label style={{ fontSize: '0.85rem', marginRight: 6 }}><b>Rule:</b></label>
+          <label style={{ fontSize: '0.85rem', marginRight: 6 }}>
+            <b>Rule:</b>
+          </label>
           <label style={{ fontSize: '0.85rem', marginRight: 8 }}>
-            <input type="radio" checked={rule === 'majority'} onChange={() => setRule('majority')} /> Majority (≥50% of trials)
+            <input type="radio" checked={rule === 'majority'} onChange={() => setRule('majority')} /> Majority (≥50% of
+            trials)
           </label>
           <label style={{ fontSize: '0.85rem' }}>
             <input type="radio" checked={rule === 'any'} onChange={() => setRule('any')} /> Any trial
@@ -553,8 +690,12 @@ function ResponderSimilarity({ simId }: { simId: string }) {
           <label style={{ fontSize: '0.85rem' }}>
             <b>q-value cutoff:</b>{' '}
             <input
-              type="range" min={0.01} max={0.5} step={0.01}
-              value={qCutoff} onChange={(e) => setQCutoff(parseFloat(e.target.value))}
+              type="range"
+              min={0.01}
+              max={0.5}
+              step={0.01}
+              value={qCutoff}
+              onChange={(e) => setQCutoff(parseFloat(e.target.value))}
             />{' '}
             {qCutoff.toFixed(2)}
           </label>
@@ -572,7 +713,12 @@ function ResponderSimilarity({ simId }: { simId: string }) {
           </label>
         </div>
         <button
-          onClick={() => window.open(`${api.defaults.baseURL}/simulation/moa-responder-similarity/${simId}/download?rule=${rule}&q_cutoff=${qCutoff}`, '_blank')}
+          onClick={() =>
+            window.open(
+              `${api.defaults.baseURL}/simulation/moa-responder-similarity/${simId}/download?rule=${rule}&q_cutoff=${qCutoff}`,
+              '_blank',
+            )
+          }
           style={{ padding: '4px 12px' }}
         >
           Download full CSV
@@ -608,12 +754,12 @@ function ResponderSimilarity({ simId }: { simId: string }) {
                 </span>
               </h4>
               <InterpretationNote>
-                Each row below is a <b>combination</b> of patient criteria that, when applied
-                together, selects a sub-group highly enriched for predicted responders.
+                Each row below is a <b>combination</b> of patient criteria that, when applied together, selects a
+                sub-group highly enriched for predicted responders.
                 <b> Precision</b> = share of patients matching the rule who are responders.
-                <b> Lift</b> = how much the rule beats the overall responder rate (lift of 2.0 =
-                twice as likely). Higher precision, higher lift, and larger n = stronger rule.
-                Use these as candidate <i>combined inclusion criteria</i> for future trials.
+                <b> Lift</b> = how much the rule beats the overall responder rate (lift of 2.0 = twice as likely).
+                Higher precision, higher lift, and larger n = stronger rule. Use these as candidate{' '}
+                <i>combined inclusion criteria</i> for future trials.
               </InterpretationNote>
               <div style={{ maxHeight: 260, overflow: 'auto', border: '1px solid #e0e0e0', borderRadius: 4 }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
@@ -630,10 +776,9 @@ function ResponderSimilarity({ simId }: { simId: string }) {
                     {result.combinations.length === 0 && (
                       <tr>
                         <td colSpan={5} style={{ padding: '8px', color: '#888' }}>
-                          No multi-criteria rule met the precision/support thresholds for this MOA.
-                          This usually means either the cohort is too small or no combination of
-                          features gives a clearly better enrichment than the single-feature
-                          suggestions below.
+                          No multi-criteria rule met the precision/support thresholds for this MOA. This usually means
+                          either the cohort is too small or no combination of features gives a clearly better enrichment
+                          than the single-feature suggestions below.
                         </td>
                       </tr>
                     )}
@@ -644,12 +789,8 @@ function ResponderSimilarity({ simId }: { simId: string }) {
                         <td style={{ padding: '4px 8px', textAlign: 'right' }}>
                           {c.n_responders}/{c.n_patients}
                         </td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right' }}>
-                          {(c.precision * 100).toFixed(0)}%
-                        </td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right' }}>
-                          {c.lift.toFixed(2)}×
-                        </td>
+                        <td style={{ padding: '4px 8px', textAlign: 'right' }}>{(c.precision * 100).toFixed(0)}%</td>
+                        <td style={{ padding: '4px 8px', textAlign: 'right' }}>{c.lift.toFixed(2)}×</td>
                       </tr>
                     ))}
                   </tbody>
@@ -663,7 +804,9 @@ function ResponderSimilarity({ simId }: { simId: string }) {
               <h4 style={{ marginBottom: '0.3rem' }}>Suggested Eligibility Criteria</h4>
               <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.85rem' }}>
                 {result.suggestions.map((s: any, i: number) => (
-                  <li key={i}>{s.text} <span style={{ color: '#607d8b' }}>(q={s.q_value?.toExponential(2)})</span></li>
+                  <li key={i}>
+                    {s.text} <span style={{ color: '#607d8b' }}>(q={s.q_value?.toExponential(2)})</span>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -684,7 +827,11 @@ function ResponderSimilarity({ simId }: { simId: string }) {
               </thead>
               <tbody>
                 {features.length === 0 && (
-                  <tr><td colSpan={7} style={{ padding: '8px', color: '#888' }}>No features passed the q-value cutoff.</td></tr>
+                  <tr>
+                    <td colSpan={7} style={{ padding: '8px', color: '#888' }}>
+                      No features passed the q-value cutoff.
+                    </td>
+                  </tr>
                 )}
                 {features.map((f: any, i: number) => (
                   <tr key={i} style={{ borderTop: '1px solid #eee' }}>
@@ -713,11 +860,18 @@ function ResponderSimilarity({ simId }: { simId: string }) {
 // Small info box shown above a chart to explain how to interpret it.
 function InterpretationNote({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{
-      fontSize: '0.75rem', color: '#37474f', lineHeight: 1.5,
-      background: '#eef6fb', border: '1px solid #b3dcf5', borderRadius: 4,
-      padding: '6px 10px', margin: '0 0 0.6rem',
-    }}>
+    <div
+      style={{
+        fontSize: '0.75rem',
+        color: '#37474f',
+        lineHeight: 1.5,
+        background: '#eef6fb',
+        border: '1px solid #b3dcf5',
+        borderRadius: 4,
+        padding: '6px 10px',
+        margin: '0 0 0.6rem',
+      }}
+    >
       {children}
     </div>
   );
@@ -728,49 +882,141 @@ function InterpretationNote({ children }: { children: React.ReactNode }) {
 // therapy. Returns a stable, lowercased canonical key plus a display label.
 const SALT_SUFFIXES = [
   // Sulfonates
-  'ditosylate', 'tosylate', 'tosilate',
-  'dimesylate', 'mesylate', 'mesilate', 'methanesulfonate',
-  'besylate', 'besilate', 'benzenesulfonate',
-  'esylate', 'ethanesulfonate',
-  'napsylate', 'naphthalenesulfonate',
-  'camsylate', 'camphorsulfonate',
-  'isethionate', 'xinafoate', 'edisylate',
+  'ditosylate',
+  'tosylate',
+  'tosilate',
+  'dimesylate',
+  'mesylate',
+  'mesilate',
+  'methanesulfonate',
+  'besylate',
+  'besilate',
+  'benzenesulfonate',
+  'esylate',
+  'ethanesulfonate',
+  'napsylate',
+  'naphthalenesulfonate',
+  'camsylate',
+  'camphorsulfonate',
+  'isethionate',
+  'xinafoate',
+  'edisylate',
   // Halide / inorganic
-  'hydrochloride', 'hcl', 'dihydrochloride', 'trihydrochloride',
-  'hydrobromide', 'dihydrobromide', 'hydroiodide',
-  'bromide', 'chloride', 'iodide', 'fluoride',
-  'nitrate', 'perchlorate',
+  'hydrochloride',
+  'hcl',
+  'dihydrochloride',
+  'trihydrochloride',
+  'hydrobromide',
+  'dihydrobromide',
+  'hydroiodide',
+  'bromide',
+  'chloride',
+  'iodide',
+  'fluoride',
+  'nitrate',
+  'perchlorate',
   // Sulfur / phosphorus
-  'sulfate', 'sulphate', 'hemisulfate', 'bisulfate', 'disulfate',
-  'phosphate', 'diphosphate', 'hydrogenphosphate', 'dihydrogenphosphate',
+  'sulfate',
+  'sulphate',
+  'hemisulfate',
+  'bisulfate',
+  'disulfate',
+  'phosphate',
+  'diphosphate',
+  'hydrogenphosphate',
+  'dihydrogenphosphate',
   // Carboxylates / dicarboxylates
-  'citrate', 'dicitrate', 'tricitrate',
-  'maleate', 'dimaleate', 'hemifumarate', 'fumarate',
-  'succinate', 'hemisuccinate',
-  'tartrate', 'bitartrate', 'hemitartrate',
-  'malate', 'hemimalate',
-  'acetate', 'diacetate', 'trifluoroacetate', 'tfa',
-  'lactate', 'bilactate',
-  'gluconate', 'glucoheptonate', 'gluceptate',
-  'oxalate', 'palmitate', 'stearate', 'pamoate', 'embonate',
-  'propionate', 'butyrate', 'valerate', 'caproate', 'enanthate',
-  'cypionate', 'decanoate', 'undecanoate', 'hexanoate', 'octanoate',
-  'benzoate', 'hippurate', 'salicylate', 'mucate', 'orotate', 'tannate',
-  'aspartate', 'glutamate', 'lactobionate', 'saccharate',
-  'furoate', 'carbonate', 'bicarbonate',
-  'methylsulfate', 'methyl sulfate', 'ethylsulfate', 'hyclate', 'teoclate',
+  'citrate',
+  'dicitrate',
+  'tricitrate',
+  'maleate',
+  'dimaleate',
+  'hemifumarate',
+  'fumarate',
+  'succinate',
+  'hemisuccinate',
+  'tartrate',
+  'bitartrate',
+  'hemitartrate',
+  'malate',
+  'hemimalate',
+  'acetate',
+  'diacetate',
+  'trifluoroacetate',
+  'tfa',
+  'lactate',
+  'bilactate',
+  'gluconate',
+  'glucoheptonate',
+  'gluceptate',
+  'oxalate',
+  'palmitate',
+  'stearate',
+  'pamoate',
+  'embonate',
+  'propionate',
+  'butyrate',
+  'valerate',
+  'caproate',
+  'enanthate',
+  'cypionate',
+  'decanoate',
+  'undecanoate',
+  'hexanoate',
+  'octanoate',
+  'benzoate',
+  'hippurate',
+  'salicylate',
+  'mucate',
+  'orotate',
+  'tannate',
+  'aspartate',
+  'glutamate',
+  'lactobionate',
+  'saccharate',
+  'furoate',
+  'carbonate',
+  'bicarbonate',
+  'methylsulfate',
+  'methyl sulfate',
+  'ethylsulfate',
+  'hyclate',
+  'teoclate',
   // Counter-ions
-  'sodium', 'disodium', 'trisodium',
-  'potassium', 'dipotassium',
-  'calcium', 'hemicalcium',
-  'magnesium', 'zinc', 'lithium', 'ammonium', 'choline', 'meglumine',
-  'diolamine', 'olamine', 'tromethamine',
-  'arginine', 'lysine',
+  'sodium',
+  'disodium',
+  'trisodium',
+  'potassium',
+  'dipotassium',
+  'calcium',
+  'hemicalcium',
+  'magnesium',
+  'zinc',
+  'lithium',
+  'ammonium',
+  'choline',
+  'meglumine',
+  'diolamine',
+  'olamine',
+  'tromethamine',
+  'arginine',
+  'lysine',
   // Hydrates / solvates / forms
-  'hemihydrate', 'monohydrate', 'dihydrate', 'trihydrate',
-  'tetrahydrate', 'pentahydrate', 'heptahydrate', 'decahydrate',
-  'anhydrous', 'solvate', 'ethanolate', 'methanolate',
-  'racemate', 'free base', 'free acid',
+  'hemihydrate',
+  'monohydrate',
+  'dihydrate',
+  'trihydrate',
+  'tetrahydrate',
+  'pentahydrate',
+  'heptahydrate',
+  'decahydrate',
+  'anhydrous',
+  'solvate',
+  'ethanolate',
+  'methanolate',
+  'racemate',
+  'free base',
+  'free acid',
 ];
 function canonicalizeDrugName(raw: string): { key: string; label: string } {
   if (!raw) return { key: '', label: '' };
@@ -814,12 +1060,7 @@ const csvButtonStyle: React.CSSProperties = {
 // scanning every trial collection that includes a drugs array.
 function buildDrugLookup(data: any): Record<string, string[]> {
   const lookup: Record<string, string[]> = {};
-  const sources = [
-    data?.testing_trials,
-    data?.training_trials,
-    data?.testing_violin_data,
-    data?.excluded_trials,
-  ];
+  const sources = [data?.testing_trials, data?.training_trials, data?.testing_violin_data, data?.excluded_trials];
   for (const src of sources) {
     if (!Array.isArray(src)) continue;
     for (const t of src) {
@@ -833,17 +1074,11 @@ function buildDrugLookup(data: any): Record<string, string[]> {
 
 // Build a "<b>Drug1, Drug2</b><br>NCT12345" axis label. Drugs are filtered to
 // only those that belong to the MOA category being analyzed.
-function formatTrialLabel(
-  nctId: string,
-  drugs: string[] | undefined,
-  moaDrugNames: string[] | undefined,
-): string {
+function formatTrialLabel(nctId: string, drugs: string[] | undefined, moaDrugNames: string[] | undefined): string {
   const wrappedNct = wrapLabel(nctId);
   if (!drugs || drugs.length === 0) return wrappedNct;
   const moaSet = new Set((moaDrugNames || []).map((d) => d.toUpperCase()));
-  const moaDrugs = moaSet.size === 0
-    ? drugs
-    : drugs.filter((d) => moaSet.has(d.toUpperCase()));
+  const moaDrugs = moaSet.size === 0 ? drugs : drugs.filter((d) => moaSet.has(d.toUpperCase()));
   if (moaDrugs.length === 0) return wrappedNct;
   return `<b>${moaDrugs.join(', ')}</b><br>${wrappedNct}`;
 }
@@ -855,9 +1090,15 @@ function wrapLabel(s: string, max = 35): string {
   const lines: string[] = [];
   let cur = '';
   for (const w of words) {
-    if (!cur) { cur = w; continue; }
+    if (!cur) {
+      cur = w;
+      continue;
+    }
     if ((cur + ' ' + w).length <= max) cur += ' ' + w;
-    else { lines.push(cur); cur = w; }
+    else {
+      lines.push(cur);
+      cur = w;
+    }
   }
   if (cur) lines.push(cur);
   // Hard-break any remaining line longer than max
@@ -871,7 +1112,17 @@ function wrapLabel(s: string, max = 35): string {
   return out.join('<br>');
 }
 
-function ViolinPlot({ data, learnedThreshold, drugLookup, moaDrugNames }: { data: any[]; learnedThreshold?: number; drugLookup?: Record<string, string[]>; moaDrugNames?: string[] }) {
+function ViolinPlot({
+  data,
+  learnedThreshold,
+  drugLookup,
+  moaDrugNames,
+}: {
+  data: any[];
+  learnedThreshold?: number;
+  drugLookup?: Record<string, string[]>;
+  moaDrugNames?: string[];
+}) {
   const plotRef = useRef<HTMLDivElement>(null);
   const plotWidth = Math.max(720, 150 * data.length + 260);
 
@@ -956,14 +1207,22 @@ function ViolinPlot({ data, learnedThreshold, drugLookup, moaDrugNames }: { data
 
     Plotly.newPlot(plotRef.current, traces, withProvenance(layout, '/simulation/simulated-vs-observed'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('simulated_vs_observed'), width: plotWidth, height: 700, scale: 4 },
+      toImageButtonOptions: {
+        format: 'svg',
+        filename: provenanceImageFilename('simulated_vs_observed'),
+        width: plotWidth,
+        height: 700,
+        scale: 4,
+      },
     });
-    return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
+    return () => {
+      if (plotRef.current) Plotly.purge(plotRef.current);
+    };
   }, [data, plotWidth, learnedThreshold, drugLookup, moaDrugNames]);
 
   const handleExport = () => {
     import('xlsx').then((XLSX) => {
-      const toPct = (v: number) => (v == null || isNaN(v)) ? null : v * 100;
+      const toPct = (v: number) => (v == null || isNaN(v) ? null : v * 100);
       const pctl = (sorted: number[], p: number): number => {
         if (!sorted.length) return NaN;
         return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
@@ -983,17 +1242,12 @@ function ViolinPlot({ data, learnedThreshold, drugLookup, moaDrugNames }: { data
         const sorted = [...rates].sort((a, b) => a - b);
         const n = sorted.length;
         const mean = n ? sorted.reduce((a, b) => a + b, 0) / n : 0;
-        const median = n
-          ? n % 2
-            ? sorted[Math.floor(n / 2)]
-            : (sorted[n / 2 - 1] + sorted[n / 2]) / 2
-          : 0;
+        const median = n ? (n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : 0;
         const q1 = n ? pctl(sorted, 0.25) : 0;
         const q3 = n ? pctl(sorted, 0.75) : 0;
         const min = n ? sorted[0] : 0;
         const max = n ? sorted[n - 1] : 0;
-        const variance = n > 1
-          ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
+        const variance = n > 1 ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
         const sd = Math.sqrt(variance);
         const obs = trial.actual_response_rate;
 
@@ -1022,28 +1276,31 @@ function ViolinPlot({ data, learnedThreshold, drugLookup, moaDrugNames }: { data
 
       // ── Sheet 1: Summary (transposed) ──
       const metricKeys = [
-        'nct_id', 'arm_group', 'drugs',
-        'mean_predicted_rr', 'median_predicted_rr',
-        'q1_predicted_rr', 'q3_predicted_rr',
-        'min_predicted_rr', 'max_predicted_rr',
-        'sd_predicted_rr', 'n_predictions',
+        'nct_id',
+        'arm_group',
+        'drugs',
+        'mean_predicted_rr',
+        'median_predicted_rr',
+        'q1_predicted_rr',
+        'q3_predicted_rr',
+        'min_predicted_rr',
+        'max_predicted_rr',
+        'sd_predicted_rr',
+        'n_predictions',
         'observed_rr',
-        'drug_rr_range_min', 'drug_rr_range_max',
+        'drug_rr_range_min',
+        'drug_rr_range_max',
       ];
-      const summaryData: any[][] = [
-        ['metric', ...allTrials.map(t => t.label)],
-      ];
+      const summaryData: any[][] = [['metric', ...allTrials.map((t) => t.label)]];
       for (const key of metricKeys) {
-        summaryData.push([key, ...allTrials.map(t => t.stats[key] ?? '')]);
+        summaryData.push([key, ...allTrials.map((t) => t.stats[key] ?? '')]);
       }
 
       // ── Sheet 2: Predicted Rates — trial labels as columns, rates down rows ──
-      const maxPred = Math.max(...allTrials.map(t => t.predicted.length), 0);
-      const predData: any[][] = [
-        allTrials.map(t => t.label),
-      ];
+      const maxPred = Math.max(...allTrials.map((t) => t.predicted.length), 0);
+      const predData: any[][] = [allTrials.map((t) => t.label)];
       for (let i = 0; i < maxPred; i++) {
-        predData.push(allTrials.map(t => t.predicted[i] != null ? t.predicted[i] * 100 : ''));
+        predData.push(allTrials.map((t) => (t.predicted[i] != null ? t.predicted[i] * 100 : '')));
       }
 
       // Build workbook
@@ -1058,10 +1315,14 @@ function ViolinPlot({ data, learnedThreshold, drugLookup, moaDrugNames }: { data
   };
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 0 0.5rem' }}>
         <h3 style={{ margin: 0, fontSize: '1rem' }}>Simulated vs Observed Response Rate Analysis</h3>
-        <button onClick={handleExport} style={csvButtonStyle}>Download XLSX</button>
+        <button onClick={handleExport} style={csvButtonStyle}>
+          Download XLSX
+        </button>
       </div>
       <div style={{ width: '100%', overflowX: 'auto' }}>
         <div ref={plotRef} style={{ width: plotWidth, minWidth: plotWidth }} />
@@ -1100,9 +1361,9 @@ function PerTherapyBoxPlot({
   // a vertical dashed divider (mimicking the example figure).
   type Group = {
     label: string;
-    predicted: number[];     // reconstructed / collected per-iteration rates
+    predicted: number[]; // reconstructed / collected per-iteration rates
     observedRates: number[]; // one actual clinical trial RR per arm
-    meanPred: number;        // mean of predicted across arms (for + marker)
+    meanPred: number; // mean of predicted across arms (for + marker)
     trials: Set<string>;
     armCount: number;
   };
@@ -1124,10 +1385,7 @@ function PerTherapyBoxPlot({
     return out;
   };
 
-  const buildGroups = (
-    trials: any[],
-    useRawRates: boolean,
-  ): Group[] => {
+  const buildGroups = (trials: any[], useRawRates: boolean): Group[] => {
     const moaSet = new Set((moaDrugNames || []).map((d) => canonicalizeDrugName(d).key));
     const map = new Map<string, Group>();
     for (const trial of trials) {
@@ -1212,12 +1470,11 @@ function PerTherapyBoxPlot({
   //   - "†" footnote                ~ 30
   //   - small breathing room        ~ 20
   // Bottom layout (stacked): tick labels, small gap, annotation box, padding.
-  const tickLabelArea = 90;   // horizontal multi-line x-axis labels
-  const gapAboveBox = 24;     // whitespace between tick labels and box
+  const tickLabelArea = 90; // horizontal multi-line x-axis labels
+  const gapAboveBox = 24; // whitespace between tick labels and box
   const annotationBoxHeight = showStatAnalysis ? 230 : 120;
-  const bottomPadding = 24;   // breathing room below the box
-  const marginBottom =
-    tickLabelArea + gapAboveBox + annotationBoxHeight + bottomPadding;
+  const bottomPadding = 24; // breathing room below the box
+  const marginBottom = tickLabelArea + gapAboveBox + annotationBoxHeight + bottomPadding;
   // Top area (title + padding) and plot area proper
   const marginTop = 130;
   const plotAreaHeight = 420;
@@ -1231,9 +1488,16 @@ function PerTherapyBoxPlot({
       const lines: string[] = [];
       let cur = '';
       for (const w of words) {
-        if (!cur) { cur = w; continue; }
-        if ((cur + ' ' + w).length > maxLen) { lines.push(cur); cur = w; }
-        else { cur += ' ' + w; }
+        if (!cur) {
+          cur = w;
+          continue;
+        }
+        if ((cur + ' ' + w).length > maxLen) {
+          lines.push(cur);
+          cur = w;
+        } else {
+          cur += ' ' + w;
+        }
       }
       if (cur) lines.push(cur);
       return lines.join('<br>');
@@ -1274,15 +1538,10 @@ function PerTherapyBoxPlot({
             sortedPredHover.length === 0
               ? 0
               : sortedPredHover.length % 2
-              ? sortedPredHover[Math.floor(sortedPredHover.length / 2)]
-              : (sortedPredHover[sortedPredHover.length / 2 - 1] +
-                  sortedPredHover[sortedPredHover.length / 2]) / 2;
-          const q1Pred = sortedPredHover.length
-            ? sortedPredHover[Math.floor(0.25 * (sortedPredHover.length - 1))]
-            : 0;
-          const q3Pred = sortedPredHover.length
-            ? sortedPredHover[Math.floor(0.75 * (sortedPredHover.length - 1))]
-            : 0;
+                ? sortedPredHover[Math.floor(sortedPredHover.length / 2)]
+                : (sortedPredHover[sortedPredHover.length / 2 - 1] + sortedPredHover[sortedPredHover.length / 2]) / 2;
+          const q1Pred = sortedPredHover.length ? sortedPredHover[Math.floor(0.25 * (sortedPredHover.length - 1))] : 0;
+          const q3Pred = sortedPredHover.length ? sortedPredHover[Math.floor(0.75 * (sortedPredHover.length - 1))] : 0;
           // Place ~20 hover anchor points spanning the full box height so the
           // tooltip appears anywhere along the box's vertical extent.
           const hoverYs: number[] = [];
@@ -1368,9 +1627,9 @@ function PerTherapyBoxPlot({
     // Primary cutoff is α = 1 − CL/100 (e.g. CL=95 → α=0.05). Tiered stars
     // use α, α/5, α/50 so a 95% CL recovers the conventional 0.05/0.01/0.001.
     const alphaSig = 1 - confidenceLevel / 100;
-    const alphaTier1 = alphaSig;        // *
-    const alphaTier2 = alphaSig / 5;    // **
-    const alphaTier3 = alphaSig / 50;   // ***
+    const alphaTier1 = alphaSig; // *
+    const alphaTier2 = alphaSig / 5; // **
+    const alphaTier3 = alphaSig / 50; // ***
     const fmtAlpha = (a: number): string => {
       if (a >= 0.01) return a.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
       if (a >= 0.0001) return a.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
@@ -1403,7 +1662,8 @@ function PerTherapyBoxPlot({
         annotations.push({
           x: xLabelFor(g, bucket),
           y: Math.min(0.99, yMax + 0.04),
-          xref: 'x', yref: 'y',
+          xref: 'x',
+          yref: 'y',
           text: `<b>${sigStars(p)}</b>`,
           showarrow: false,
           font: { size: 14, color: '#000' },
@@ -1425,7 +1685,7 @@ function PerTherapyBoxPlot({
       if (!g.observedRates.length || !g.predicted.length) continue;
       const meanObs = g.observedRates.reduce((a, b) => a + b, 0) / g.observedRates.length;
       const sortedPred = [...g.predicted].sort((a, b) => a - b);
-      const alpha = (1 - confidenceLevel / 100);
+      const alpha = 1 - confidenceLevel / 100;
       const loQ = percentile(sortedPred, alpha / 2);
       const hiQ = percentile(sortedPred, 1 - alpha / 2);
       const covered = meanObs >= loQ && meanObs <= hiQ;
@@ -1461,7 +1721,7 @@ function PerTherapyBoxPlot({
         biases.push(acc / n);
       }
       biases.sort((a, b) => a - b);
-      const alphaBoot = (1 - confidenceLevel / 100);
+      const alphaBoot = 1 - confidenceLevel / 100;
       const lo = biases[Math.floor((alphaBoot / 2) * B)];
       const hi = biases[Math.floor((1 - alphaBoot / 2) * B)];
       const coverage = pairs.filter((q) => q.covered).length / n;
@@ -1487,14 +1747,20 @@ function PerTherapyBoxPlot({
     annotateSig(testingGroups, 'test');
     if (footerText) {
       annotations.push({
-        xref: 'paper', yref: 'paper',
-        x: 0.5, y: 0, xanchor: 'center', yanchor: 'top',
+        xref: 'paper',
+        yref: 'paper',
+        x: 0.5,
+        y: 0,
+        xanchor: 'center',
+        yanchor: 'top',
         yshift: -(tickLabelArea + gapAboveBox),
         text: footerText,
         showarrow: false,
         font: { size: 15, color: '#222' },
         bgcolor: 'rgba(255,255,255,0.9)',
-        bordercolor: '#ccc', borderwidth: 1, borderpad: 4,
+        bordercolor: '#ccc',
+        borderwidth: 1,
+        borderpad: 4,
       });
     }
 
@@ -1507,10 +1773,12 @@ function PerTherapyBoxPlot({
     if (trainingGroups.length > 0 && testingGroups.length > 0) {
       shapes.push({
         type: 'line',
-        xref: 'x', yref: 'paper',
+        xref: 'x',
+        yref: 'paper',
         x0: trainingGroups.length - 0.5,
         x1: trainingGroups.length - 0.5,
-        y0: 0, y1: 1,
+        y0: 0,
+        y1: 1,
         line: { color: '#e63946', width: 2, dash: 'dash' },
       });
     }
@@ -1519,9 +1787,12 @@ function PerTherapyBoxPlot({
     if (bandMin != null && bandMax != null && bandMax > bandMin) {
       shapes.push({
         type: 'rect',
-        xref: 'paper', yref: 'y',
-        x0: 0, x1: 1,
-        y0: bandMin, y1: bandMax,
+        xref: 'paper',
+        yref: 'y',
+        x0: 0,
+        x1: 1,
+        y0: bandMin,
+        y1: bandMax,
         fillcolor: 'rgba(230, 57, 70, 0.18)',
         line: { width: 0 },
         layer: 'below',
@@ -1539,71 +1810,169 @@ function PerTherapyBoxPlot({
       if (kind === 'predBox') {
         // Black square outline (box)
         shapes.push({
-          type: 'rect', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -8, x1: 8, y0: -7, y1: 7,
-          line: { color: black, width: 2 }, fillcolor: 'rgba(0,0,0,0)',
+          type: 'rect',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -8,
+          x1: 8,
+          y0: -7,
+          y1: 7,
+          line: { color: black, width: 2 },
+          fillcolor: 'rgba(0,0,0,0)',
         });
         // Vertical whisker (top + bottom) extending past the box
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: 0, x1: 0, y0: -14, y1: 14, line: { color: black, width: 1.5 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: 0,
+          x1: 0,
+          y0: -14,
+          y1: 14,
+          line: { color: black, width: 1.5 },
         });
         // End caps
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -5, x1: 5, y0: -14, y1: -14, line: { color: black, width: 1.5 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -5,
+          x1: 5,
+          y0: -14,
+          y1: -14,
+          line: { color: black, width: 1.5 },
         });
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -5, x1: 5, y0: 14, y1: 14, line: { color: black, width: 1.5 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -5,
+          x1: 5,
+          y0: 14,
+          y1: 14,
+          line: { color: black, width: 1.5 },
         });
       } else if (kind === 'predCross') {
         // Black + (cross-thin-open look)
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -9, x1: 9, y0: 0, y1: 0, line: { color: black, width: 2 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -9,
+          x1: 9,
+          y0: 0,
+          y1: 0,
+          line: { color: black, width: 2 },
         });
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: 0, x1: 0, y0: -9, y1: 9, line: { color: black, width: 2 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: 0,
+          x1: 0,
+          y0: -9,
+          y1: 9,
+          line: { color: black, width: 2 },
         });
       } else if (kind === 'obsCircle') {
         // Red open circle
         shapes.push({
-          type: 'circle', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -7, x1: 7, y0: -7, y1: 7,
-          line: { color: red, width: 2 }, fillcolor: 'rgba(0,0,0,0)',
+          type: 'circle',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -7,
+          x1: 7,
+          y0: -7,
+          y1: 7,
+          line: { color: red, width: 2 },
+          fillcolor: 'rgba(0,0,0,0)',
         });
         // Vertical error bar
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: 0, x1: 0, y0: -14, y1: 14, line: { color: red, width: 1.5 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: 0,
+          x1: 0,
+          y0: -14,
+          y1: 14,
+          line: { color: red, width: 1.5 },
         });
         // End caps
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -5, x1: 5, y0: -14, y1: -14, line: { color: red, width: 1.5 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -5,
+          x1: 5,
+          y0: -14,
+          y1: -14,
+          line: { color: red, width: 1.5 },
         });
         shapes.push({
-          type: 'line', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -5, x1: 5, y0: 14, y1: 14, line: { color: red, width: 1.5 },
+          type: 'line',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -5,
+          x1: 5,
+          y0: 14,
+          y1: 14,
+          line: { color: red, width: 1.5 },
         });
       } else if (kind === 'rangeSwatch') {
         // Filled red shaded square
         shapes.push({
-          type: 'rect', xref: 'paper', yref: 'paper',
-          xsizemode: 'pixel', ysizemode: 'pixel', xanchor: cx, yanchor: cy,
-          x0: -10, x1: 10, y0: -8, y1: 8,
+          type: 'rect',
+          xref: 'paper',
+          yref: 'paper',
+          xsizemode: 'pixel',
+          ysizemode: 'pixel',
+          xanchor: cx,
+          yanchor: cy,
+          x0: -10,
+          x1: 10,
+          y0: -8,
+          y1: 8,
           fillcolor: 'rgba(230, 57, 70, 0.18)',
           line: { color: 'rgba(230, 57, 70, 0.6)', width: 1 },
         });
@@ -1633,9 +2002,7 @@ function PerTherapyBoxPlot({
     legendItems.forEach((item, i) => {
       const row = twoRowLegend ? Math.floor(i / cols) : 0;
       const col = twoRowLegend ? i % cols : i;
-      const itemsInRow = twoRowLegend
-        ? Math.min(cols, nItems - row * cols)
-        : nItems;
+      const itemsInRow = twoRowLegend ? Math.min(cols, nItems - row * cols) : nItems;
       const totalWidth = slotWidth * itemsInRow;
       const startX = 0.5 - totalWidth / 2;
       const slotCenter = startX + slotWidth * (col + 0.5);
@@ -1646,9 +2013,12 @@ function PerTherapyBoxPlot({
       const y = legendY + yOffset;
       drawGlyph(glyphX, y, item.kind);
       annotations.push({
-        x: labelX, y,
-        xref: 'paper', yref: 'paper',
-        xanchor: 'left', yanchor: 'middle',
+        x: labelX,
+        y,
+        xref: 'paper',
+        yref: 'paper',
+        xanchor: 'left',
+        yanchor: 'middle',
         text: item.label,
         showarrow: false,
         font: { size: 13, color: '#222' },
@@ -1659,17 +2029,25 @@ function PerTherapyBoxPlot({
     if (trainingGroups.length > 0) {
       annotations.push({
         x: (trainingGroups.length - 1) / 2,
-        y: 0.80, xref: 'x', yref: 'paper',
+        y: 0.8,
+        xref: 'x',
+        yref: 'paper',
         text: '<b>Training</b>',
-        showarrow: false, font: { size: 18, color: '#000' }, align: 'center',
+        showarrow: false,
+        font: { size: 18, color: '#000' },
+        align: 'center',
       });
     }
     if (testingGroups.length > 0) {
       annotations.push({
         x: trainingGroups.length + (testingGroups.length - 1) / 2,
-        y: 0.80, xref: 'x', yref: 'paper',
+        y: 0.8,
+        xref: 'x',
+        yref: 'paper',
         text: '<b>Testing†</b>',
-        showarrow: false, font: { size: 18, color: '#000' }, align: 'center',
+        showarrow: false,
+        font: { size: 18, color: '#000' },
+        align: 'center',
       });
     }
 
@@ -1681,7 +2059,9 @@ function PerTherapyBoxPlot({
         tickformat: '.0%',
         zeroline: false,
         range: [0, 1],
-        showline: true, mirror: false, ticks: 'outside',
+        showline: true,
+        mirror: false,
+        ticks: 'outside',
         automargin: true,
       },
       xaxis: {
@@ -1691,7 +2071,9 @@ function PerTherapyBoxPlot({
         // other SVG importers mis-align for rotated labels.
         tickangle: 0,
         automargin: true,
-        showline: true, mirror: false, ticks: 'outside',
+        showline: true,
+        mirror: false,
+        ticks: 'outside',
       },
       height: plotHeight,
       width: plotWidth,
@@ -1712,8 +2094,25 @@ function PerTherapyBoxPlot({
         scale: 4,
       },
     });
-    return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
-  }, [trainingGroups, testingGroups, plotWidth, plotHeight, titleText, bandMin, bandMax, moaCategory, confidenceLevel, showStatAnalysis, marginBottom, marginTop, tickLabelArea, gapAboveBox]);
+    return () => {
+      if (plotRef.current) Plotly.purge(plotRef.current);
+    };
+  }, [
+    trainingGroups,
+    testingGroups,
+    plotWidth,
+    plotHeight,
+    titleText,
+    bandMin,
+    bandMax,
+    moaCategory,
+    confidenceLevel,
+    showStatAnalysis,
+    marginBottom,
+    marginTop,
+    tickLabelArea,
+    gapAboveBox,
+  ]);
 
   if (groups.length === 0) return null;
 
@@ -1732,7 +2131,8 @@ function PerTherapyBoxPlot({
       const empiricalP = (predicted: number[], meanObs: number): number => {
         const n = predicted.length;
         if (n === 0) return NaN;
-        let nLess = 0, nMore = 0;
+        let nLess = 0,
+          nMore = 0;
         for (const v of predicted) {
           if (v <= meanObs) nLess++;
           if (v >= meanObs) nMore++;
@@ -1743,8 +2143,8 @@ function PerTherapyBoxPlot({
         if (!sorted.length) return NaN;
         return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
       };
-      const fmtN = (v: number) => isNaN(v) ? null : v;
-      const toPct = (v: number) => isNaN(v) ? null : v * 100;
+      const fmtN = (v: number) => (isNaN(v) ? null : v);
+      const toPct = (v: number) => (isNaN(v) ? null : v * 100);
 
       // Collect therapy data
       type TherapyData = {
@@ -1761,29 +2161,23 @@ function PerTherapyBoxPlot({
           const sorted = [...g.predicted].sort((a, b) => a - b);
           const n = sorted.length;
           const mean = n ? sorted.reduce((a, b) => a + b, 0) / n : 0;
-          const median = n
-            ? n % 2
-              ? sorted[Math.floor(n / 2)]
-              : (sorted[n / 2 - 1] + sorted[n / 2]) / 2
-            : 0;
+          const median = n ? (n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : 0;
           const q1 = n ? pctl(sorted, 0.25) : 0;
           const q3 = n ? pctl(sorted, 0.75) : 0;
           const min = n ? sorted[0] : 0;
           const max = n ? sorted[n - 1] : 0;
-          const variance = n > 1
-            ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
+          const variance = n > 1 ? sorted.reduce((acc, v) => acc + (v - mean) ** 2, 0) / (n - 1) : 0;
           const sd = Math.sqrt(variance);
 
           const nObs = g.observedRates.length;
           const meanObs = nObs ? g.observedRates.reduce((a, b) => a + b, 0) / nObs : NaN;
-          const sdObs = nObs >= 2
-            ? Math.sqrt(g.observedRates.reduce((acc, v) => acc + (v - meanObs) ** 2, 0) / (nObs - 1))
-            : NaN;
+          const sdObs =
+            nObs >= 2 ? Math.sqrt(g.observedRates.reduce((acc, v) => acc + (v - meanObs) ** 2, 0) / (nObs - 1)) : NaN;
           const pVal = nObs && n ? empiricalP(g.predicted, meanObs) : NaN;
           const sig = !isNaN(pVal) ? sigStars(pVal) : '';
           const ciLo = n ? pctl(sorted, alpha / 2) : NaN;
           const ciHi = n ? pctl(sorted, 1 - alpha / 2) : NaN;
-          const covered = nObs && !isNaN(ciLo) ? (meanObs >= ciLo && meanObs <= ciHi) : null;
+          const covered = nObs && !isNaN(ciLo) ? meanObs >= ciLo && meanObs <= ciHi : null;
 
           allTherapies.push({
             label: g.label,
@@ -1825,44 +2219,56 @@ function PerTherapyBoxPlot({
 
       // ── Sheet 1: Summary (transposed) — no raw predicted/observed arrays ──
       const metricKeys = [
-        'moa_category', 'bucket', 'therapy', 'trial_nct_ids',
-        'arm_count', 'unique_trials',
-        'mean_predicted_rr', 'median_predicted_rr',
-        'q1_predicted_rr', 'q3_predicted_rr',
-        'min_predicted_rr', 'max_predicted_rr',
-        'sd_predicted_rr', 'n_predictions',
-        'mean_observed_rr', 'sd_observed_rr', 'n_observed',
-        'empirical_p_value', 'significance',
-        'ci_lower', 'ci_upper', 'observed_in_ci',
+        'moa_category',
+        'bucket',
+        'therapy',
+        'trial_nct_ids',
+        'arm_count',
+        'unique_trials',
+        'mean_predicted_rr',
+        'median_predicted_rr',
+        'q1_predicted_rr',
+        'q3_predicted_rr',
+        'min_predicted_rr',
+        'max_predicted_rr',
+        'sd_predicted_rr',
+        'n_predictions',
+        'mean_observed_rr',
+        'sd_observed_rr',
+        'n_observed',
+        'empirical_p_value',
+        'significance',
+        'ci_lower',
+        'ci_upper',
+        'observed_in_ci',
         'confidence_level',
-        'moa_orr_band_min', 'moa_orr_band_max',
+        'moa_orr_band_min',
+        'moa_orr_band_max',
       ];
-      const summaryData: any[][] = [
-        ['metric', ...allTherapies.map(t => t.label)],
-      ];
+      const summaryData: any[][] = [['metric', ...allTherapies.map((t) => t.label)]];
       for (const key of metricKeys) {
-        summaryData.push([key, ...allTherapies.map(t => t.stats[key] ?? '')]);
+        summaryData.push([key, ...allTherapies.map((t) => t.stats[key] ?? '')]);
       }
       // Append observed rates as rows beneath the summary
-      const maxObs = Math.max(...allTherapies.map(t => t.observedRates.length), 0);
+      const maxObs = Math.max(...allTherapies.map((t) => t.observedRates.length), 0);
       if (maxObs > 0) {
-        summaryData.push([]);  // blank separator row
+        summaryData.push([]); // blank separator row
         summaryData.push(['observed_rates', ...allTherapies.map(() => '')]);
         for (let i = 0; i < maxObs; i++) {
           summaryData.push([
             `observed_rate_${i + 1}`,
-            ...allTherapies.map(t => t.observedRates[i] != null ? t.observedRates[i] * 100 : ''),
+            ...allTherapies.map((t) => (t.observedRates[i] != null ? t.observedRates[i] * 100 : '')),
           ]);
         }
       }
 
       // ── Sheet 2: Predicted Rates — drug names as columns, rates down rows ──
-      const maxPred = Math.max(...allTherapies.map(t => t.predicted.length), 0);
+      const maxPred = Math.max(...allTherapies.map((t) => t.predicted.length), 0);
       const predData: any[][] = [
-        allTherapies.map(t => t.label),  // header row: drug names
+        allTherapies.map((t) => t.label), // header row: drug names
       ];
       for (let i = 0; i < maxPred; i++) {
-        predData.push(allTherapies.map(t => t.predicted[i] != null ? t.predicted[i] * 100 : ''));
+        predData.push(allTherapies.map((t) => (t.predicted[i] != null ? t.predicted[i] * 100 : '')));
       }
 
       // Build workbook
@@ -1877,53 +2283,62 @@ function PerTherapyBoxPlot({
   };
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 0 0.5rem' }}>
         <h3 style={{ margin: 0, fontSize: '1rem' }}>Per-Therapy Aggregated Predictions</h3>
-        <button onClick={handleExport} style={csvButtonStyle}>Download CSV</button>
+        <button onClick={handleExport} style={csvButtonStyle}>
+          Download CSV
+        </button>
       </div>
       <InterpretationNote>
-        <strong>How to read:</strong> each box collapses every prediction made for one therapy
-        across the trials that included it. Training therapies (left of the red dashed line)
-        are reconstructed from the simulator's per-trial mean ± SD; testing therapies (right)
-        use the full per-iteration distributions. Drug-name variants (e.g.
-        <em> sorafenib tosylate</em>) merge into the parent therapy (<em>Sorafenib</em>). The
-        red shaded band spans the MOA-wide observed clinical ORR range. The black <code>+</code>
-        marks each therapy's mean predicted response rate; the red open circle marks the mean
-        observed clinical response rate (with ±1 SD error bars when ≥2 trials contribute).
+        <strong>How to read:</strong> each box collapses every prediction made for one therapy across the trials that
+        included it. Training therapies (left of the red dashed line) are reconstructed from the simulator's per-trial
+        mean ± SD; testing therapies (right) use the full per-iteration distributions. Drug-name variants (e.g.
+        <em> sorafenib tosylate</em>) merge into the parent therapy (<em>Sorafenib</em>). The red shaded band spans the
+        MOA-wide observed clinical ORR range. The black <code>+</code>
+        marks each therapy's mean predicted response rate; the red open circle marks the mean observed clinical response
+        rate (with ±1 SD error bars when ≥2 trials contribute).
         <div style={{ marginTop: 8 }}>
-          <strong>Per-box significance</strong> (above each box): empirical 2-sided p-value of
-          the mean observed RR against the simulator's predicted distribution, computed as
-          <code> 2 × min(P(pred ≤ obs̄), P(pred ≥ obs̄))</code>. Thresholds scale with the
-          chosen confidence level (α = 1 − CL/100 = {(1 - confidenceLevel / 100).toString()}):
-          {' '}<code>***</code> p&lt;{((1 - confidenceLevel / 100) / 50).toString()},
-          {' '}<code>**</code> p&lt;{((1 - confidenceLevel / 100) / 5).toString()},
-          {' '}<code>*</code> p&lt;{(1 - confidenceLevel / 100).toString()},
-          {' '}<code>ns</code> otherwise. A significant marker means the trial result is
-          unlikely to have come from the simulator's predicted distribution — i.e., the model
-          and the trial disagree for that therapy. Hover the marker for the exact p-value.
+          <strong>Per-box significance</strong> (above each box): empirical 2-sided p-value of the mean observed RR
+          against the simulator's predicted distribution, computed as
+          <code> 2 × min(P(pred ≤ obs̄), P(pred ≥ obs̄))</code>. Thresholds scale with the chosen confidence level (α = 1
+          − CL/100 = {(1 - confidenceLevel / 100).toString()}): <code>***</code> p&lt;
+          {((1 - confidenceLevel / 100) / 50).toString()}, <code>**</code> p&lt;
+          {((1 - confidenceLevel / 100) / 5).toString()}, <code>*</code> p&lt;{(1 - confidenceLevel / 100).toString()},{' '}
+          <code>ns</code> otherwise. A significant marker means the trial result is unlikely to have come from the
+          simulator's predicted distribution — i.e., the model and the trial disagree for that therapy. Hover the marker
+          for the exact p-value.
         </div>
         <div style={{ marginTop: 8 }}>
-          <strong>Cohort agreement footer</strong> (below the plot, computed across every
-          therapy with ≥1 contributing clinical trial):
+          <strong>Cohort agreement footer</strong> (below the plot, computed across every therapy with ≥1 contributing
+          clinical trial):
           <ul style={{ margin: '4px 0 0 18px', padding: 0 }}>
-            <li><b>MAE</b> — mean absolute error between each therapy's mean predicted and mean
-              observed RR, in percentage points. Lower is better; <em>0 pp</em> means perfect
-              point-estimate agreement.</li>
-            <li><b>Mean bias</b> — average of (predicted − observed) across therapies, with a
-              bootstrap {confidenceLevel}% CI. Positive ⇒ model systematically overshoots; negative ⇒ undershoots.
-              A CI that crosses 0 indicates no significant systemic bias.</li>
-            <li><b>Lin's CCC</b> — concordance correlation coefficient combining correlation
-              and bias. Ranges <em>−1 to +1</em>: <em>+1</em> perfect agreement, <em>0</em> no
-              agreement, <em>−1</em> perfect inverse agreement. Rough bands: <em>&gt;0.90</em>
+            <li>
+              <b>MAE</b> — mean absolute error between each therapy's mean predicted and mean observed RR, in percentage
+              points. Lower is better; <em>0 pp</em> means perfect point-estimate agreement.
+            </li>
+            <li>
+              <b>Mean bias</b> — average of (predicted − observed) across therapies, with a bootstrap {confidenceLevel}%
+              CI. Positive ⇒ model systematically overshoots; negative ⇒ undershoots. A CI that crosses 0 indicates no
+              significant systemic bias.
+            </li>
+            <li>
+              <b>Lin's CCC</b> — concordance correlation coefficient combining correlation and bias. Ranges{' '}
+              <em>−1 to +1</em>: <em>+1</em> perfect agreement, <em>0</em> no agreement, <em>−1</em> perfect inverse
+              agreement. Rough bands: <em>&gt;0.90</em>
               excellent, <em>0.75–0.90</em> good, <em>0.5–0.75</em> moderate, <em>&lt;0.5</em>
-              poor (and values near 0 mean the predicted and observed means do not co-vary
-              across therapies, even if the average error is small).</li>
-            <li><b>{confidenceLevel}% CI coverage</b> — fraction of therapies whose mean observed
-              RR falls inside the {((1 - confidenceLevel / 100) / 2 * 100).toFixed(2)}–
-              {(100 - (1 - confidenceLevel / 100) / 2 * 100).toFixed(2)} percentile interval of
-              the predicted distribution. A well-calibrated simulator should cover ~{confidenceLevel}%.
-              Substantially lower ⇒ predicted intervals are too narrow / overconfident.</li>
+              poor (and values near 0 mean the predicted and observed means do not co-vary across therapies, even if the
+              average error is small).
+            </li>
+            <li>
+              <b>{confidenceLevel}% CI coverage</b> — fraction of therapies whose mean observed RR falls inside the{' '}
+              {(((1 - confidenceLevel / 100) / 2) * 100).toFixed(2)}–
+              {(100 - ((1 - confidenceLevel / 100) / 2) * 100).toFixed(2)} percentile interval of the predicted
+              distribution. A well-calibrated simulator should cover ~{confidenceLevel}%. Substantially lower ⇒
+              predicted intervals are too narrow / overconfident.
+            </li>
           </ul>
         </div>
       </InterpretationNote>
@@ -1958,10 +2373,15 @@ function PerTherapyCorrelationPlot({
     const n = xs.length;
     const mx = xs.reduce((a, b) => a + b, 0) / n;
     const my = ys.reduce((a, b) => a + b, 0) / n;
-    let num = 0, dx = 0, dy = 0;
+    let num = 0,
+      dx = 0,
+      dy = 0;
     for (let i = 0; i < n; i++) {
-      const xi = xs[i] - mx, yi = ys[i] - my;
-      num += xi * yi; dx += xi * xi; dy += yi * yi;
+      const xi = xs[i] - mx,
+        yi = ys[i] - my;
+      num += xi * yi;
+      dx += xi * xi;
+      dy += yi * yi;
     }
     const d = Math.sqrt(dx * dy);
     return d === 0 ? null : num / d;
@@ -2000,7 +2420,9 @@ function PerTherapyCorrelationPlot({
     const moaSet = new Set((moaDrugNames || []).map((d) => canonicalizeDrugName(d).key));
     type Acc = {
       label: string;
-      predSum: number; predSumSq: number; predN: number;
+      predSum: number;
+      predSumSq: number;
+      predN: number;
       obs: number[];
       trials: Set<string>;
       nArms: number;
@@ -2057,9 +2479,7 @@ function PerTherapyCorrelationPlot({
       if (acc.obs.length === 0) continue;
       const meanObs = acc.obs.reduce((a, b) => a + b, 0) / acc.obs.length;
       const varObs =
-        acc.obs.length > 1
-          ? acc.obs.reduce((a, b) => a + (b - meanObs) * (b - meanObs), 0) / acc.obs.length
-          : 0;
+        acc.obs.length > 1 ? acc.obs.reduce((a, b) => a + (b - meanObs) * (b - meanObs), 0) / acc.obs.length : 0;
       const stdObs = Math.sqrt(varObs);
       out.push({
         label: acc.label,
@@ -2097,7 +2517,7 @@ function PerTherapyCorrelationPlot({
           `<b>${p.label}</b> (${source})<br>` +
           `observed: ${(p.meanObs * 100).toFixed(1)}% ± ${(p.stdObs * 100).toFixed(1)}%<br>` +
           `predicted: ${(p.meanPred * 100).toFixed(1)}% ± ${(p.stdPred * 100).toFixed(1)}%<br>` +
-          `${p.trials.size} trial(s), ${p.nArms} arm(s)`
+          `${p.trials.size} trial(s), ${p.nArms} arm(s)`,
       );
       return {
         x: xs,
@@ -2122,12 +2542,7 @@ function PerTherapyCorrelationPlot({
     const ys = points.map((p) => p.meanPred);
     const ex = points.map((p) => p.stdObs);
     const ey = points.map((p) => p.stdPred);
-    const maxVal =
-      Math.max(
-        0.05,
-        ...xs.map((v, i) => v + ex[i]),
-        ...ys.map((v, i) => v + ey[i])
-      ) * 1.08;
+    const maxVal = Math.max(0.05, ...xs.map((v, i) => v + ex[i]), ...ys.map((v, i) => v + ey[i])) * 1.08;
     traces.push({
       x: [0, maxVal],
       y: [0, maxVal],
@@ -2147,54 +2562,57 @@ function PerTherapyCorrelationPlot({
     Plotly.newPlot(
       plotRef.current,
       traces,
-      withProvenance({
-        title: { text: 'Predicted vs Observed Response Rates' },
-        annotations: [
-          {
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.98,
-            y: 0.98,
-            xanchor: 'right',
-            yanchor: 'top',
-            text: statsLines.join('<br>'),
-            showarrow: false,
-            align: 'right',
-            font: { size: 11, color: '#333' },
-            bgcolor: 'rgba(255,255,255,0.9)',
-            bordercolor: '#ccc',
-            borderwidth: 1,
-            borderpad: 6,
+      withProvenance(
+        {
+          title: { text: 'Predicted vs Observed Response Rates' },
+          annotations: [
+            {
+              xref: 'paper',
+              yref: 'paper',
+              x: 0.98,
+              y: 0.98,
+              xanchor: 'right',
+              yanchor: 'top',
+              text: statsLines.join('<br>'),
+              showarrow: false,
+              align: 'right',
+              font: { size: 11, color: '#333' },
+              bgcolor: 'rgba(255,255,255,0.9)',
+              bordercolor: '#ccc',
+              borderwidth: 1,
+              borderpad: 6,
+            },
+          ],
+          xaxis: {
+            title: { text: 'Mean Observed Response Rate (± SD across trials)' },
+            range: [0, maxVal],
+            tickformat: '.0%',
+            zeroline: true,
+            zerolinecolor: '#ddd',
+            automargin: true,
           },
-        ],
-        xaxis: {
-          title: { text: 'Mean Observed Response Rate (± SD across trials)' },
-          range: [0, maxVal],
-          tickformat: '.0%',
-          zeroline: true,
-          zerolinecolor: '#ddd',
-          automargin: true,
-        },
-        yaxis: {
-          title: { text: 'Mean Predicted Response Rate (± SD)' },
-          range: [0, maxVal],
-          tickformat: '.0%',
-          zeroline: true,
-          zerolinecolor: '#ddd',
-          automargin: true,
-        },
-        height: 560,
-        margin: { l: 70, r: 30, t: 60, b: 60 },
-        legend: {
-          x: 0.01,
-          y: 0.99,
-          bgcolor: 'rgba(255,255,255,0.9)',
-          bordercolor: '#ddd',
-          borderwidth: 1,
-        },
-        hovermode: 'closest',
-        plot_bgcolor: '#fff',
-      } as any, '/simulation/per-therapy-correlation'),
+          yaxis: {
+            title: { text: 'Mean Predicted Response Rate (± SD)' },
+            range: [0, maxVal],
+            tickformat: '.0%',
+            zeroline: true,
+            zerolinecolor: '#ddd',
+            automargin: true,
+          },
+          height: 560,
+          margin: { l: 70, r: 30, t: 60, b: 60 },
+          legend: {
+            x: 0.01,
+            y: 0.99,
+            bgcolor: 'rgba(255,255,255,0.9)',
+            bordercolor: '#ddd',
+            borderwidth: 1,
+          },
+          hovermode: 'closest',
+          plot_bgcolor: '#fff',
+        } as any,
+        '/simulation/per-therapy-correlation',
+      ),
       {
         displayModeBar: true,
         responsive: true,
@@ -2205,13 +2623,19 @@ function PerTherapyCorrelationPlot({
           height: 800,
           scale: 4,
         },
-      }
+      },
     );
   }, [trialSet, testingTrials, trainingTrials, moaCategory]);
 
   const activePts = trialSet === 'all' ? [...trainingPts, ...testingPts] : testingPts;
-  const r = pearson(activePts.map((p) => p.meanObs), activePts.map((p) => p.meanPred));
-  const rho = spearman(activePts.map((p) => p.meanObs), activePts.map((p) => p.meanPred));
+  const r = pearson(
+    activePts.map((p) => p.meanObs),
+    activePts.map((p) => p.meanPred),
+  );
+  const rho = spearman(
+    activePts.map((p) => p.meanObs),
+    activePts.map((p) => p.meanPred),
+  );
 
   return (
     <div
@@ -2237,7 +2661,14 @@ function PerTherapyCorrelationPlot({
           </select>
         </label>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.5rem', marginBottom: '0.75rem' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+          gap: '0.5rem',
+          marginBottom: '0.75rem',
+        }}
+      >
         <div style={{ textAlign: 'center', padding: '0.5rem', background: '#f8f9fa', borderRadius: 6 }}>
           <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c3e72' }}>{activePts.length}</div>
           <div style={{ fontSize: '0.7rem', color: '#888' }}>Therapies</div>
@@ -2247,7 +2678,9 @@ function PerTherapyCorrelationPlot({
           <div style={{ fontSize: '0.7rem', color: '#888' }}>Pearson r</div>
         </div>
         <div style={{ textAlign: 'center', padding: '0.5rem', background: '#f8f9fa', borderRadius: 6 }}>
-          <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c3e72' }}>{rho != null ? rho.toFixed(3) : '—'}</div>
+          <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c3e72' }}>
+            {rho != null ? rho.toFixed(3) : '—'}
+          </div>
           <div style={{ fontSize: '0.7rem', color: '#888' }}>Spearman ρ</div>
         </div>
       </div>
@@ -2258,7 +2691,15 @@ function PerTherapyCorrelationPlot({
 
 // ── MAE Plot ─────────────────────────────────────────────────────────────
 
-function MAEPlot({ mae, drugLookup, moaDrugNames }: { mae: any; drugLookup?: Record<string, string[]>; moaDrugNames?: string[] }) {
+function MAEPlot({
+  mae,
+  drugLookup,
+  moaDrugNames,
+}: {
+  mae: any;
+  drugLookup?: Record<string, string[]>;
+  moaDrugNames?: string[];
+}) {
   const plotRef = useRef<HTMLDivElement>(null);
   const plotWidth = Math.max(720, 180 * (mae.per_trial?.length || 0) + 160);
 
@@ -2271,7 +2712,7 @@ function MAEPlot({ mae, drugLookup, moaDrugNames }: { mae: any; drugLookup?: Rec
       x: trials.map((t: any) => formatTrialLabel(t.nct_id, t.drugs || drugLookup?.[t.nct_id], moaDrugNames)),
       y: trials.map((t: any) => t.abs_error),
       marker: {
-        color: trials.map((t: any) => t.abs_error > 0.15 ? '#c62828' : '#4a90d9'),
+        color: trials.map((t: any) => (t.abs_error > 0.15 ? '#c62828' : '#4a90d9')),
       },
       hovertemplate: '%{x}<br>Abs Error: %{y:.3f}<extra></extra>',
     };
@@ -2283,34 +2724,58 @@ function MAEPlot({ mae, drugLookup, moaDrugNames }: { mae: any; drugLookup?: Rec
       height: 440,
       width: plotWidth,
       margin: { l: 80, r: 30, t: 60, b: 140 },
-      shapes: [{
-        type: 'line', y0: mae.value, y1: mae.value, x0: 0, x1: 1, xref: 'paper',
-        line: { color: '#ff9800', width: 2, dash: 'dash' },
-      }],
-      annotations: [{
-        x: 0, y: mae.value, xref: 'paper', yref: 'y',
-        text: `MAE = ${(mae.value * 100).toFixed(1)}%`, showarrow: false,
-        font: { size: 11, color: '#ff9800' },
-        xanchor: 'left', yanchor: 'bottom', yshift: 4,
-        bgcolor: 'rgba(255,255,255,0.85)',
-      }],
+      shapes: [
+        {
+          type: 'line',
+          y0: mae.value,
+          y1: mae.value,
+          x0: 0,
+          x1: 1,
+          xref: 'paper',
+          line: { color: '#ff9800', width: 2, dash: 'dash' },
+        },
+      ],
+      annotations: [
+        {
+          x: 0,
+          y: mae.value,
+          xref: 'paper',
+          yref: 'y',
+          text: `MAE = ${(mae.value * 100).toFixed(1)}%`,
+          showarrow: false,
+          font: { size: 11, color: '#ff9800' },
+          xanchor: 'left',
+          yanchor: 'bottom',
+          yshift: 4,
+          bgcolor: 'rgba(255,255,255,0.85)',
+        },
+      ],
     };
 
     Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/simulation/mae'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('mae_analysis'), width: plotWidth, height: 440, scale: 4 },
+      toImageButtonOptions: {
+        format: 'svg',
+        filename: provenanceImageFilename('mae_analysis'),
+        width: plotWidth,
+        height: 440,
+        scale: 4,
+      },
     });
-    return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
+    return () => {
+      if (plotRef.current) Plotly.purge(plotRef.current);
+    };
   }, [mae, plotWidth, drugLookup, moaDrugNames]);
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Mean Absolute Error Analysis</h3>
       <InterpretationNote>
-        <strong>How to read:</strong> each bar shows how far the model's predicted response rate
-        was from the real trial result for one trial. Shorter bars = better prediction. The dashed
-        orange line is the average error across all testing trials (MAE) — the closer to 0%, the
-        more accurate the model.
+        <strong>How to read:</strong> each bar shows how far the model's predicted response rate was from the real trial
+        result for one trial. Shorter bars = better prediction. The dashed orange line is the average error across all
+        testing trials (MAE) — the closer to 0%, the more accurate the model.
       </InterpretationNote>
       <div style={{ width: '100%', overflowX: 'auto' }}>
         <div ref={plotRef} style={{ width: plotWidth, minWidth: plotWidth }} />
@@ -2321,7 +2786,17 @@ function MAEPlot({ mae, drugLookup, moaDrugNames }: { mae: any; drugLookup?: Rec
 
 // ── Bland-Altman Plot ────────────────────────────────────────────────────
 
-function BlandAltmanPlot({ ba, drugLookup, moaDrugNames, confidenceLevel = 95 }: { ba: any; drugLookup?: Record<string, string[]>; moaDrugNames?: string[]; confidenceLevel?: number }) {
+function BlandAltmanPlot({
+  ba,
+  drugLookup,
+  moaDrugNames,
+  confidenceLevel = 95,
+}: {
+  ba: any;
+  drugLookup?: Record<string, string[]>;
+  moaDrugNames?: string[];
+  confidenceLevel?: number;
+}) {
   const plotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -2357,46 +2832,121 @@ function BlandAltmanPlot({ ba, drugLookup, moaDrugNames, confidenceLevel = 95 }:
     const layout: any = {
       title: 'Bland-Altman Agreement Analysis',
       xaxis: { title: { text: 'Mean of Predicted<br>& Actual', standoff: 15 }, tickformat: '.0%', automargin: true },
-      yaxis: { title: { text: 'Difference<br>(Predicted − Actual)', standoff: 10 }, tickformat: '.0%', automargin: true },
+      yaxis: {
+        title: { text: 'Difference<br>(Predicted − Actual)', standoff: 10 },
+        tickformat: '.0%',
+        automargin: true,
+      },
       height: 470,
       margin: { l: 90, r: 30, t: 60, b: 90 },
       shapes: [
-        { type: 'line', y0: ba.mean_diff, y1: ba.mean_diff, x0: xRange[0], x1: xRange[1], line: { color: '#2e7d32', width: 2 } },
-        { type: 'line', y0: upperLoa, y1: upperLoa, x0: xRange[0], x1: xRange[1], line: { color: '#c62828', width: 1, dash: 'dash' } },
-        { type: 'line', y0: lowerLoa, y1: lowerLoa, x0: xRange[0], x1: xRange[1], line: { color: '#c62828', width: 1, dash: 'dash' } },
+        {
+          type: 'line',
+          y0: ba.mean_diff,
+          y1: ba.mean_diff,
+          x0: xRange[0],
+          x1: xRange[1],
+          line: { color: '#2e7d32', width: 2 },
+        },
+        {
+          type: 'line',
+          y0: upperLoa,
+          y1: upperLoa,
+          x0: xRange[0],
+          x1: xRange[1],
+          line: { color: '#c62828', width: 1, dash: 'dash' },
+        },
+        {
+          type: 'line',
+          y0: lowerLoa,
+          y1: lowerLoa,
+          x0: xRange[0],
+          x1: xRange[1],
+          line: { color: '#c62828', width: 1, dash: 'dash' },
+        },
       ],
       annotations: [
-        { x: xRange[1], y: ba.mean_diff, text: `Mean: ${(ba.mean_diff * 100).toFixed(1)}%`, showarrow: false, font: { size: 10, color: '#2e7d32' }, xanchor: 'right', yanchor: 'bottom', yshift: 4, bgcolor: 'rgba(255,255,255,0.85)' },
-        { x: xRange[1], y: upperLoa, text: `+${z.toFixed(2)}SD: ${(upperLoa * 100).toFixed(1)}% (${clLabel} LoA)`, showarrow: false, font: { size: 10, color: '#c62828' }, xanchor: 'right', yanchor: 'bottom', yshift: 4, bgcolor: 'rgba(255,255,255,0.85)' },
-        { x: xRange[1], y: lowerLoa, text: `-${z.toFixed(2)}SD: ${(lowerLoa * 100).toFixed(1)}% (${clLabel} LoA)`, showarrow: false, font: { size: 10, color: '#c62828' }, xanchor: 'right', yanchor: 'top', yshift: -4, bgcolor: 'rgba(255,255,255,0.85)' },
+        {
+          x: xRange[1],
+          y: ba.mean_diff,
+          text: `Mean: ${(ba.mean_diff * 100).toFixed(1)}%`,
+          showarrow: false,
+          font: { size: 10, color: '#2e7d32' },
+          xanchor: 'right',
+          yanchor: 'bottom',
+          yshift: 4,
+          bgcolor: 'rgba(255,255,255,0.85)',
+        },
+        {
+          x: xRange[1],
+          y: upperLoa,
+          text: `+${z.toFixed(2)}SD: ${(upperLoa * 100).toFixed(1)}% (${clLabel} LoA)`,
+          showarrow: false,
+          font: { size: 10, color: '#c62828' },
+          xanchor: 'right',
+          yanchor: 'bottom',
+          yshift: 4,
+          bgcolor: 'rgba(255,255,255,0.85)',
+        },
+        {
+          x: xRange[1],
+          y: lowerLoa,
+          text: `-${z.toFixed(2)}SD: ${(lowerLoa * 100).toFixed(1)}% (${clLabel} LoA)`,
+          showarrow: false,
+          font: { size: 10, color: '#c62828' },
+          xanchor: 'right',
+          yanchor: 'top',
+          yshift: -4,
+          bgcolor: 'rgba(255,255,255,0.85)',
+        },
       ],
     };
 
     Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/simulation/bland-altman'), {
       responsive: true,
-      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('bland_altman'), width: 1100, height: 560, scale: 4 },
+      toImageButtonOptions: {
+        format: 'svg',
+        filename: provenanceImageFilename('bland_altman'),
+        width: 1100,
+        height: 560,
+        scale: 4,
+      },
     });
-    return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
+    return () => {
+      if (plotRef.current) Plotly.purge(plotRef.current);
+    };
   }, [ba, drugLookup, moaDrugNames, confidenceLevel]);
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Bland-Altman Agreement Analysis</h3>
       <InterpretationNote>
-        <strong>How to read:</strong> each dot is one trial. The horizontal axis is the average
-        of the predicted and actual response rates; the vertical axis is how much they differ.
-        A dot near 0 means the prediction matched the real result. The solid green line shows
-        the average bias (is the model over- or under-predicting overall?), and the dashed red
-        lines are the expected range for {confidenceLevel}% of predictions (mean ± {zForConfidence(confidenceLevel).toFixed(2)}·SD) — dots
-        outside those lines are unusually far off.
+        <strong>How to read:</strong> each dot is one trial. The horizontal axis is the average of the predicted and
+        actual response rates; the vertical axis is how much they differ. A dot near 0 means the prediction matched the
+        real result. The solid green line shows the average bias (is the model over- or under-predicting overall?), and
+        the dashed red lines are the expected range for {confidenceLevel}% of predictions (mean ±{' '}
+        {zForConfidence(confidenceLevel).toFixed(2)}·SD) — dots outside those lines are unusually far off.
       </InterpretationNote>
       <p style={{ fontSize: '1.05rem', fontWeight: 700, color: '#1a1a1a', margin: '0 0 0.5rem' }}>
         Mean difference: {(ba.mean_diff * 100).toFixed(2)}%
         <span style={{ fontSize: '0.78rem', fontWeight: 400, color: '#666', marginLeft: 8 }}>
           {confidenceLevel}% Limits of agreement: [
-          {(((ba.mean_diff as number) - zForConfidence(confidenceLevel) * (((ba.upper_loa as number) - (ba.lower_loa as number)) / (2 * 1.959963984540054))) * 100).toFixed(2)}%,
-          {' '}
-          {(((ba.mean_diff as number) + zForConfidence(confidenceLevel) * (((ba.upper_loa as number) - (ba.lower_loa as number)) / (2 * 1.959963984540054))) * 100).toFixed(2)}%]
+          {(
+            ((ba.mean_diff as number) -
+              zForConfidence(confidenceLevel) *
+                (((ba.upper_loa as number) - (ba.lower_loa as number)) / (2 * 1.959963984540054))) *
+            100
+          ).toFixed(2)}
+          %,{' '}
+          {(
+            ((ba.mean_diff as number) +
+              zForConfidence(confidenceLevel) *
+                (((ba.upper_loa as number) - (ba.lower_loa as number)) / (2 * 1.959963984540054))) *
+            100
+          ).toFixed(2)}
+          %]
         </span>
       </p>
       <div ref={plotRef} style={{ width: '100%' }} />
@@ -2406,7 +2956,19 @@ function BlandAltmanPlot({ ba, drugLookup, moaDrugNames, confidenceLevel = 95 }:
 
 // ── CI Coverage Plot ─────────────────────────────────────────────────────
 
-function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, testingViolinData = [] }: { ci: any; drugLookup?: Record<string, string[]>; moaDrugNames?: string[]; confidenceLevel?: number; testingViolinData?: any[] }) {
+function CICoveragePlot({
+  ci,
+  drugLookup,
+  moaDrugNames,
+  confidenceLevel = 95,
+  testingViolinData = [],
+}: {
+  ci: any;
+  drugLookup?: Record<string, string[]>;
+  moaDrugNames?: string[];
+  confidenceLevel?: number;
+  testingViolinData?: any[];
+}) {
   const plotRef = useRef<HTMLDivElement>(null);
   const plotWidth = Math.max(560, 140 * (ci.trials?.length || 0) + 220);
 
@@ -2414,7 +2976,8 @@ function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, te
   // the raw per-trial predicted_rates arrays from testing_violin_data, falling
   // back to the backend-supplied 95% bounds when raw rates are unavailable.
   const recomputed = (() => {
-    if (!ci.trials) return { trials: [], coverage_rate: 0, covered_count: 0, total_trials: 0, clLabel: `${confidenceLevel}%` };
+    if (!ci.trials)
+      return { trials: [], coverage_rate: 0, covered_count: 0, total_trials: 0, clLabel: `${confidenceLevel}%` };
     const alpha = 1 - confidenceLevel / 100;
     const violinByNct: Record<string, any> = {};
     for (const v of testingViolinData) violinByNct[v.nct_id] = v;
@@ -2469,7 +3032,8 @@ function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, te
       },
       marker: { size: 8, color: '#4a90d9' },
       name: `Predicted (${recomputed.clLabel} CI)`,
-      hovertemplate: '%{text}<br>Predicted: %{y:.3f}<br>CI: [%{customdata[0]:.3f}, %{customdata[1]:.3f}]<extra></extra>',
+      hovertemplate:
+        '%{text}<br>Predicted: %{y:.3f}<br>CI: [%{customdata[0]:.3f}, %{customdata[1]:.3f}]<extra></extra>',
       text: trials.map((t: any) => t.nct_id),
       customdata: trials.map((t: any) => [t.ci_lower, t.ci_upper]),
     });
@@ -2483,13 +3047,13 @@ function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, te
       marker: {
         size: 12,
         symbol: 'diamond',
-        color: trials.map((t: any) => t.covered ? '#2e7d32' : '#c62828'),
+        color: trials.map((t: any) => (t.covered ? '#2e7d32' : '#c62828')),
         line: { width: 2, color: '#fff' },
       },
       name: 'Actual RR',
       hovertemplate: '%{text}<br>Actual: %{y:.3f}<br>Covered: %{customdata}<extra></extra>',
       text: trials.map((t: any) => t.nct_id),
-      customdata: trials.map((t: any) => t.covered ? 'Yes' : 'No'),
+      customdata: trials.map((t: any) => (t.covered ? 'Yes' : 'No')),
     });
 
     const layout: any = {
@@ -2511,30 +3075,48 @@ function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, te
       margin: { l: 80, r: 30, t: 90, b: 140 },
       showlegend: true,
       legend: {
-        x: 0.02, y: 0.98, xanchor: 'left', yanchor: 'top',
-        bgcolor: 'rgba(255,255,255,0.9)', bordercolor: '#ddd', borderwidth: 1,
+        x: 0.02,
+        y: 0.98,
+        xanchor: 'left',
+        yanchor: 'top',
+        bgcolor: 'rgba(255,255,255,0.9)',
+        bordercolor: '#ddd',
+        borderwidth: 1,
       },
     };
 
     Plotly.newPlot(plotRef.current, traces, withProvenance(layout, '/simulation/ci-coverage'), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename('ci_coverage'), width: plotWidth, height: 490, scale: 4 },
+      toImageButtonOptions: {
+        format: 'svg',
+        filename: provenanceImageFilename('ci_coverage'),
+        width: plotWidth,
+        height: 490,
+        scale: 4,
+      },
     });
-    return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
+    return () => {
+      if (plotRef.current) Plotly.purge(plotRef.current);
+    };
   }, [ci, plotWidth, drugLookup, moaDrugNames, confidenceLevel, testingViolinData]);
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
-      <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>{recomputed.clLabel} Confidence Interval Coverage Analysis</h3>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
+      <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>
+        {recomputed.clLabel} Confidence Interval Coverage Analysis
+      </h3>
       <InterpretationNote>
-        <strong>How to read:</strong> for each trial, the blue dot and vertical bar show the
-        model's predicted response rate and the range it expects the real answer to fall inside
-        {confidenceLevel}% of the time. The diamond is the trial's actual response rate — <span style={{ color: '#2e7d32', fontWeight: 600 }}>green</span> if
-        it landed inside the predicted range, <span style={{ color: '#c62828', fontWeight: 600 }}>red</span> if
-        it fell outside.
+        <strong>How to read:</strong> for each trial, the blue dot and vertical bar show the model's predicted response
+        rate and the range it expects the real answer to fall inside
+        {confidenceLevel}% of the time. The diamond is the trial's actual response rate —{' '}
+        <span style={{ color: '#2e7d32', fontWeight: 600 }}>green</span> if it landed inside the predicted range,{' '}
+        <span style={{ color: '#c62828', fontWeight: 600 }}>red</span> if it fell outside.
       </InterpretationNote>
       <p style={{ fontSize: '1.05rem', fontWeight: 700, color: '#1a1a1a', margin: '0 0 0.5rem' }}>
-        Coverage rate: {(recomputed.coverage_rate * 100).toFixed(0)}% ({recomputed.covered_count}/{recomputed.total_trials} trials).
+        Coverage rate: {(recomputed.coverage_rate * 100).toFixed(0)}% ({recomputed.covered_count}/
+        {recomputed.total_trials} trials).
         <span style={{ fontSize: '0.78rem', fontWeight: 400, color: '#666', marginLeft: 8 }}>
           Green diamonds = actual RR within {recomputed.clLabel} CI. Red = outside CI.
         </span>
@@ -2551,16 +3133,22 @@ function CICoveragePlot({ ci, drugLookup, moaDrugNames, confidenceLevel = 95, te
 function ExclusionBadge({ reason, method }: { reason: string; method?: string }) {
   const colorMap: Record<string, { bg: string; fg: string }> = {
     enrollment_floor: { bg: '#fce4ec', fg: '#c62828' },
-    perfect_rr:       { bg: '#fce4ec', fg: '#c62828' },
-    statistical:      { bg: '#fff3e0', fg: '#e65100' },
+    perfect_rr: { bg: '#fce4ec', fg: '#c62828' },
+    statistical: { bg: '#fff3e0', fg: '#e65100' },
   };
   const { bg, fg } = colorMap[method || ''] || { bg: '#f5f5f5', fg: '#616161' };
 
   return (
     <span
       style={{
-        display: 'inline-block', padding: '2px 8px', fontSize: '0.7rem', fontWeight: 500,
-        borderRadius: 10, background: bg, color: fg, lineHeight: 1.4,
+        display: 'inline-block',
+        padding: '2px 8px',
+        fontSize: '0.7rem',
+        fontWeight: 500,
+        borderRadius: 10,
+        background: bg,
+        color: fg,
+        lineHeight: 1.4,
       }}
       title={reason}
     >
@@ -2578,18 +3166,17 @@ function CriteriaPills({ criteria }: { criteria?: string[] }) {
 
   const getColor = (label: string): { bg: string; fg: string } => {
     const l = label.toLowerCase();
-    if (l.includes('mgmt') || l.includes('methylat'))  return { bg: '#e8f5e9', fg: '#2e7d32' };
-    if (l.includes('idh'))                               return { bg: '#e3f2fd', fg: '#1565c0' };
-    if (l.includes('egfr'))                              return { bg: '#fff3e0', fg: '#e65100' };
-    if (l.includes('tp53') || l.includes('pten'))        return { bg: '#fce4ec', fg: '#c62828' };
-    if (l.includes('braf') || l.includes('nf1'))         return { bg: '#fff8e1', fg: '#f57f17' };
+    if (l.includes('mgmt') || l.includes('methylat')) return { bg: '#e8f5e9', fg: '#2e7d32' };
+    if (l.includes('idh')) return { bg: '#e3f2fd', fg: '#1565c0' };
+    if (l.includes('egfr')) return { bg: '#fff3e0', fg: '#e65100' };
+    if (l.includes('tp53') || l.includes('pten')) return { bg: '#fce4ec', fg: '#c62828' };
+    if (l.includes('braf') || l.includes('nf1')) return { bg: '#fff8e1', fg: '#f57f17' };
     if (l.includes('amplif') || l.includes('delet') || l.includes('gain') || l.includes('loss'))
-                                                          return { bg: '#ede7f6', fg: '#4527a0' };
-    if (l.includes('fusion') || l.includes('fgfr'))      return { bg: '#e0f7fa', fg: '#00695c' };
+      return { bg: '#ede7f6', fg: '#4527a0' };
+    if (l.includes('fusion') || l.includes('fgfr')) return { bg: '#e0f7fa', fg: '#00695c' };
     if (l.includes('recurrent') || l.includes('newly') || l.includes('prior') || l.includes('alkylator'))
-                                                          return { bg: '#f5f5f5', fg: '#616161' };
-    if (l.includes('tmb') || l.includes('msi') || l.includes('pd-l1'))
-                                                          return { bg: '#e8eaf6', fg: '#283593' };
+      return { bg: '#f5f5f5', fg: '#616161' };
+    if (l.includes('tmb') || l.includes('msi') || l.includes('pd-l1')) return { bg: '#e8eaf6', fg: '#283593' };
     return { bg: '#f3e5f5', fg: '#7b1fa2' };
   };
 
@@ -2601,8 +3188,14 @@ function CriteriaPills({ criteria }: { criteria?: string[] }) {
           <span
             key={c}
             style={{
-              display: 'inline-block', padding: '1px 7px', fontSize: '0.7rem', fontWeight: 500,
-              borderRadius: 10, whiteSpace: 'nowrap', background: bg, color: fg,
+              display: 'inline-block',
+              padding: '1px 7px',
+              fontSize: '0.7rem',
+              fontWeight: 500,
+              borderRadius: 10,
+              whiteSpace: 'nowrap',
+              background: bg,
+              color: fg,
             }}
           >
             {c}
@@ -2636,7 +3229,9 @@ function MOAAutocomplete({
   const displayText = selectedCat ? selectedCat.category : '';
 
   // Sync query with display text
-  useEffect(() => { setQuery(displayText); }, [displayText]);
+  useEffect(() => {
+    setQuery(displayText);
+  }, [displayText]);
 
   // Filter: search matches against category name, drug names, and member names
   const matchesQuery = (c: MOACategory, q: string): boolean => {
@@ -2660,11 +3255,14 @@ function MOAAutocomplete({
 
   const allItems = [...groups, ...individuals];
 
-  const handleSelect = useCallback((val: string) => {
-    onChange(val);
-    setOpen(false);
-    setHighlightIdx(-1);
-  }, [onChange]);
+  const handleSelect = useCallback(
+    (val: string) => {
+      onChange(val);
+      setOpen(false);
+      setHighlightIdx(-1);
+    },
+    [onChange],
+  );
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -2691,7 +3289,10 @@ function MOAAutocomplete({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!open) {
-      if (e.key === 'ArrowDown' || e.key === 'Enter') { setOpen(true); e.preventDefault(); }
+      if (e.key === 'ArrowDown' || e.key === 'Enter') {
+        setOpen(true);
+        e.preventDefault();
+      }
       return;
     }
     switch (e.key) {
@@ -2735,41 +3336,75 @@ function MOAAutocomplete({
         onFocus={() => setOpen(true)}
         onKeyDown={handleKeyDown}
         style={{
-          width: '100%', padding: '0.5rem', border: '1px solid #ccc',
-          borderRadius: 4, fontSize: '0.85rem', boxSizing: 'border-box',
+          width: '100%',
+          padding: '0.5rem',
+          border: '1px solid #ccc',
+          borderRadius: 4,
+          fontSize: '0.85rem',
+          boxSizing: 'border-box',
           borderColor: open ? '#4a90d9' : '#ccc',
           outline: 'none',
         }}
       />
       {value && (
         <span
-          onClick={() => { setQuery(''); onChange(''); }}
+          onClick={() => {
+            setQuery('');
+            onChange('');
+          }}
           style={{
-            position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
-            cursor: 'pointer', color: '#999', fontSize: '0.9rem', lineHeight: 1,
+            position: 'absolute',
+            right: 8,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            cursor: 'pointer',
+            color: '#999',
+            fontSize: '0.9rem',
+            lineHeight: 1,
           }}
           title="Clear selection"
-        >&times;</span>
+        >
+          &times;
+        </span>
       )}
       {open && allItems.length > 0 && (
         <ul
           ref={listRef}
           style={{
-            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100,
-            maxHeight: 340, overflowY: 'auto',
-            background: '#fff', border: '1px solid #ccc', borderTop: 'none',
-            borderRadius: '0 0 4px 4px', margin: 0, padding: 0, listStyle: 'none',
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 100,
+            maxHeight: 340,
+            overflowY: 'auto',
+            background: '#fff',
+            border: '1px solid #ccc',
+            borderTop: 'none',
+            borderRadius: '0 0 4px 4px',
+            margin: 0,
+            padding: 0,
+            listStyle: 'none',
             boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
           }}
         >
           {/* Section header: Therapy Groups */}
           {groups.length > 0 && (
-            <li style={{
-              padding: '6px 10px', fontSize: '0.7rem', fontWeight: 700,
-              color: '#1a1a2e', background: '#f0f4ff', borderBottom: '1px solid #e0e4ef',
-              letterSpacing: '0.04em', textTransform: 'uppercase',
-              position: 'sticky', top: 0, zIndex: 1,
-            }}>
+            <li
+              style={{
+                padding: '6px 10px',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                color: '#1a1a2e',
+                background: '#f0f4ff',
+                borderBottom: '1px solid #e0e4ef',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
+              }}
+            >
               Therapy Groups (combined MOAs)
             </li>
           )}
@@ -2778,26 +3413,27 @@ function MOAAutocomplete({
             return (
               <li
                 key={c.value}
-                onMouseDown={(e) => { e.preventDefault(); handleSelect(c.value); }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleSelect(c.value);
+                }}
                 onMouseEnter={() => setHighlightIdx(idx)}
                 style={{
-                  padding: '7px 10px', fontSize: '0.83rem', cursor: 'pointer',
+                  padding: '7px 10px',
+                  fontSize: '0.83rem',
+                  cursor: 'pointer',
                   background: idx === highlightIdx ? '#e8f0fe' : '#fafbff',
                   borderBottom: '1px solid #f0f0f0',
                   borderLeft: '3px solid #4a90d9',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 600 }}>
-                    {c.value.replace('group:', '')}
-                  </span>
+                  <span style={{ fontWeight: 600 }}>{c.value.replace('group:', '')}</span>
                   <span style={{ fontSize: '0.72rem', color: '#888', marginLeft: 8, whiteSpace: 'nowrap' }}>
                     {c.drug_count} drugs
                   </span>
                 </div>
-                <div style={{ fontSize: '0.73rem', color: '#666', marginTop: 2 }}>
-                  [{c.drugs.join(', ')}]
-                </div>
+                <div style={{ fontSize: '0.73rem', color: '#666', marginTop: 2 }}>[{c.drugs.join(', ')}]</div>
                 {c.members.length > 0 && (
                   <div style={{ fontSize: '0.68rem', color: '#999', marginTop: 1 }}>
                     Combines: {c.members.join(', ')}
@@ -2809,20 +3445,42 @@ function MOAAutocomplete({
 
           {/* Section header: Individual MOAs */}
           {individuals.length > 0 && (
-            <li style={{
-              padding: '6px 10px', fontSize: '0.7rem', fontWeight: 700,
-              color: '#1a1a2e', background: '#f5f5f5', borderBottom: '1px solid #e0e0e0',
-              letterSpacing: '0.04em', textTransform: 'uppercase',
-              position: 'sticky', top: groups.length > 0 ? 28 : 0, zIndex: 1,
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            }}>
+            <li
+              style={{
+                padding: '6px 10px',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                color: '#1a1a2e',
+                background: '#f5f5f5',
+                borderBottom: '1px solid #e0e0e0',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                position: 'sticky',
+                top: groups.length > 0 ? 28 : 0,
+                zIndex: 1,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <span>Individual MOA Targets</span>
               {categories.some((c) => c.part_of_group) && (
-                <label style={{ fontWeight: 400, textTransform: 'none', fontSize: '0.68rem', color: '#666', cursor: 'pointer' }}>
+                <label
+                  style={{
+                    fontWeight: 400,
+                    textTransform: 'none',
+                    fontSize: '0.68rem',
+                    color: '#666',
+                    cursor: 'pointer',
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={showIndividual}
-                    onChange={(e) => { e.stopPropagation(); setShowIndividual(e.target.checked); }}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      setShowIndividual(e.target.checked);
+                    }}
                     style={{ marginRight: 3, verticalAlign: 'middle' }}
                   />
                   Show grouped members
@@ -2835,10 +3493,15 @@ function MOAAutocomplete({
             return (
               <li
                 key={c.value}
-                onMouseDown={(e) => { e.preventDefault(); handleSelect(c.value); }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleSelect(c.value);
+                }}
                 onMouseEnter={() => setHighlightIdx(idx)}
                 style={{
-                  padding: '6px 10px', fontSize: '0.83rem', cursor: 'pointer',
+                  padding: '6px 10px',
+                  fontSize: '0.83rem',
+                  cursor: 'pointer',
                   background: idx === highlightIdx ? '#e8f0fe' : '#fff',
                   borderBottom: '1px solid #f5f5f5',
                   opacity: c.part_of_group ? 0.75 : 1,
@@ -2856,9 +3519,7 @@ function MOAAutocomplete({
                   </span>
                 </div>
                 {c.drugs && c.drugs.length > 0 && (
-                  <div style={{ fontSize: '0.73rem', color: '#666', marginTop: 2 }}>
-                    [{c.drugs.join(', ')}]
-                  </div>
+                  <div style={{ fontSize: '0.73rem', color: '#666', marginTop: 2 }}>[{c.drugs.join(', ')}]</div>
                 )}
               </li>
             );
@@ -2866,12 +3527,23 @@ function MOAAutocomplete({
         </ul>
       )}
       {open && allItems.length === 0 && query && (
-        <div style={{
-          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100,
-          background: '#fff', border: '1px solid #ccc', borderTop: 'none',
-          borderRadius: '0 0 4px 4px', padding: '8px 10px', fontSize: '0.82rem', color: '#999',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 100,
+            background: '#fff',
+            border: '1px solid #ccc',
+            borderTop: 'none',
+            borderRadius: '0 0 4px 4px',
+            padding: '8px 10px',
+            fontSize: '0.82rem',
+            color: '#999',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+          }}
+        >
           No matching categories
         </div>
       )}
@@ -2898,21 +3570,24 @@ function useSortedRows(
   const [sortKey, setSortKey] = useState<string>(initialKey);
   const [sortDir, setSortDir] = useState<SortDir>(initialDir);
 
-  const onSort = useCallback((key: string) => {
-    const def = cols[key];
-    const firstDir: SortDir = def?.type === 'number' ? 'desc' : 'asc';
-    const secondDir: SortDir = firstDir === 'desc' ? 'asc' : 'desc';
-    if (sortKey !== key || sortDir === null) {
-      setSortKey(key);
-      setSortDir(firstDir);
-    } else if (sortDir === firstDir) {
-      setSortDir(secondDir);
-    } else {
-      // third click → clear sort
-      setSortKey('');
-      setSortDir(null);
-    }
-  }, [cols, sortKey, sortDir]);
+  const onSort = useCallback(
+    (key: string) => {
+      const def = cols[key];
+      const firstDir: SortDir = def?.type === 'number' ? 'desc' : 'asc';
+      const secondDir: SortDir = firstDir === 'desc' ? 'asc' : 'desc';
+      if (sortKey !== key || sortDir === null) {
+        setSortKey(key);
+        setSortDir(firstDir);
+      } else if (sortDir === firstDir) {
+        setSortDir(secondDir);
+      } else {
+        // third click → clear sort
+        setSortKey('');
+        setSortDir(null);
+      }
+    },
+    [cols, sortKey, sortDir],
+  );
 
   const sorted = (() => {
     if (!rows) return [];
@@ -2926,7 +3601,7 @@ function useSortedRows(
       const aMissing = av == null || (isNum && Number.isNaN(av));
       const bMissing = bv == null || (isNum && Number.isNaN(bv));
       if (aMissing && bMissing) return 0;
-      if (aMissing) return 1;   // missing values always sink to the bottom
+      if (aMissing) return 1; // missing values always sink to the bottom
       if (bMissing) return -1;
       if (isNum) return (Number(av) - Number(bv)) * sign;
       return String(av).localeCompare(String(bv)) * sign;
@@ -2937,7 +3612,13 @@ function useSortedRows(
 }
 
 function SortableTH({
-  label, colKey, sortKey, sortDir, onSort, align = 'left', style,
+  label,
+  colKey,
+  sortKey,
+  sortDir,
+  onSort,
+  align = 'left',
+  style,
 }: {
   label: string;
   colKey: string;
@@ -2962,7 +3643,8 @@ function SortableTH({
       }}
       title="Click to sort"
     >
-      {label}{arrow}
+      {label}
+      {arrow}
     </th>
   );
 }
@@ -2973,66 +3655,118 @@ const _criteriaText = (c: any): string => {
   if (typeof c === 'string') return c;
   return '';
 };
-const _drugsText = (d: any): string => Array.isArray(d) ? d.join(' ') : '';
+const _drugsText = (d: any): string => (Array.isArray(d) ? d.join(' ') : '');
 
 const TRAINING_COLS: Record<string, ColDef> = {
-  nct_id:             { key: 'nct_id',             type: 'string', accessor: (r) => r.nct_id },
-  title:              { key: 'title',              type: 'string', accessor: (r) => r.title || '' },
-  enrollment:         { key: 'enrollment',         type: 'number', accessor: (r) => r.enrollment },
-  age:                { key: 'age',                type: 'number', accessor: (r) => parseFloat(r.min_age) || parseFloat(r.max_age) || NaN },
-  criteria:           { key: 'criteria',           type: 'string', accessor: (r) => _criteriaText(r.molecular_criteria) },
-  eligible_patients:  { key: 'eligible_patients',  type: 'number', accessor: (r) => r.eligible_patients },
+  nct_id: { key: 'nct_id', type: 'string', accessor: (r) => r.nct_id },
+  title: { key: 'title', type: 'string', accessor: (r) => r.title || '' },
+  enrollment: { key: 'enrollment', type: 'number', accessor: (r) => r.enrollment },
+  age: { key: 'age', type: 'number', accessor: (r) => parseFloat(r.min_age) || parseFloat(r.max_age) || NaN },
+  criteria: { key: 'criteria', type: 'string', accessor: (r) => _criteriaText(r.molecular_criteria) },
+  eligible_patients: { key: 'eligible_patients', type: 'number', accessor: (r) => r.eligible_patients },
   actual_response_rate: { key: 'actual_response_rate', type: 'number', accessor: (r) => r.actual_response_rate },
-  mean_predicted_rate:  { key: 'mean_predicted_rate',  type: 'number', accessor: (r) => r.mean_predicted_rate },
-  mean_threshold:     { key: 'mean_threshold',     type: 'number', accessor: (r) => r.mean_threshold },
-  std_threshold:      { key: 'std_threshold',      type: 'number', accessor: (r) => r.std_threshold },
-  drugs:              { key: 'drugs',              type: 'string', accessor: (r) => _drugsText(r.drugs) },
+  mean_predicted_rate: { key: 'mean_predicted_rate', type: 'number', accessor: (r) => r.mean_predicted_rate },
+  mean_threshold: { key: 'mean_threshold', type: 'number', accessor: (r) => r.mean_threshold },
+  std_threshold: { key: 'std_threshold', type: 'number', accessor: (r) => r.std_threshold },
+  drugs: { key: 'drugs', type: 'string', accessor: (r) => _drugsText(r.drugs) },
 };
 
 const TESTING_COLS: Record<string, ColDef> = {
-  nct_id:             { key: 'nct_id',             type: 'string', accessor: (r) => r.nct_id },
-  title:              { key: 'title',              type: 'string', accessor: (r) => r.title || '' },
-  enrollment:         { key: 'enrollment',         type: 'number', accessor: (r) => r.enrollment },
-  age:                { key: 'age',                type: 'number', accessor: (r) => parseFloat(r.min_age) || parseFloat(r.max_age) || NaN },
-  criteria:           { key: 'criteria',           type: 'string', accessor: (r) => _criteriaText(r.molecular_criteria) },
-  eligible_patients:  { key: 'eligible_patients',  type: 'number', accessor: (r) => r.eligible_patients },
+  nct_id: { key: 'nct_id', type: 'string', accessor: (r) => r.nct_id },
+  title: { key: 'title', type: 'string', accessor: (r) => r.title || '' },
+  enrollment: { key: 'enrollment', type: 'number', accessor: (r) => r.enrollment },
+  age: { key: 'age', type: 'number', accessor: (r) => parseFloat(r.min_age) || parseFloat(r.max_age) || NaN },
+  criteria: { key: 'criteria', type: 'string', accessor: (r) => _criteriaText(r.molecular_criteria) },
+  eligible_patients: { key: 'eligible_patients', type: 'number', accessor: (r) => r.eligible_patients },
   actual_response_rate: { key: 'actual_response_rate', type: 'number', accessor: (r) => r.actual_response_rate },
-  mean_predicted_rate:  { key: 'mean_predicted_rate',  type: 'number', accessor: (r) => r.mean_predicted_rate },
-  abs_error:          { key: 'abs_error',          type: 'number', accessor: (r) => Math.abs((r.mean_predicted_rate ?? 0) - (r.actual_response_rate ?? 0)) },
-  drugs:              { key: 'drugs',              type: 'string', accessor: (r) => _drugsText(r.drugs) },
+  mean_predicted_rate: { key: 'mean_predicted_rate', type: 'number', accessor: (r) => r.mean_predicted_rate },
+  abs_error: {
+    key: 'abs_error',
+    type: 'number',
+    accessor: (r) => Math.abs((r.mean_predicted_rate ?? 0) - (r.actual_response_rate ?? 0)),
+  },
+  drugs: { key: 'drugs', type: 'string', accessor: (r) => _drugsText(r.drugs) },
 };
 
 const EXCLUDED_COLS: Record<string, ColDef> = {
-  nct_id:             { key: 'nct_id',             type: 'string', accessor: (r) => r.nct_id },
-  title:              { key: 'title',              type: 'string', accessor: (r) => r.title || '' },
-  enrollment:         { key: 'enrollment',         type: 'number', accessor: (r) => r.enrollment },
-  age:                { key: 'age',                type: 'number', accessor: (r) => parseFloat(r.min_age) || parseFloat(r.max_age) || NaN },
-  criteria:           { key: 'criteria',           type: 'string', accessor: (r) => _criteriaText(r.molecular_criteria) },
+  nct_id: { key: 'nct_id', type: 'string', accessor: (r) => r.nct_id },
+  title: { key: 'title', type: 'string', accessor: (r) => r.title || '' },
+  enrollment: { key: 'enrollment', type: 'number', accessor: (r) => r.enrollment },
+  age: { key: 'age', type: 'number', accessor: (r) => parseFloat(r.min_age) || parseFloat(r.max_age) || NaN },
+  criteria: { key: 'criteria', type: 'string', accessor: (r) => _criteriaText(r.molecular_criteria) },
   actual_response_rate: { key: 'actual_response_rate', type: 'number', accessor: (r) => r.actual_response_rate },
-  drugs:              { key: 'drugs',              type: 'string', accessor: (r) => _drugsText(r.drugs) },
-  exclusion_reason:   { key: 'exclusion_reason',   type: 'string', accessor: (r) => r.exclusion_reason || '' },
+  drugs: { key: 'drugs', type: 'string', accessor: (r) => _drugsText(r.drugs) },
+  exclusion_reason: { key: 'exclusion_reason', type: 'string', accessor: (r) => r.exclusion_reason || '' },
 };
 
 function TrainingTrialsTable({ data }: { data: any }) {
-  const { sorted, sortKey, sortDir, onSort } = useSortedRows(
-    data.training_trials, TRAINING_COLS, 'nct_id', 'asc',
-  );
+  const { sorted, sortKey, sortDir, onSort } = useSortedRows(data.training_trials, TRAINING_COLS, 'nct_id', 'asc');
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem' }}>Training Trials (Threshold Learning)</h3>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
         <thead>
           <tr style={{ background: '#f0f4ff' }}>
             <SortableTH label="NCT ID" colKey="nct_id" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
             <SortableTH label="Title" colKey="title" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Enrollment" colKey="enrollment" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
+            <SortableTH
+              label="Enrollment"
+              colKey="enrollment"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
             <SortableTH label="Age" colKey="age" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Matched Eligibility Criteria" colKey="criteria" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Eligible Patients" colKey="eligible_patients" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Actual RR" colKey="actual_response_rate" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Mean Predicted RR" colKey="mean_predicted_rate" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Mean Threshold" colKey="mean_threshold" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Std Threshold" colKey="std_threshold" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
+            <SortableTH
+              label="Matched Eligibility Criteria"
+              colKey="criteria"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <SortableTH
+              label="Eligible Patients"
+              colKey="eligible_patients"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Actual RR"
+              colKey="actual_response_rate"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Mean Predicted RR"
+              colKey="mean_predicted_rate"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Mean Threshold"
+              colKey="mean_threshold"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Std Threshold"
+              colKey="std_threshold"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
             <SortableTH label="Drugs" colKey="drugs" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
           </tr>
         </thead>
@@ -3041,15 +3775,38 @@ function TrainingTrialsTable({ data }: { data: any }) {
             <tr key={t.nct_id + (t.arm_group || '')} style={{ borderBottom: '1px solid #eee' }}>
               <td style={tdStyle}>
                 {t.nct_id.split(':')[0]}
-                {t.arm_group && <div style={{ fontSize: '0.68rem', color: '#7b1fa2', fontWeight: 500, marginTop: 1 }}>{t.arm_group}</div>}
+                {t.arm_group && (
+                  <div style={{ fontSize: '0.68rem', color: '#7b1fa2', fontWeight: 500, marginTop: 1 }}>
+                    {t.arm_group}
+                  </div>
+                )}
               </td>
-              <td style={{ ...tdStyle, maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.title}>{t.title}</td>
+              <td
+                style={{
+                  ...tdStyle,
+                  maxWidth: 250,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                title={t.title}
+              >
+                {t.title}
+              </td>
               <td style={{ ...tdStyle, textAlign: 'right' }}>{t.enrollment}</td>
-              <td style={{ ...tdStyle, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>{formatAgeRange(t.min_age, t.max_age)}</td>
-              <td style={tdStyle}><CriteriaPills criteria={t.molecular_criteria} /></td>
-              <td style={{ ...tdStyle, textAlign: 'right', whiteSpace: 'nowrap' }}>{t.eligible_patients} / {t.total_patients}</td>
+              <td style={{ ...tdStyle, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
+                {formatAgeRange(t.min_age, t.max_age)}
+              </td>
+              <td style={tdStyle}>
+                <CriteriaPills criteria={t.molecular_criteria} />
+              </td>
+              <td style={{ ...tdStyle, textAlign: 'right', whiteSpace: 'nowrap' }}>
+                {t.eligible_patients} / {t.total_patients}
+              </td>
               <td style={{ ...tdStyle, textAlign: 'right' }}>{(t.actual_response_rate * 100).toFixed(1)}%</td>
-              <td style={{ ...tdStyle, textAlign: 'right' }}>{t.mean_predicted_rate != null ? (t.mean_predicted_rate * 100).toFixed(1) + '%' : '-'}</td>
+              <td style={{ ...tdStyle, textAlign: 'right' }}>
+                {t.mean_predicted_rate != null ? (t.mean_predicted_rate * 100).toFixed(1) + '%' : '-'}
+              </td>
               <td style={{ ...tdStyle, textAlign: 'right' }}>{t.mean_threshold?.toFixed(4)}</td>
               <td style={{ ...tdStyle, textAlign: 'right' }}>{t.std_threshold?.toFixed(4)}</td>
               <td style={{ ...tdStyle, fontSize: '0.72rem' }}>
@@ -3067,24 +3824,65 @@ function TrainingTrialsTable({ data }: { data: any }) {
 }
 
 function TestingTrialsTable({ data }: { data: any }) {
-  const { sorted, sortKey, sortDir, onSort } = useSortedRows(
-    data.testing_trials, TESTING_COLS, 'nct_id', 'asc',
-  );
+  const { sorted, sortKey, sortDir, onSort } = useSortedRows(data.testing_trials, TESTING_COLS, 'nct_id', 'asc');
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem' }}>Testing Trials (Threshold Validation)</h3>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
         <thead>
           <tr style={{ background: '#f0fff4' }}>
             <SortableTH label="NCT ID" colKey="nct_id" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
             <SortableTH label="Title" colKey="title" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Enrollment" colKey="enrollment" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
+            <SortableTH
+              label="Enrollment"
+              colKey="enrollment"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
             <SortableTH label="Age" colKey="age" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Matched Eligibility Criteria" colKey="criteria" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Eligible Patients" colKey="eligible_patients" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Actual RR" colKey="actual_response_rate" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Predicted RR (mean)" colKey="mean_predicted_rate" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
-            <SortableTH label="Abs Error" colKey="abs_error" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
+            <SortableTH
+              label="Matched Eligibility Criteria"
+              colKey="criteria"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <SortableTH
+              label="Eligible Patients"
+              colKey="eligible_patients"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Actual RR"
+              colKey="actual_response_rate"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Predicted RR (mean)"
+              colKey="mean_predicted_rate"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
+            <SortableTH
+              label="Abs Error"
+              colKey="abs_error"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
             <SortableTH label="Drugs" colKey="drugs" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
           </tr>
         </thead>
@@ -3095,16 +3893,39 @@ function TestingTrialsTable({ data }: { data: any }) {
               <tr key={t.nct_id + (t.arm_group || '')} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={tdStyle}>
                   {t.nct_id.split(':')[0]}
-                  {t.arm_group && <div style={{ fontSize: '0.68rem', color: '#7b1fa2', fontWeight: 500, marginTop: 1 }}>{t.arm_group}</div>}
+                  {t.arm_group && (
+                    <div style={{ fontSize: '0.68rem', color: '#7b1fa2', fontWeight: 500, marginTop: 1 }}>
+                      {t.arm_group}
+                    </div>
+                  )}
                 </td>
-                <td style={{ ...tdStyle, maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.title}>{t.title}</td>
+                <td
+                  style={{
+                    ...tdStyle,
+                    maxWidth: 250,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                  title={t.title}
+                >
+                  {t.title}
+                </td>
                 <td style={{ ...tdStyle, textAlign: 'right' }}>{t.enrollment}</td>
-                <td style={{ ...tdStyle, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>{formatAgeRange(t.min_age, t.max_age)}</td>
-                <td style={tdStyle}><CriteriaPills criteria={t.molecular_criteria} /></td>
-                <td style={{ ...tdStyle, textAlign: 'right', whiteSpace: 'nowrap' }}>{t.eligible_patients} / {t.total_patients}</td>
+                <td style={{ ...tdStyle, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
+                  {formatAgeRange(t.min_age, t.max_age)}
+                </td>
+                <td style={tdStyle}>
+                  <CriteriaPills criteria={t.molecular_criteria} />
+                </td>
+                <td style={{ ...tdStyle, textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  {t.eligible_patients} / {t.total_patients}
+                </td>
                 <td style={{ ...tdStyle, textAlign: 'right' }}>{(t.actual_response_rate * 100).toFixed(1)}%</td>
                 <td style={{ ...tdStyle, textAlign: 'right' }}>{(t.mean_predicted_rate * 100).toFixed(1)}%</td>
-                <td style={{ ...tdStyle, textAlign: 'right', color: absErr > 0.15 ? '#c62828' : '#2e7d32' }}>{(absErr * 100).toFixed(1)}%</td>
+                <td style={{ ...tdStyle, textAlign: 'right', color: absErr > 0.15 ? '#c62828' : '#2e7d32' }}>
+                  {(absErr * 100).toFixed(1)}%
+                </td>
                 <td style={{ ...tdStyle, fontSize: '0.72rem' }}>
                   <DrugList drugs={t.drugs} moaDrugNames={data.moa_drug_names} />
                   {t.arm_drugs && t.arm_drugs.length > 0 && (
@@ -3121,29 +3942,61 @@ function TestingTrialsTable({ data }: { data: any }) {
 }
 
 function ExcludedTrialsTable({ data }: { data: any }) {
-  const { sorted, sortKey, sortDir, onSort } = useSortedRows(
-    data.excluded_trials, EXCLUDED_COLS, 'nct_id', 'asc',
-  );
+  const { sorted, sortKey, sortDir, onSort } = useSortedRows(data.excluded_trials, EXCLUDED_COLS, 'nct_id', 'asc');
   return (
-    <div style={{ background: '#fff8f0', border: '1px solid #ffe0b2', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{
+        background: '#fff8f0',
+        border: '1px solid #ffe0b2',
+        borderRadius: 8,
+        padding: '1rem',
+        marginBottom: '1rem',
+      }}
+    >
       <h3 style={{ margin: '0 0 0.25rem', fontSize: '1rem', color: '#e65100' }}>
         Excluded Trials — Outlier Detection ({data.excluded_trials.length})
       </h3>
       <p style={{ margin: '0 0 0.75rem', fontSize: '0.78rem', color: '#888' }}>
-        These trial arms were excluded from the simulation because their response rates were flagged as statistical outliers.
-        They are shown here for transparency with all available metrics.
+        These trial arms were excluded from the simulation because their response rates were flagged as statistical
+        outliers. They are shown here for transparency with all available metrics.
       </p>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
         <thead>
           <tr style={{ background: '#fff3e0' }}>
             <SortableTH label="NCT ID" colKey="nct_id" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
             <SortableTH label="Title" colKey="title" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Enrollment" colKey="enrollment" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
+            <SortableTH
+              label="Enrollment"
+              colKey="enrollment"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
             <SortableTH label="Age" colKey="age" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Matched Eligibility Criteria" colKey="criteria" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Actual RR" colKey="actual_response_rate" sortKey={sortKey} sortDir={sortDir} onSort={onSort} align="right" />
+            <SortableTH
+              label="Matched Eligibility Criteria"
+              colKey="criteria"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <SortableTH
+              label="Actual RR"
+              colKey="actual_response_rate"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+              align="right"
+            />
             <SortableTH label="Drugs" colKey="drugs" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <SortableTH label="Exclusion Reason" colKey="exclusion_reason" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+            <SortableTH
+              label="Exclusion Reason"
+              colKey="exclusion_reason"
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
           </tr>
         </thead>
         <tbody>
@@ -3151,12 +4004,31 @@ function ExcludedTrialsTable({ data }: { data: any }) {
             <tr key={t.nct_id + (t.arm_group || '')} style={{ borderBottom: '1px solid #ffe0b2' }}>
               <td style={tdStyle}>
                 {t.nct_id.split(':')[0]}
-                {t.arm_group && <div style={{ fontSize: '0.68rem', color: '#7b1fa2', fontWeight: 500, marginTop: 1 }}>{t.arm_group}</div>}
+                {t.arm_group && (
+                  <div style={{ fontSize: '0.68rem', color: '#7b1fa2', fontWeight: 500, marginTop: 1 }}>
+                    {t.arm_group}
+                  </div>
+                )}
               </td>
-              <td style={{ ...tdStyle, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.title}>{t.title}</td>
+              <td
+                style={{
+                  ...tdStyle,
+                  maxWidth: 220,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                title={t.title}
+              >
+                {t.title}
+              </td>
               <td style={{ ...tdStyle, textAlign: 'right' }}>{t.enrollment}</td>
-              <td style={{ ...tdStyle, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>{formatAgeRange(t.min_age, t.max_age)}</td>
-              <td style={tdStyle}><CriteriaPills criteria={t.molecular_criteria} /></td>
+              <td style={{ ...tdStyle, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
+                {formatAgeRange(t.min_age, t.max_age)}
+              </td>
+              <td style={tdStyle}>
+                <CriteriaPills criteria={t.molecular_criteria} />
+              </td>
               <td style={{ ...tdStyle, textAlign: 'right', fontWeight: 600, color: '#c62828' }}>
                 {(t.actual_response_rate * 100).toFixed(1)}%
               </td>
@@ -3347,11 +4219,22 @@ function CriteriaAutocomplete({
   const rows: React.ReactNode[] = [];
   for (const g of grouped) {
     rows.push(
-      <li key={`hdr-${g.category}`} style={{
-        padding: '4px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#888',
-        textTransform: 'uppercase', letterSpacing: '0.04em', background: '#fafafa',
-        cursor: 'default', borderBottom: '1px solid #eee',
-      }}>{g.category}</li>,
+      <li
+        key={`hdr-${g.category}`}
+        style={{
+          padding: '4px 10px',
+          fontSize: '0.7rem',
+          fontWeight: 700,
+          color: '#888',
+          textTransform: 'uppercase',
+          letterSpacing: '0.04em',
+          background: '#fafafa',
+          cursor: 'default',
+          borderBottom: '1px solid #eee',
+        }}
+      >
+        {g.category}
+      </li>,
     );
     for (const item of g.items) {
       const idx = flatIdx++;
@@ -3363,19 +4246,32 @@ function CriteriaAutocomplete({
         const before = item.label.slice(0, matchStart);
         const match = item.label.slice(matchStart, matchStart + query.length);
         const after = item.label.slice(matchStart + query.length);
-        labelNode = <>{before}<b style={{ color: '#1e3a8a' }}>{match}</b>{after}</>;
+        labelNode = (
+          <>
+            {before}
+            <b style={{ color: '#1e3a8a' }}>{match}</b>
+            {after}
+          </>
+        );
       }
       rows.push(
         <li
           key={item.label}
-          onMouseDown={(e) => { e.preventDefault(); select(item.label); }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            select(item.label);
+          }}
           onMouseEnter={() => setFocusIdx(idx)}
           style={{
-            padding: '6px 12px', fontSize: '0.85rem', cursor: 'pointer',
+            padding: '6px 12px',
+            fontSize: '0.85rem',
+            cursor: 'pointer',
             background: isFocused ? '#e3f2fd' : '#fff',
             borderBottom: '1px solid #f0f0f0',
           }}
-        >{labelNode}</li>,
+        >
+          {labelNode}
+        </li>,
       );
     }
   }
@@ -3385,7 +4281,11 @@ function CriteriaAutocomplete({
       <input
         type="text"
         value={value}
-        onChange={(e) => { onChange(e.target.value); setOpen(true); setFocusIdx(-1); }}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setOpen(true);
+          setFocusIdx(-1);
+        }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKey}
         placeholder={placeholder}
@@ -3393,13 +4293,26 @@ function CriteriaAutocomplete({
         autoComplete="off"
       />
       {open && rows.length > 0 && (
-        <ul ref={listRef} style={{
-          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
-          maxHeight: 280, overflowY: 'auto', margin: 0, padding: 0,
-          listStyle: 'none', background: '#fff',
-          border: '1px solid #ccc', borderTop: 'none', borderRadius: '0 0 6px 6px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-        }}>
+        <ul
+          ref={listRef}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 50,
+            maxHeight: 280,
+            overflowY: 'auto',
+            margin: 0,
+            padding: 0,
+            listStyle: 'none',
+            background: '#fff',
+            border: '1px solid #ccc',
+            borderTop: 'none',
+            borderRadius: '0 0 6px 6px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+          }}
+        >
           {rows}
         </ul>
       )}
@@ -3423,7 +4336,9 @@ function ProposedDrugSimulation({
   learnedThreshold?: number;
 }) {
   const [drugName, setDrugName] = useState('');
-  const [criteria, setCriteria] = useState<{ text: string; type: 'inclusion' | 'exclusion' }[]>([{ text: '', type: 'inclusion' }]);
+  const [criteria, setCriteria] = useState<{ text: string; type: 'inclusion' | 'exclusion' }[]>([
+    { text: '', type: 'inclusion' },
+  ]);
   const [criteriaLogic, setCriteriaLogic] = useState<'all' | 'any' | 'at_least'>('all');
   const [criteriaMinCount, setCriteriaMinCount] = useState(1);
   const [trialSize, setTrialSize] = useState(100);
@@ -3514,7 +4429,10 @@ function ProposedDrugSimulation({
 
     // Legend-only placeholder for the mean predicted + marker
     traces.push({
-      type: 'scatter', mode: 'markers', x: [null], y: [null],
+      type: 'scatter',
+      mode: 'markers',
+      x: [null],
+      y: [null],
       marker: { symbol: 'cross-thin-open', size: 14, color: '#000', line: { color: '#000', width: 2 } },
       name: `Mean Predicted Response Rate: ${(meanRate * 100).toFixed(1)}%`,
       hoverinfo: 'skip',
@@ -3530,16 +4448,22 @@ function ProposedDrugSimulation({
       const rrMax = Math.max(...rrAll);
       shapes.push({
         type: 'rect',
-        xref: 'paper', yref: 'y',
-        x0: 0, x1: 1,
-        y0: rrMin, y1: rrMax,
+        xref: 'paper',
+        yref: 'y',
+        x0: 0,
+        x1: 1,
+        y0: rrMin,
+        y1: rrMax,
         fillcolor: 'rgba(230, 57, 70, 0.18)',
         line: { width: 0 },
         layer: 'below',
       });
       // Legend-only swatch for the shaded band
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { symbol: 'square', size: 16, color: 'rgba(230, 57, 70, 0.35)', line: { color: '#e63946', width: 1 } },
         name: bandLegendName,
         hoverinfo: 'skip',
@@ -3551,33 +4475,51 @@ function ProposedDrugSimulation({
       title: { text: `<b>${drug} Predicted Response Rate Simulation</b>`, font: { size: 24 } },
       yaxis: {
         title: { text: '<b>Predicted Response Rate (%)</b>', font: { size: 22 }, standoff: 20 },
-        tickformat: '.0%', range: [0, 1],
+        tickformat: '.0%',
+        range: [0, 1],
         tickfont: { size: 18 },
         automargin: true,
-        showline: true, ticks: 'outside', zeroline: false,
+        showline: true,
+        ticks: 'outside',
+        zeroline: false,
       },
       xaxis: {
         title: { text: '' },
         tickfont: { size: 18 },
-        automargin: true, type: 'category',
-        showline: true, ticks: 'outside',
+        automargin: true,
+        type: 'category',
+        showline: true,
+        ticks: 'outside',
       },
       height: 640,
       width: 820,
       margin: { l: 110, r: 30, t: 140, b: 100 },
       showlegend: true,
       legend: {
-        x: 0.5, y: 1.12, xanchor: 'center', yanchor: 'top',
-        bgcolor: 'rgba(255,255,255,0.95)', bordercolor: '#333', borderwidth: 1,
+        x: 0.5,
+        y: 1.12,
+        xanchor: 'center',
+        yanchor: 'top',
+        bgcolor: 'rgba(255,255,255,0.95)',
+        bordercolor: '#333',
+        borderwidth: 1,
         font: { size: 16 },
       },
       shapes,
     };
     Plotly.newPlot(boxRef.current, traces, withProvenance(layout, `/simulation/proposed-rr/${drug}`), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename(`${drug}_proposed_rr`), width: 820, height: 560, scale: 4 },
+      toImageButtonOptions: {
+        format: 'svg',
+        filename: provenanceImageFilename(`${drug}_proposed_rr`),
+        width: 820,
+        height: 560,
+        scale: 4,
+      },
     });
-    return () => { if (boxRef.current) Plotly.purge(boxRef.current); };
+    return () => {
+      if (boxRef.current) Plotly.purge(boxRef.current);
+    };
   }, [result, allResponseRates, moaCategory]);
 
   // Scatter plot (patient classification — all TCGA patients)
@@ -3615,32 +4557,56 @@ function ProposedDrugSimulation({
 
     // ── Legend entries ──
     // Compute the four quadrant counts
-    const respElig   = shifted.filter((p: any) => p.responder && p.eligible).length;
+    const respElig = shifted.filter((p: any) => p.responder && p.eligible).length;
     const respInelig = shifted.filter((p: any) => p.responder && !p.eligible).length;
-    const nonElig    = shifted.filter((p: any) => !p.responder && p.eligible).length;
-    const nonInelig  = shifted.filter((p: any) => !p.responder && !p.eligible).length;
+    const nonElig = shifted.filter((p: any) => !p.responder && p.eligible).length;
+    const nonInelig = shifted.filter((p: any) => !p.responder && !p.eligible).length;
 
     if (hasCriteria) {
       // Four combined entries: colour = responder class, size = eligibility, count in label
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { size: SIZE_ELIGIBLE, color: '#e74c3c', line: { color: '#333', width: 0.5 } },
-        name: `Responder + Eligible (${respElig})`, legendgroup: 'combo', showlegend: true, hoverinfo: 'skip',
+        name: `Responder + Eligible (${respElig})`,
+        legendgroup: 'combo',
+        showlegend: true,
+        hoverinfo: 'skip',
       });
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { size: SIZE_INELIGIBLE, color: '#e74c3c', opacity: 0.35, line: { color: '#333', width: 0.3 } },
-        name: `Responder + Ineligible (${respInelig})`, legendgroup: 'combo', showlegend: true, hoverinfo: 'skip',
+        name: `Responder + Ineligible (${respInelig})`,
+        legendgroup: 'combo',
+        showlegend: true,
+        hoverinfo: 'skip',
       });
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { size: SIZE_ELIGIBLE, color: '#4a90d9', line: { color: '#333', width: 0.5 } },
-        name: `Non-Responder + Eligible (${nonElig})`, legendgroup: 'combo', showlegend: true, hoverinfo: 'skip',
+        name: `Non-Responder + Eligible (${nonElig})`,
+        legendgroup: 'combo',
+        showlegend: true,
+        hoverinfo: 'skip',
       });
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { size: SIZE_INELIGIBLE, color: '#4a90d9', opacity: 0.35, line: { color: '#333', width: 0.3 } },
-        name: `Non-Responder + Ineligible (${nonInelig})`, legendgroup: 'combo', showlegend: true, hoverinfo: 'skip',
+        name: `Non-Responder + Ineligible (${nonInelig})`,
+        legendgroup: 'combo',
+        showlegend: true,
+        hoverinfo: 'skip',
       });
 
       // Per-criterion legend entries
@@ -3649,24 +4615,46 @@ function ProposedDrugSimulation({
         const isExcl = (critTypes[i] || 'inclusion') === 'exclusion';
         const tag = isExcl ? '✕ Exclude' : '✓ Include';
         traces.push({
-          type: 'scatter', mode: 'markers', x: [null], y: [null],
-          marker: { size: 10, symbol: 'diamond', color: isExcl ? '#e57373' : '#81c784', line: { color: '#333', width: 0.5 } },
-          name: `${critNames[i]} (${tag})`, legendgroup: 'criteria',
+          type: 'scatter',
+          mode: 'markers',
+          x: [null],
+          y: [null],
+          marker: {
+            size: 10,
+            symbol: 'diamond',
+            color: isExcl ? '#e57373' : '#81c784',
+            line: { color: '#333', width: 0.5 },
+          },
+          name: `${critNames[i]} (${tag})`,
+          legendgroup: 'criteria',
           legendgrouptitle: { text: 'Criteria' },
-          showlegend: true, hoverinfo: 'skip',
+          showlegend: true,
+          hoverinfo: 'skip',
         });
       }
     } else {
       // No criteria — simple responder / non-responder legend
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { size: SIZE_ELIGIBLE, color: '#e74c3c', line: { color: '#333', width: 0.5 } },
-        name: `Predicted Responder (${respElig + respInelig})`, legendgroup: 'class', showlegend: true, hoverinfo: 'skip',
+        name: `Predicted Responder (${respElig + respInelig})`,
+        legendgroup: 'class',
+        showlegend: true,
+        hoverinfo: 'skip',
       });
       traces.push({
-        type: 'scatter', mode: 'markers', x: [null], y: [null],
+        type: 'scatter',
+        mode: 'markers',
+        x: [null],
+        y: [null],
         marker: { size: SIZE_ELIGIBLE, color: '#4a90d9', line: { color: '#333', width: 0.5 } },
-        name: `Predicted Non-Responder (${nonElig + nonInelig})`, legendgroup: 'class', showlegend: true, hoverinfo: 'skip',
+        name: `Predicted Non-Responder (${nonElig + nonInelig})`,
+        legendgroup: 'class',
+        showlegend: true,
+        hoverinfo: 'skip',
       });
     }
 
@@ -3691,10 +4679,12 @@ function ProposedDrugSimulation({
           const matchedStr = hasCriteria
             ? (p.matched_criteria || []).map((i: number) => critNames[i] || `C${i + 1}`).join(', ') || 'none'
             : 'n/a';
-          return `${p.patient_id}<br>Responsiveness: ${p.x.toFixed(3)}<br>` +
+          return (
+            `${p.patient_id}<br>Responsiveness: ${p.x.toFixed(3)}<br>` +
             `Expr: ${p.expr.toFixed(3)}<br>` +
             `Eligible: ${p.eligible ? 'Yes' : 'No'}<br>` +
-            `Matched criteria: ${matchedStr}`;
+            `Matched criteria: ${matchedStr}`
+          );
         }),
         hoverinfo: 'text',
         showlegend: false,
@@ -3738,17 +4728,30 @@ function ProposedDrugSimulation({
         groupclick: 'togglegroup',
         font: { size: 16 },
       },
-      shapes: [{
-        type: 'line',
-        x0: 0, x1: 0, y0: -1.2, y1: 1.2,
-        line: { color: '#000', width: 2, dash: 'solid' },
-      }],
+      shapes: [
+        {
+          type: 'line',
+          x0: 0,
+          x1: 0,
+          y0: -1.2,
+          y1: 1.2,
+          line: { color: '#000', width: 2, dash: 'solid' },
+        },
+      ],
     };
     Plotly.newPlot(scatterRef.current, traces, withProvenance(layout, `/simulation/patient-classification/${drug}`), {
       responsive: false,
-      toImageButtonOptions: { format: 'svg', filename: provenanceImageFilename(`${drug}_patient_classification`), width: 960, height: 400, scale: 4 },
+      toImageButtonOptions: {
+        format: 'svg',
+        filename: provenanceImageFilename(`${drug}_patient_classification`),
+        width: 960,
+        height: 400,
+        scale: 4,
+      },
     });
-    return () => { if (scatterRef.current) Plotly.purge(scatterRef.current); };
+    return () => {
+      if (scatterRef.current) Plotly.purge(scatterRef.current);
+    };
   }, [result]);
 
   const availableDrugs = (moaDrugNames || []).slice().sort();
@@ -3757,8 +4760,8 @@ function ProposedDrugSimulation({
     <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginTop: '1rem' }}>
       <h3 style={{ marginTop: 0 }}>Proposed-Drug Simulation</h3>
       <p style={{ fontSize: '0.85rem', color: '#555', marginTop: 0 }}>
-        Simulate a proposed new drug from the <b>{moaCategory || 'same'}</b> MOA family against a TCGA cohort.
-        The simulation runs 1000 iterations using the learned DCNA threshold ({' '}
+        Simulate a proposed new drug from the <b>{moaCategory || 'same'}</b> MOA family against a TCGA cohort. The
+        simulation runs 1000 iterations using the learned DCNA threshold ({' '}
         <code>{(result?.learned_threshold ?? learnedThreshold)?.toFixed(4) || '…'}</code>) and a gene-expression
         threshold &gt; 0 to classify responders.
       </p>
@@ -3775,7 +4778,9 @@ function ProposedDrugSimulation({
             style={{ width: '100%', padding: '6px', fontSize: '0.85rem' }}
           />
           <datalist id="proposed-drug-options">
-            {availableDrugs.map((d) => (<option key={d} value={d} />))}
+            {availableDrugs.map((d) => (
+              <option key={d} value={d} />
+            ))}
           </datalist>
         </label>
         <label style={{ display: 'block' }}>
@@ -3791,21 +4796,34 @@ function ProposedDrugSimulation({
         </label>
       </div>
       <div style={{ marginBottom: '0.75rem' }}>
-        <div style={{ fontWeight: 600, fontSize: '0.8rem', marginBottom: 6 }}>
-          Eligibility criteria
-        </div>
+        <div style={{ fontWeight: 600, fontSize: '0.8rem', marginBottom: 6 }}>Eligibility criteria</div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 8, fontSize: '0.82rem' }}>
           <span style={{ fontWeight: 600, color: '#555' }}>Inclusion logic:</span>
           <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-            <input type="radio" name="crit-logic" checked={criteriaLogic === 'all'} onChange={() => setCriteriaLogic('all')} />
+            <input
+              type="radio"
+              name="crit-logic"
+              checked={criteriaLogic === 'all'}
+              onChange={() => setCriteriaLogic('all')}
+            />
             <span>ALL criteria met</span>
           </label>
           <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-            <input type="radio" name="crit-logic" checked={criteriaLogic === 'any'} onChange={() => setCriteriaLogic('any')} />
+            <input
+              type="radio"
+              name="crit-logic"
+              checked={criteriaLogic === 'any'}
+              onChange={() => setCriteriaLogic('any')}
+            />
             <span>ANY criterion met</span>
           </label>
           <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-            <input type="radio" name="crit-logic" checked={criteriaLogic === 'at_least'} onChange={() => setCriteriaLogic('at_least')} />
+            <input
+              type="radio"
+              name="crit-logic"
+              checked={criteriaLogic === 'at_least'}
+              onChange={() => setCriteriaLogic('at_least')}
+            />
             <span>At least</span>
           </label>
           {criteriaLogic === 'at_least' && (
@@ -3818,14 +4836,14 @@ function ProposedDrugSimulation({
               style={{ width: 48, padding: '3px 6px', fontSize: '0.82rem', textAlign: 'center' }}
             />
           )}
-          {criteriaLogic === 'at_least' && (
-            <span>criteria met</span>
-          )}
+          {criteriaLogic === 'at_least' && <span>criteria met</span>}
         </div>
         <div style={{ fontSize: '0.75rem', color: '#777', marginBottom: 6 }}>
           {criteriaLogic === 'all' && 'Patients must match ALL inclusion criteria and NONE of the exclusion criteria.'}
-          {criteriaLogic === 'any' && 'Patients must match at least ONE inclusion criterion and NONE of the exclusion criteria.'}
-          {criteriaLogic === 'at_least' && `Patients must match at least ${criteriaMinCount} inclusion criteria and NONE of the exclusion criteria.`}
+          {criteriaLogic === 'any' &&
+            'Patients must match at least ONE inclusion criterion and NONE of the exclusion criteria.'}
+          {criteriaLogic === 'at_least' &&
+            `Patients must match at least ${criteriaMinCount} inclusion criteria and NONE of the exclusion criteria.`}
         </div>
         {criteria.map((c, i) => (
           <div key={i} style={{ display: 'flex', gap: 6, marginBottom: 6, alignItems: 'center' }}>
@@ -3837,8 +4855,12 @@ function ProposedDrugSimulation({
                 setCriteria(next);
               }}
               style={{
-                padding: '6px 4px', fontSize: '0.8rem', fontWeight: 600, borderRadius: 4,
-                border: '1px solid #ccc', width: 100,
+                padding: '6px 4px',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                borderRadius: 4,
+                border: '1px solid #ccc',
+                width: 100,
                 background: c.type === 'inclusion' ? '#e8f5e9' : '#fce4ec',
                 color: c.type === 'inclusion' ? '#2e7d32' : '#c62828',
               }}
@@ -3860,20 +4882,29 @@ function ProposedDrugSimulation({
               disabled={criteria.length === 1}
               style={{ padding: '0 10px', cursor: 'pointer' }}
               title="Remove this criterion"
-            >-</button>
+            >
+              -
+            </button>
           </div>
         ))}
         <button
           onClick={() => setCriteria([...criteria, { text: '', type: 'inclusion' }])}
           style={{ padding: '4px 10px', fontSize: '0.8rem', cursor: 'pointer' }}
-        >+ Add criterion</button>
+        >
+          + Add criterion
+        </button>
       </div>
       <button
         onClick={runSimulation}
         disabled={running}
         style={{
-          padding: '8px 16px', background: running ? '#999' : '#1e3a8a', color: '#fff',
-          border: 'none', borderRadius: 4, cursor: running ? 'wait' : 'pointer', fontWeight: 600,
+          padding: '8px 16px',
+          background: running ? '#999' : '#1e3a8a',
+          color: '#fff',
+          border: 'none',
+          borderRadius: 4,
+          cursor: running ? 'wait' : 'pointer',
+          fontWeight: 600,
         }}
       >
         {running ? 'Running 1000 iterations…' : 'Run Proposed-Drug Simulation'}
@@ -3882,70 +4913,78 @@ function ProposedDrugSimulation({
 
       {result && (
         <div style={{ marginTop: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}
+          >
             <div style={{ fontSize: '0.85rem' }}>
-              <b>{result.drug_name}</b> — {result.eligible_count} eligible / {result.total_patients} total TCGA patients —
-              mean predicted RR: <b>{(result.mean_predicted_rate * 100).toFixed(1)}%</b>
+              <b>{result.drug_name}</b> — {result.eligible_count} eligible / {result.total_patients} total TCGA patients
+              — mean predicted RR: <b>{(result.mean_predicted_rate * 100).toFixed(1)}%</b>
             </div>
-            <button onClick={() => {
-              import('xlsx').then((XLSX) => {
-                const toPct = (v: number) => (v == null || isNaN(v)) ? null : v * 100;
-                const rates = (result.predicted_rates as number[]) || [];
-                const sorted = [...rates].sort((a, b) => a - b);
-                const pctl = (s: number[], p: number): number => {
-                  if (!s.length) return NaN;
-                  return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))];
-                };
-                const mean = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : NaN;
-                const median = pctl(sorted, 0.5);
-                const q1 = pctl(sorted, 0.25);
-                const q3 = pctl(sorted, 0.75);
-                const minV = sorted.length ? sorted[0] : NaN;
-                const maxV = sorted.length ? sorted[sorted.length - 1] : NaN;
-                const sd = rates.length > 1
-                  ? Math.sqrt(rates.reduce((s, v) => s + (v - mean) ** 2, 0) / (rates.length - 1))
-                  : NaN;
+            <button
+              onClick={() => {
+                import('xlsx').then((XLSX) => {
+                  const toPct = (v: number) => (v == null || isNaN(v) ? null : v * 100);
+                  const rates = (result.predicted_rates as number[]) || [];
+                  const sorted = [...rates].sort((a, b) => a - b);
+                  const pctl = (s: number[], p: number): number => {
+                    if (!s.length) return NaN;
+                    return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))];
+                  };
+                  const mean = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : NaN;
+                  const median = pctl(sorted, 0.5);
+                  const q1 = pctl(sorted, 0.25);
+                  const q3 = pctl(sorted, 0.75);
+                  const minV = sorted.length ? sorted[0] : NaN;
+                  const maxV = sorted.length ? sorted[sorted.length - 1] : NaN;
+                  const sd =
+                    rates.length > 1
+                      ? Math.sqrt(rates.reduce((s, v) => s + (v - mean) ** 2, 0) / (rates.length - 1))
+                      : NaN;
 
-                const rrAll = (allResponseRates || []).filter((v) => typeof v === 'number' && !isNaN(v));
-                const moaBandMin = rrAll.length >= 2 ? Math.min(...rrAll) : NaN;
-                const moaBandMax = rrAll.length >= 2 ? Math.max(...rrAll) : NaN;
+                  const rrAll = (allResponseRates || []).filter((v) => typeof v === 'number' && !isNaN(v));
+                  const moaBandMin = rrAll.length >= 2 ? Math.min(...rrAll) : NaN;
+                  const moaBandMax = rrAll.length >= 2 ? Math.max(...rrAll) : NaN;
 
-                // Summary sheet (transposed: metrics as rows)
-                const summaryRows: (string | number | null)[][] = [
-                  ['Metric', result.drug_name],
-                  ['MOA Category', moaCategory || ''],
-                  ['Trial Size (N patients)', result.trial_size],
-                  ['N Iterations', result.n_iterations],
-                  ['Eligible TCGA Patients', result.eligible_count],
-                  ['Learned DCNA Threshold', result.learned_threshold],
-                  ['Eligibility Criteria', (result.criteria || []).join('; ')],
-                  ['Mean Predicted RR (%)', toPct(mean)],
-                  ['Median Predicted RR (%)', toPct(median)],
-                  ['Q1 Predicted RR (%)', toPct(q1)],
-                  ['Q3 Predicted RR (%)', toPct(q3)],
-                  ['Min Predicted RR (%)', toPct(minV)],
-                  ['Max Predicted RR (%)', toPct(maxV)],
-                  ['SD Predicted RR (%)', toPct(sd)],
-                  ['MOA Band Min (%)', toPct(moaBandMin)],
-                  ['MOA Band Max (%)', toPct(moaBandMax)],
-                ];
+                  // Summary sheet (transposed: metrics as rows)
+                  const summaryRows: (string | number | null)[][] = [
+                    ['Metric', result.drug_name],
+                    ['MOA Category', moaCategory || ''],
+                    ['Trial Size (N patients)', result.trial_size],
+                    ['N Iterations', result.n_iterations],
+                    ['Eligible TCGA Patients', result.eligible_count],
+                    ['Learned DCNA Threshold', result.learned_threshold],
+                    ['Eligibility Criteria', (result.criteria || []).join('; ')],
+                    ['Mean Predicted RR (%)', toPct(mean)],
+                    ['Median Predicted RR (%)', toPct(median)],
+                    ['Q1 Predicted RR (%)', toPct(q1)],
+                    ['Q3 Predicted RR (%)', toPct(q3)],
+                    ['Min Predicted RR (%)', toPct(minV)],
+                    ['Max Predicted RR (%)', toPct(maxV)],
+                    ['SD Predicted RR (%)', toPct(sd)],
+                    ['MOA Band Min (%)', toPct(moaBandMin)],
+                    ['MOA Band Max (%)', toPct(moaBandMax)],
+                  ];
 
-                // Predicted Rates sheet
-                const predHeader = [result.drug_name];
-                const predRows: (string | number | null)[][] = [predHeader];
-                for (const r of rates) {
-                  predRows.push([toPct(r)]);
-                }
+                  // Predicted Rates sheet
+                  const predHeader = [result.drug_name];
+                  const predRows: (string | number | null)[][] = [predHeader];
+                  for (const r of rates) {
+                    predRows.push([toPct(r)]);
+                  }
 
-                const wb = XLSX.utils.book_new();
-                const ws1 = XLSX.utils.aoa_to_sheet(summaryRows);
-                XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
-                const ws2 = XLSX.utils.aoa_to_sheet(predRows);
-                XLSX.utils.book_append_sheet(wb, ws2, 'Predicted Rates');
+                  const wb = XLSX.utils.book_new();
+                  const ws1 = XLSX.utils.aoa_to_sheet(summaryRows);
+                  XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+                  const ws2 = XLSX.utils.aoa_to_sheet(predRows);
+                  XLSX.utils.book_append_sheet(wb, ws2, 'Predicted Rates');
 
-                XLSX.writeFile(wb, `${result.drug_name || 'proposed_drug'}_simulation.xlsx`);
-              });
-            }} style={csvButtonStyle}>Download XLSX</button>
+                  XLSX.writeFile(wb, `${result.drug_name || 'proposed_drug'}_simulation.xlsx`);
+                });
+              }}
+              style={csvButtonStyle}
+            >
+              Download XLSX
+            </button>
           </div>
           <div ref={boxRef} style={{ width: 820, minWidth: 820 }} />
           <div ref={scatterRef} style={{ width: 900, minWidth: 900, marginTop: '1rem' }} />
@@ -3955,13 +4994,17 @@ function ProposedDrugSimulation({
   );
 }
 
-
 // ── Style helpers ────────────────────────────────────────────────────────
 
 const thStyle: React.CSSProperties = {
-  padding: '6px 8px', textAlign: 'left', borderBottom: '2px solid #ddd', fontWeight: 600, fontSize: '0.78rem',
+  padding: '6px 8px',
+  textAlign: 'left',
+  borderBottom: '2px solid #ddd',
+  fontWeight: 600,
+  fontSize: '0.78rem',
 };
 
 const tdStyle: React.CSSProperties = {
-  padding: '5px 8px', fontSize: '0.8rem',
+  padding: '5px 8px',
+  fontSize: '0.8rem',
 };
