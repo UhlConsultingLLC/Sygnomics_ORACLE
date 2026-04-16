@@ -1,6 +1,7 @@
 """Tests for configuration loading and validation."""
 
 import pytest
+
 from config.schema import PipelineConfig, load_config
 
 

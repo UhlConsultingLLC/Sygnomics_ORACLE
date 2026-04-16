@@ -5,7 +5,6 @@ cost-based optimization, or percentile-based approaches.
 """
 
 import logging
-from typing import Optional
 
 import numpy as np
 from pydantic import BaseModel

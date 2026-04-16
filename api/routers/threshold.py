@@ -1,6 +1,7 @@
 """Threshold learning endpoints."""
 
 import logging
+
 import numpy as np
 from fastapi import APIRouter, HTTPException
 

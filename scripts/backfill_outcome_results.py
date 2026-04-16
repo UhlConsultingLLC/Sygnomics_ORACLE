@@ -28,10 +28,11 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from sqlalchemy import func, distinct
-from database.engine import create_db_engine, init_db, get_session_factory
-from database.models import TrialRecord, OutcomeRecord
+from sqlalchemy import distinct, func
+
 from connectors.clinicaltrials import _fetch_json, _parse_outcome_results
+from database.engine import create_db_engine, get_session_factory, init_db
+from database.models import OutcomeRecord
 
 logging.basicConfig(
     level=logging.INFO,

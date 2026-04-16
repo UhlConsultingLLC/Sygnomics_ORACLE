@@ -13,7 +13,7 @@ from analysis.metrics import (
     status_distribution,
     trials_per_condition,
 )
-from analysis.models import FilterSpec, SplitResult
+from analysis.models import FilterSpec
 from analysis.split import split_trials
 from config.schema import SplitConfig
 from connectors.models.trial import (
@@ -25,7 +25,7 @@ from connectors.models.trial import (
     Trial,
 )
 from database.etl import load_trials
-from database.models import Base, InterventionRecord, MOAAnnotationRecord
+from database.models import Base
 
 
 @pytest.fixture
@@ -151,7 +151,10 @@ class TestFilters:
         assert results[0].nct_id == "NCT00000002"
 
     def test_filter_by_phase(self, populated_db):
-        spec = FilterSpec(phases=["Phase 2"])
+        # FilterSpec.phases takes canonical phase identifiers (PHASE1/2/3/4/NA),
+        # not the free-form "Phase 2" strings the fixtures happen to use —
+        # apply_filters canonicalizes the stored DB values at query time.
+        spec = FilterSpec(phases=["PHASE2"])
         results = apply_filters(populated_db, spec)
         assert len(results) == 2
 
@@ -200,7 +203,8 @@ class TestFilters:
         options = get_filter_options(populated_db)
         assert "Glioblastoma" in options["conditions"]
         assert "COMPLETED" in options["statuses"]
-        assert "Phase 2" in options["phases"]
+        # options["phases"] returns canonical PHASE1/PHASE2/... identifiers
+        assert "PHASE2" in options["phases"]
         assert "NCI" in options["sponsors"]
 
 

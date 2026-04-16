@@ -244,7 +244,7 @@ const SALT_SUFFIXES = [
 function canonicalizeDrug(raw: string): { key: string; label: string } {
   const base = (raw || '').trim();
   if (!base) return { key: '', label: '' };
-  let words = base.split(/\s+/);
+  const words = base.split(/\s+/);
   while (words.length > 1) {
     const last = words[words.length - 1].toLowerCase().replace(/[^a-z]/g, '');
     if (SALT_SUFFIXES.includes(last)) words.pop();
@@ -597,7 +597,7 @@ export default function MOACorrelation() {
     if (store.state.jackknife) patch.jackknife = null;
     if (store.state.leaveKOut) patch.leaveKOut = null;
     if (Object.keys(patch).length > 0) store.setState(patch);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [results, trialSet, aggregation]);
 
   const setBootConfig = (patch: Partial<BootstrapUIConfig>) =>

@@ -1,6 +1,5 @@
 """Tests for TCGA integration, eligibility matching, and in-silico simulation."""
 
-import pytest
 
 from analysis.eligibility_matcher import (
     EligibilityMatcher,
@@ -12,7 +11,6 @@ from analysis.simulation import InSilicoSimulator
 from connectors.models.tcga import (
     ClinicalData,
     GeneExpressionProfile,
-    SimulatedResponse,
     TCGACase,
 )
 from connectors.tcga import TCGAConnector

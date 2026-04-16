@@ -2,7 +2,6 @@
 
 import re
 
-
 # Patterns to strip from intervention names
 _DOSAGE_PATTERN = re.compile(
     r"\s*\d+\.?\d*\s*(mg|g|ml|mcg|ug|µg|mg/m2|mg/kg|iu|units?|mm|%)\b.*",

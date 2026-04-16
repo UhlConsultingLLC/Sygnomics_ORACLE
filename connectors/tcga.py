@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Optional
 
 import httpx
-import numpy as np
 import pandas as pd
 
 from config.schema import TCGAConfig

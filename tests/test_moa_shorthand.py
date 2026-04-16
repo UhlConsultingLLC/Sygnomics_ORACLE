@@ -1,11 +1,9 @@
 """Tests for MOA short-hand name resolution."""
 
-import pytest
 
 from moa_classification.moa_shorthand import (
-    MOAShorthand,
-    resolve_shorthand,
     group_moa_shorthands,
+    resolve_shorthand,
 )
 
 

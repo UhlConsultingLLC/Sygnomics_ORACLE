@@ -14,14 +14,12 @@ Usage:
 import argparse
 import asyncio
 import logging
-import sys
 
 from config.schema import load_config
-from connectors.chembl import ChEMBLConnector
 from connectors.open_targets import OpenTargetsClient
-from database.engine import create_db_engine, init_db, get_session_factory
+from database.engine import create_db_engine, get_session_factory, init_db
 from moa_classification.classifier import MOAClassifier
-from moa_classification.moa_shorthand import resolve_shorthand, group_moa_shorthands
+from moa_classification.moa_shorthand import group_moa_shorthands, resolve_shorthand
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -68,7 +66,7 @@ def lookup_drug(drug_name: str) -> None:
         print()
 
     groups = group_moa_shorthands(shorthands)
-    print(f"  Grouped by broad category:")
+    print("  Grouped by broad category:")
     for broad, specifics in groups.items():
         print(f"    {broad}: {', '.join(specifics)}")
     print()
@@ -97,15 +95,15 @@ def run_classification(config_path: str | None, force: bool) -> None:
         )
 
         print(f"\n{'='*60}")
-        print(f"  MOA Classification")
+        print("  MOA Classification")
         print(f"{'='*60}")
         print(f"  Database:              {config.database.url}")
         print(f"  Total interventions:   {total_interventions}")
         print(f"  Already classified:    {already_classified}")
         print(f"  Unclassified:          {total_interventions - already_classified}")
         print(f"  Force re-classify:     {force}")
-        print(f"  Primary source:        Open Targets Platform API")
-        print(f"  Fallback source:       ChEMBL REST API")
+        print("  Primary source:        Open Targets Platform API")
+        print("  Fallback source:       ChEMBL REST API")
         print(f"{'='*60}\n")
 
         if total_interventions == 0:
@@ -123,7 +121,7 @@ def run_classification(config_path: str | None, force: bool) -> None:
         stats = asyncio.run(classifier.classify_all(session, force_reclassify=force))
 
         print(f"\n{'='*60}")
-        print(f"  Classification Results")
+        print("  Classification Results")
         print(f"{'='*60}")
         print(f"  Classified:  {stats['classified']}")
         print(f"  Skipped:     {stats['skipped']}")

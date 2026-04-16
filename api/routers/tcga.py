@@ -5,7 +5,6 @@ import json
 import os
 import statistics
 from functools import lru_cache
-from typing import Optional
 
 from fastapi import APIRouter, Query
 from pydantic import BaseModel, Field
@@ -248,9 +247,10 @@ def get_drug_targets(drug_name: str):
             return {"drug": drug_name, "targets": targets, "source": "open_targets"}
 
     # 2. Fall back to DB MOA annotations
-    from api.dependencies import get_engine, get_session_factory
-    from database.models import MOAAnnotationRecord, InterventionRecord
     from sqlalchemy import func
+
+    from api.dependencies import get_engine, get_session_factory
+    from database.models import InterventionRecord, MOAAnnotationRecord
 
     engine = get_engine()
     session_factory = get_session_factory(engine)

@@ -18,12 +18,12 @@ Usage::
     detail = conn.get_trial_details("2024-514399-42-00")
 """
 
-import logging
-import time
-import urllib.request
-import urllib.error
 import json
+import logging
 import ssl
+import time
+import urllib.error
+import urllib.request
 from datetime import date, datetime
 from typing import Any, Optional
 

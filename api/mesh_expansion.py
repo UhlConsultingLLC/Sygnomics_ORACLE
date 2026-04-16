@@ -10,7 +10,6 @@ import logging
 from functools import lru_cache
 
 from connectors.disease_mapper import DiseaseMapper
-from connectors.mesh_client import MeSHClient
 
 logger = logging.getLogger(__name__)
 

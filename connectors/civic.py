@@ -12,16 +12,13 @@ from __future__ import annotations
 
 import csv
 import io
-import json
 import logging
-import os
 import re
 import time
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 

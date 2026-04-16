@@ -1,7 +1,8 @@
 """Tests for the FastAPI backend endpoints."""
 
-import pytest
 from contextlib import asynccontextmanager
+
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine

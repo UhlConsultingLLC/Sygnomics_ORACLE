@@ -11,9 +11,10 @@ These tests exercise the end-to-end data flow:
   8. FastAPI serves results via REST
 """
 
+from contextlib import asynccontextmanager
+
 import numpy as np
 import pytest
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -34,7 +35,8 @@ from analysis.simulation import InSilicoSimulator
 from analysis.split import split_trials
 from analysis.threshold_learning import learn_threshold
 from api.dependencies import get_db
-from api.routers import analysis as analysis_router, conditions, export, trials
+from api.routers import analysis as analysis_router
+from api.routers import conditions, export, trials
 from connectors.models.tcga import ClinicalData, GeneExpressionProfile, TCGACase
 from connectors.models.trial import Intervention, Sponsor, Trial
 from database.etl import load_trials
@@ -46,14 +48,12 @@ from database.queries import (
     get_trial,
     get_trial_count,
 )
-from moa_classification.classifier import MOAClassifier
 from moa_classification.moa_categories import MOACategory, classify_moa
 from visualization.summary_plots import (
     plot_moa_distribution,
     plot_phase_distribution,
     plot_trials_per_condition,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -432,9 +432,11 @@ class TestAPIIntegration:
         assert len(lines) >= 2  # header + data
 
     def test_api_filter(self, client):
-        resp = client.post("/analysis/filter", json={"phases": ["Phase 3"]})
+        # API expects canonical phase identifiers; response also serializes
+        # phases in canonical form (PHASE1 / PHASE2 / PHASE3 / PHASE4 / NA).
+        resp = client.post("/analysis/filter", json={"phases": ["PHASE3"]})
         assert resp.status_code == 200
         body = resp.json()
         assert body["total"] >= 1
         for t in body["trials"]:
-            assert t["phase"] == "Phase 3"
+            assert t["phase"] == "PHASE3"

@@ -1,11 +1,11 @@
 """Summary visualizations for clinical trial analysis."""
 
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import pandas as pd
 
-from analysis.models import ConditionCount, MOADistribution, PhaseDistribution
 import visualization.theme  # noqa: F401 - registers template
+from analysis.models import ConditionCount, MOADistribution, PhaseDistribution
 
 
 def plot_trials_per_condition(

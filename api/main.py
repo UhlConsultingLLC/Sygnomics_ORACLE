@@ -6,7 +6,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.dependencies import get_config, get_engine
-from api.routers import analysis, conditions, ctis_router, export, moa, novel_therapy, simulation, tcga, threshold, trials, validation, version as version_router, who
+from api.routers import (
+    analysis,
+    conditions,
+    ctis_router,
+    export,
+    moa,
+    novel_therapy,
+    simulation,
+    tcga,
+    threshold,
+    trials,
+    validation,
+    who,
+)
+from api.routers import version as version_router
 from config.version import APP_VERSION
 from database.engine import init_db
 

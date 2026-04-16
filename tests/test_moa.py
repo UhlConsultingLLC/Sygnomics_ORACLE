@@ -1,18 +1,16 @@
 """Tests for MOA classification: name resolver, categories, and classifier."""
 
-import pytest
 from unittest.mock import AsyncMock
 
+import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from connectors.chembl import ChEMBLConnector
-from connectors.models.chembl import Compound, Mechanism, Target
 from database.models import Base, InterventionRecord, MOAAnnotationRecord
 from moa_classification.classifier import MOAClassifier
 from moa_classification.moa_categories import MOACategory, classify_moa
 from moa_classification.name_resolver import clean_drug_name, is_drug_intervention
-
 
 # --- Name resolver tests ---
 

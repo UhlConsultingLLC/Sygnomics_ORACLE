@@ -7,8 +7,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from config.schema import PipelineConfig, load_config
-
+from config.schema import PipelineConfig
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 

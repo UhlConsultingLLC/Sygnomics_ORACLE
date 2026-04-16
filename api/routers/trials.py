@@ -5,11 +5,11 @@ import json
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import and_, func, or_
 from sqlalchemy.orm import Session, joinedload, subqueryload
 
-from analysis.filters import canonicalize_phase, CANONICAL_PHASES
+from analysis.filters import CANONICAL_PHASES, canonicalize_phase
 from api.dependencies import get_db
 from api.mesh_expansion import expand_condition, expand_intervention
 
@@ -23,7 +23,15 @@ def _display_phase(raw: str | None) -> str:
     ordered = [p for p in CANONICAL_PHASES if p in canon]
     return "/".join(ordered)
 from api.schemas import OutcomeSummary, TrialListResponse, TrialSummary
-from database.models import ArmRecord, ConditionRecord, InterventionRecord, OutcomeRecord, TrialRecord, WHOClassificationRecord, trial_conditions, trial_interventions
+from database.models import (
+    ArmRecord,
+    ConditionRecord,
+    InterventionRecord,
+    OutcomeRecord,
+    TrialRecord,
+    WHOClassificationRecord,
+    trial_interventions,
+)
 from database.queries import get_trial
 
 logger = logging.getLogger(__name__)
@@ -365,7 +373,7 @@ def get_trial_detail(nct_id: str, db: Session = Depends(get_db)):
 @router.get("/{nct_id}/biomarkers")
 def get_trial_biomarkers(nct_id: str, db: Session = Depends(get_db)):
     """Extract biomarker criteria from trial eligibility and arms, with TCGA GBM prevalence."""
-    from analysis.biomarker_extractor import extract_biomarkers, extract_arm_biomarkers
+    from analysis.biomarker_extractor import extract_arm_biomarkers, extract_biomarkers
     from database.models import ArmRecord, EligibilityRecord, TrialRecord
 
     # Pull trial-level prose so we don't miss criteria buried in the summary
@@ -548,6 +556,7 @@ def _standardize_drug_name(raw: str) -> str:
 
 
 from functools import lru_cache as _lru_cache
+
 
 @_lru_cache(maxsize=512)
 def _chembl_preferred_name(term: str) -> str | None:
@@ -793,12 +802,14 @@ def tcga_trial_comparison(
       *arm_id* — scopes to a formal CT.gov arm's description and therapies.
       *(neither)* — uses the full trial eligibility criteria.
     """
-    import numpy as np
     import json as _json2
-    from analysis.biomarker_extractor import extract_biomarkers, extract_arm_biomarkers
+
+    import numpy as np
+
+    from analysis.biomarker_extractor import extract_arm_biomarkers, extract_biomarkers
     from analysis.moa_simulation import MOASimulationEngine, extract_response_rate
-    from api.routers.simulation import _get_cached_engine
-    from api.routers.tcga import get_drug_targets as tcga_get_drug_targets, _load_dcna, _load_expression
+    from api.routers.tcga import _load_dcna, _load_expression
+    from api.routers.tcga import get_drug_targets as tcga_get_drug_targets
     from database.models import EligibilityRecord, MOAAnnotationRecord, TrialRecord
 
     trial_row = db.get(TrialRecord, nct_id)
@@ -947,7 +958,8 @@ def tcga_trial_comparison(
     expr_idx = {p: i for i, p in enumerate(expr_patients)}
 
     # 6) Load per-patient biomarkers
-    import json as _json, os as _os
+    import json as _json
+    import os as _os
     bio_path = _os.path.join(_os.path.dirname(__file__), "..", "..", "data", "tcga_patient_biomarkers.json")
     try:
         with open(bio_path, "r", encoding="utf-8") as f:
@@ -1416,7 +1428,6 @@ async def backfill_results(
 
     Fetches fresh data from CT.gov for each trial. Rate-limited to avoid API throttling.
     """
-    import time
     from connectors.clinicaltrials import _http_get_trial_details
 
     # Find trials with outcomes but no results_json populated
@@ -1479,7 +1490,6 @@ async def refresh_categorical_outcomes(
     Required after upgrading the connector to start capturing class/category
     titles, so existing rows can disambiguate Tumor Response Yes/No outcomes.
     """
-    import time
     from connectors.clinicaltrials import _http_get_trial_details
 
     rows = (

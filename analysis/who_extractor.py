@@ -15,17 +15,13 @@ The extractor examines:
 
 import logging
 import re
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
 from analysis.biomarker_extractor import BiomarkerMatch, extract_biomarkers
 from analysis.who_classification import (
-    MolecularStatus,
-    WHOClassificationResult,
     WHOGliomaType,
     WHOGrade,
-    normalize_biomarker_dict,
 )
 
 logger = logging.getLogger(__name__)

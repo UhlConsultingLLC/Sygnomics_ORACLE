@@ -21,7 +21,6 @@ from collections import Counter
 from api.dependencies import get_engine, get_session_factory
 from database.models import OutcomeRecord, TrialRecord
 
-
 PERCENT_TOKENS = ("percent", "%", "proportion", "fraction", "rate")
 
 

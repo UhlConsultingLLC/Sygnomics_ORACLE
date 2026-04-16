@@ -163,7 +163,7 @@ def main() -> int:
         if s7:
             matched += 1
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Matched to S7: {matched}")
     print(f"  MGMT methylated: {mgmt_meth}")
     print(f"  MGMT unmethylated: {mgmt_unmeth}")

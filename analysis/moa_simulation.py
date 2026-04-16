@@ -9,7 +9,6 @@ import csv
 import json
 import logging
 import os
-import random
 import uuid
 from typing import Optional
 
@@ -2084,8 +2083,8 @@ class MOASimulationEngine:
             fetches PARP1, PARP2, PARP 1,2,3 inhibitors).
           - Plain string — exact match on ``moa_short_form``.
         """
+
         from database.models import InterventionRecord, MOAAnnotationRecord
-        from sqlalchemy import func
 
         q = (
             db.query(
@@ -2141,11 +2140,16 @@ class MOASimulationEngine:
         different arms (different drugs, doses, or molecular criteria) are
         each simulated independently with their own DCNA drug lists.
         """
-        from database.models import (
-            ArmRecord, InterventionRecord, OutcomeRecord, TrialRecord,
-            EligibilityRecord, trial_interventions, MOAAnnotationRecord,
-        )
         from sqlalchemy import func
+
+        from database.models import (
+            ArmRecord,
+            EligibilityRecord,
+            InterventionRecord,
+            OutcomeRecord,
+            TrialRecord,
+            trial_interventions,
+        )
 
         # Get trial IDs that use any of these drugs
         drug_names_upper = [d.upper() for d in drug_names]
@@ -3275,8 +3279,9 @@ class MOASimulationEngine:
         outlier filtering), so the overlay matches the data the simulation
         actually used. Any ``excluded_nct_ids`` are removed as an extra guard.
         """
-        from database.models import OutcomeRecord, InterventionRecord, trial_interventions
         from sqlalchemy import func
+
+        from database.models import InterventionRecord, OutcomeRecord, trial_interventions
 
         excluded_nct_ids = excluded_nct_ids or set()
         cohort_nct_ids = cohort_nct_ids or set()

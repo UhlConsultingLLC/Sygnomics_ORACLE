@@ -5,7 +5,6 @@ import pytest
 
 from analysis.bland_altman import bland_altman_analysis
 from analysis.evaluation import (
-    ClassifierMetrics,
     confidence_interval_coverage,
     evaluate_classifier,
 )

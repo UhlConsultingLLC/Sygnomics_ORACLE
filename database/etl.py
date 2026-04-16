@@ -1,7 +1,6 @@
 """ETL functions for loading Trial Pydantic models into the database."""
 
 import logging
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -12,7 +11,6 @@ from database.models import (
     EligibilityRecord,
     InterventionRecord,
     LocationRecord,
-    MOAAnnotationRecord,
     OutcomeRecord,
     SponsorRecord,
     TrialRecord,
