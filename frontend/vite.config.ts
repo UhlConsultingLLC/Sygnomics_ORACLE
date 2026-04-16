@@ -27,10 +27,26 @@ export default defineConfig({
         // Split heavy vendor libraries into their own chunks so the
         // main bundle stays small and Plotly (the largest dep at ~3 MB
         // uncompressed) is cached independently by the browser.
-        manualChunks: {
-          plotly: ['plotly.js'],
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'tanstack-query': ['@tanstack/react-query'],
+        //
+        // Expressed as `codeSplitting.groups` because Vite 8 uses
+        // Rolldown as its bundler, and Rolldown dropped the classic
+        // Rollup `manualChunks: Record<string, string[]>` object form
+        // (it only accepts a function there). `codeSplitting.groups`
+        // is the documented Rolldown-native replacement — regex-based
+        // filters that express the same intent. (The older
+        // `advancedChunks` spelling also works but is deprecated.)
+        codeSplitting: {
+          groups: [
+            { name: 'plotly', test: /[\\/]node_modules[\\/]plotly\.js[\\/]/ },
+            {
+              name: 'react-vendor',
+              test: /[\\/]node_modules[\\/](?:react|react-dom|react-router-dom)[\\/]/,
+            },
+            {
+              name: 'tanstack-query',
+              test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
+            },
+          ],
         },
       },
     },

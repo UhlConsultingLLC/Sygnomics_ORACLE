@@ -47,7 +47,12 @@ jobs:
         run: npm install --no-audit --no-fund
 
       - name: TypeScript typecheck
-        run: npx tsc --noEmit
+        # `tsc -b --noEmit` so project references (tsconfig.app.json,
+        # tsconfig.node.json) are actually visited. Plain `tsc --noEmit`
+        # against the root tsconfig.json is a no-op here because that
+        # config has `files: []` and only declares references — any
+        # errors in src/ or vite.config.ts would be silently skipped.
+        run: npx tsc -b --noEmit
 
       - name: ESLint
         run: npm run lint
