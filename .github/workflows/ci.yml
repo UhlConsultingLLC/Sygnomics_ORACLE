@@ -52,6 +52,9 @@ jobs:
       - name: ESLint
         run: npm run lint
 
+      - name: Vitest (component + unit tests)
+        run: npm test
+
   lint-backend:
     name: Backend lint (ruff)
     runs-on: ubuntu-latest

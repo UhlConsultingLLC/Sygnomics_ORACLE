@@ -1,6 +1,6 @@
 """Analysis endpoints: metrics, filtering, plots."""
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -120,7 +120,7 @@ def get_plot(plot_type: str, db: Session = Depends(get_db)):
         data = phase_distribution(db)
         fig = plot_phase_distribution(data)
     else:
-        return {"error": f"Unknown plot type: {plot_type}"}
+        raise HTTPException(status_code=400, detail=f"Unknown plot type: {plot_type}")
 
     return fig.to_json()
 

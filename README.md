@@ -69,6 +69,16 @@ Then open **http://localhost:5173** in your browser. The backend is on **http://
 
 `launch_claude.bat` and `launch_claude_server.bat` in the repo root start both processes together on Windows for convenience.
 
+### Seed demo data (optional)
+
+The database starts empty. To populate it with a curated set of GBM trials so you can explore the UI immediately:
+
+```bash
+python scripts/load_demo_data.py
+```
+
+For a guided 10-minute walkthrough of every pipeline stage, see [DEMO_SCRIPT.md](DEMO_SCRIPT.md).
+
 ---
 
 ## Prerequisites
@@ -127,7 +137,7 @@ Sygnomics_ORACLE/
 │   ├── engine.py               # Engine factory (SQLite today, PG-ready)
 │   ├── etl.py                  # load_trials() with upsert
 │   ├── queries.py              # Query helpers returning Pydantic models
-│   └── migrations/             # Alembic initial + incremental migrations
+│   # Schema is managed by init_db() → Base.metadata.create_all() + column-level ALTER migrations
 │
 ├── moa_classification/     # Drug name → MOA category resolution
 │   ├── name_resolver.py        # Strip dosage / salt / route to canonical drug
@@ -173,7 +183,8 @@ Sygnomics_ORACLE/
 │       └── types/index.ts          # TypeScript mirrors of Pydantic models
 │
 ├── data/                   # GITIGNORED — cached TCGA + DB snapshots
-├── docs/                   # Supplemental docs (architecture notes, notebooks)
+├── docs/                   # Supplemental docs (user guide, developer guide, roadmap)
+├── DEMO_SCRIPT.md          # 10-minute walkthrough script for live demos
 ├── tests/                  # pytest suite
 ├── pyproject.toml          # Python metadata — version source of truth
 ├── setup.py                # Install hook that bakes git SHA into _build_info.py
@@ -193,7 +204,7 @@ Sygnomics_ORACLE/
 | Change the DCNA formula | `analysis/dcna.py` |
 | Change threshold-learning method | `analysis/threshold_learning.py` — Youden / cost / percentile selectors |
 | Change CORS allowlist | `config/default_config.yaml` → `api.cors_origins` (then restart backend) |
-| Change the DB schema | `database/models.py` + new Alembic migration in `database/migrations/` |
+| Change the DB schema | `database/models.py` (add columns) + `database/engine._apply_column_migrations()` (add ALTER TABLE entries) |
 | Change TCGA data source | `config/default_config.yaml` → `tcga.mode` (`api` / `local` / `auto`) |
 | Add a new export format | `api/routers/export.py` + `api/provenance.py` |
 | Bump the app version | `pyproject.toml`, `config/version.py`, `frontend/package.json`, `CHANGELOG.md` — all four in lockstep |
