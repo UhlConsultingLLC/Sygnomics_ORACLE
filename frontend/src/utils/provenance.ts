@@ -11,7 +11,8 @@
 // unreachable, everything falls through to literal "unknown" strings and
 // the export still succeeds (just without provenance).
 
-import { getVersionSync, type VersionInfo } from '../hooks/useVersion';
+import { getVersionSync } from '../hooks/useVersion';
+import type { VersionInfo } from '../services/version';
 
 export interface ExportMetadata {
   app: string;
