@@ -64,7 +64,9 @@ export const fetchTrialBiomarkers = async (nctId: string): Promise<BiomarkerResp
   return data;
 };
 
-export const refreshTrialResults = async (nctId: string): Promise<{ nct_id: string; outcomes_updated: number; has_results_on_ctgov: boolean }> => {
+export const refreshTrialResults = async (
+  nctId: string,
+): Promise<{ nct_id: string; outcomes_updated: number; has_results_on_ctgov: boolean }> => {
   const { data } = await api.post(`/trials/${nctId}/refresh`);
   return data;
 };
@@ -154,7 +156,9 @@ export const lookupDrugMOA = async (drugName: string): Promise<MOADrugLookupResp
   return data;
 };
 
-export const classifyMOA = async (forceReclassify = false): Promise<{ classified: number; skipped: number; failed: number }> => {
+export const classifyMOA = async (
+  forceReclassify = false,
+): Promise<{ classified: number; skipped: number; failed: number }> => {
   const { data } = await api.post('/moa/classify', { force_reclassify: forceReclassify });
   return data;
 };
@@ -170,16 +174,18 @@ export const runSimulation = async (req: SimulationRequest): Promise<SimulationR
   return data;
 };
 
-export const fetchResponderSimilarity = async (
-  simId: string,
-  rule: 'majority' | 'any' = 'majority',
-  qCutoff = 0.1,
-) => {
+export const fetchResponderSimilarity = async (simId: string, rule: 'majority' | 'any' = 'majority', qCutoff = 0.1) => {
   const { data } = await api.get(`/simulation/moa-responder-similarity/${simId}`, {
     params: { rule, q_cutoff: qCutoff },
   });
   return data as {
-    meta: { rule: string; q_cutoff: number; total_patients: number; total_features: number; n_trials_in_cohort: number };
+    meta: {
+      rule: string;
+      q_cutoff: number;
+      total_patients: number;
+      total_features: number;
+      n_trials_in_cohort: number;
+    };
     groups: { n_responders: number; n_nonresponders: number; responders: string[]; nonresponders: string[] };
     features: Array<{
       feature: string;
@@ -208,11 +214,7 @@ export const fetchResponderSimilarity = async (
   };
 };
 
-export const downloadResponderSimilarityCsv = (
-  simId: string,
-  rule: 'majority' | 'any' = 'majority',
-  qCutoff = 0.1,
-) => {
+export const downloadResponderSimilarityCsv = (simId: string, rule: 'majority' | 'any' = 'majority', qCutoff = 0.1) => {
   const baseURL = api.defaults.baseURL || '';
   const url = `${baseURL}/simulation/moa-responder-similarity/${simId}/download?rule=${rule}&q_cutoff=${qCutoff}`;
   window.open(url, '_blank');
@@ -318,10 +320,7 @@ export const fetchDrugTargets = async (drugName: string) => {
   return data as { drug: string; targets: { gene_symbol: string; action_type: string; in_expression_data: boolean }[] };
 };
 
-export const fetchExpressionHeatmap = async (
-  genes: string[],
-  includeAverage = false,
-) => {
+export const fetchExpressionHeatmap = async (genes: string[], includeAverage = false) => {
   const { data } = await api.get('/tcga/heatmap', {
     params: { genes: genes.join(','), include_average: includeAverage },
   });

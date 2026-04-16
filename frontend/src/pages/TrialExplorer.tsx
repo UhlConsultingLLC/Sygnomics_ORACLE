@@ -31,20 +31,43 @@ function MultiPicker({ label, options, selected, onChange }: MultiPickerProps) {
         disabled={remaining.length === 0}
       >
         <option value="">{label}</option>
-        {remaining.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        {remaining.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
       </select>
       {selected.map((v) => (
-        <span key={v} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          padding: '2px 8px', background: '#e3f2fd', color: '#1565c0',
-          border: '1px solid #bbdefb', borderRadius: 12, fontSize: '0.75rem',
-        }}>
+        <span
+          key={v}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '2px 8px',
+            background: '#e3f2fd',
+            color: '#1565c0',
+            border: '1px solid #bbdefb',
+            borderRadius: 12,
+            fontSize: '0.75rem',
+          }}
+        >
           {labelOf(v)}
           <button
             onClick={() => onChange(selected.filter((x) => x !== v))}
-            style={{ background: 'none', border: 'none', color: '#1565c0', cursor: 'pointer', padding: 0, fontSize: '0.9rem', lineHeight: 1 }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#1565c0',
+              cursor: 'pointer',
+              padding: 0,
+              fontSize: '0.9rem',
+              lineHeight: 1,
+            }}
             title={`Remove ${labelOf(v)}`}
-          >×</button>
+          >
+            ×
+          </button>
         </span>
       ))}
     </div>
@@ -66,9 +89,7 @@ export default function TrialExplorer() {
   const [activeOutcomeKeyword, setActiveOutcomeKeyword] = useState(initial.activeOutcomeKeyword);
 
   const [expandedOutcomes, setExpandedOutcomes] = useState<string[]>(initial.expandedOutcomes);
-  const [selectedOutcomes, setSelectedOutcomes] = useState<Set<string>>(
-    () => new Set(initial.selectedOutcomes),
-  );
+  const [selectedOutcomes, setSelectedOutcomes] = useState<Set<string>>(() => new Set(initial.selectedOutcomes));
   const [expanding, setExpanding] = useState(false);
   const [page, setPage] = useState(initial.page);
   const [expandSynonyms, setExpandSynonyms] = useState(initial.expandSynonyms);
@@ -97,12 +118,28 @@ export default function TrialExplorer() {
       interventionExclusive,
       interventionSameArm,
     });
-  }, [nctId, condition, statuses, phases, interventionFilter, hasResultsList, whoTypes, outcomeInput, activeOutcomeKeyword, expandedOutcomes, selectedOutcomes, page, expandSynonyms, interventionMode, interventionExclusive, interventionSameArm]);
+  }, [
+    nctId,
+    condition,
+    statuses,
+    phases,
+    interventionFilter,
+    hasResultsList,
+    whoTypes,
+    outcomeInput,
+    activeOutcomeKeyword,
+    expandedOutcomes,
+    selectedOutcomes,
+    page,
+    expandSynonyms,
+    interventionMode,
+    interventionExclusive,
+    interventionSameArm,
+  ]);
 
   // Build the effective outcome keyword for the API (join all selected terms)
-  const effectiveOutcomeKeyword = selectedOutcomes.size > 0
-    ? Array.from(selectedOutcomes).join(',')
-    : activeOutcomeKeyword;
+  const effectiveOutcomeKeyword =
+    selectedOutcomes.size > 0 ? Array.from(selectedOutcomes).join(',') : activeOutcomeKeyword;
 
   const { data, isLoading, isFetching } = useTrials({
     nct_id: nctId || undefined,
@@ -145,7 +182,8 @@ export default function TrialExplorer() {
   const toggleOutcome = (term: string) => {
     setSelectedOutcomes((prev) => {
       const next = new Set(prev);
-      if (next.has(term)) next.delete(term); else next.add(term);
+      if (next.has(term)) next.delete(term);
+      else next.add(term);
       return next;
     });
     setPage(0);
@@ -178,7 +216,16 @@ export default function TrialExplorer() {
     clearTrialExplorerFilters();
   };
 
-  const hasAnyFilter = !!(nctId || condition || statuses.length || phases.length || interventionFilter || hasResultsList.length || whoTypes.length || effectiveOutcomeKeyword);
+  const hasAnyFilter = !!(
+    nctId ||
+    condition ||
+    statuses.length ||
+    phases.length ||
+    interventionFilter ||
+    hasResultsList.length ||
+    whoTypes.length ||
+    effectiveOutcomeKeyword
+  );
 
   const clearBtnStyle: React.CSSProperties = {
     position: 'absolute',
@@ -205,31 +252,41 @@ export default function TrialExplorer() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <label
             title="When enabled, condition & intervention inputs are expanded via MeSH vocabulary so synonyms (e.g. GBM ↔ Glioblastoma) are matched automatically."
-            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', color: '#444', cursor: 'pointer' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: '0.78rem',
+              color: '#444',
+              cursor: 'pointer',
+            }}
           >
             <input
               type="checkbox"
               checked={expandSynonyms}
-              onChange={(e) => { setExpandSynonyms(e.target.checked); setPage(0); }}
+              onChange={(e) => {
+                setExpandSynonyms(e.target.checked);
+                setPage(0);
+              }}
             />
             MeSH synonym expansion
           </label>
-        {hasAnyFilter && (
-          <button
-            onClick={clearAllFilters}
-            style={{
-              padding: '0.4rem 1rem',
-              background: '#dc3545',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 4,
-              cursor: 'pointer',
-              fontSize: '0.8rem',
-            }}
-          >
-            Clear All Filters
-          </button>
-        )}
+          {hasAnyFilter && (
+            <button
+              onClick={clearAllFilters}
+              style={{
+                padding: '0.4rem 1rem',
+                background: '#dc3545',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontSize: '0.8rem',
+              }}
+            >
+              Clear All Filters
+            </button>
+          )}
         </div>
       </div>
 
@@ -240,50 +297,123 @@ export default function TrialExplorer() {
             type="text"
             placeholder="Search by NCT ID..."
             value={nctId}
-            onChange={(e) => { setNctId(e.target.value); setPage(0); }}
-            style={{ width: '100%', padding: '0.4rem 0.8rem', paddingRight: nctId ? 28 : '0.8rem', border: '1px solid #ccc', borderRadius: 4, boxSizing: 'border-box' }}
+            onChange={(e) => {
+              setNctId(e.target.value);
+              setPage(0);
+            }}
+            style={{
+              width: '100%',
+              padding: '0.4rem 0.8rem',
+              paddingRight: nctId ? 28 : '0.8rem',
+              border: '1px solid #ccc',
+              borderRadius: 4,
+              boxSizing: 'border-box',
+            }}
           />
           {nctId && (
-            <button onClick={() => { setNctId(''); setPage(0); }} style={clearBtnStyle} title="Clear NCT ID">&times;</button>
+            <button
+              onClick={() => {
+                setNctId('');
+                setPage(0);
+              }}
+              style={clearBtnStyle}
+              title="Clear NCT ID"
+            >
+              &times;
+            </button>
           )}
         </div>
         <AutocompleteInput
           placeholder="Filter by condition..."
           value={condition}
-          onChange={(v) => { setCondition(v); setPage(0); }}
+          onChange={(v) => {
+            setCondition(v);
+            setPage(0);
+          }}
           field="conditions"
-          clearButton={condition ? (
-            <button onClick={() => { setCondition(''); setPage(0); }} style={clearBtnStyle} title="Clear condition">&times;</button>
-          ) : undefined}
+          clearButton={
+            condition ? (
+              <button
+                onClick={() => {
+                  setCondition('');
+                  setPage(0);
+                }}
+                style={clearBtnStyle}
+                title="Clear condition"
+              >
+                &times;
+              </button>
+            ) : undefined
+          }
         />
         <AutocompleteInput
           placeholder="Therapy/treatment (comma-separate for multiple, e.g. Erlotinib, Temozolomide)..."
           value={interventionFilter}
-          onChange={(v) => { setInterventionFilter(v); setPage(0); }}
+          onChange={(v) => {
+            setInterventionFilter(v);
+            setPage(0);
+          }}
           field="interventions"
-          clearButton={interventionFilter ? (
-            <button onClick={() => { setInterventionFilter(''); setPage(0); }} style={clearBtnStyle} title="Clear intervention">&times;</button>
-          ) : undefined}
+          clearButton={
+            interventionFilter ? (
+              <button
+                onClick={() => {
+                  setInterventionFilter('');
+                  setPage(0);
+                }}
+                style={clearBtnStyle}
+                title="Clear intervention"
+              >
+                &times;
+              </button>
+            ) : undefined
+          }
         />
       </div>
 
       {/* Multi-therapy combination controls (only relevant when 2+ therapies entered) */}
-      {interventionFilter.split(',').map((s) => s.trim()).filter(Boolean).length >= 2 && (
-        <div style={{
-          marginBottom: '0.5rem', padding: '0.5rem 0.7rem',
-          background: '#fff8e1', border: '1px solid #ffe082', borderRadius: 4,
-          fontSize: '0.75rem', color: '#5d4037',
-          display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14,
-        }}>
+      {interventionFilter
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean).length >= 2 && (
+        <div
+          style={{
+            marginBottom: '0.5rem',
+            padding: '0.5rem 0.7rem',
+            background: '#fff8e1',
+            border: '1px solid #ffe082',
+            borderRadius: 4,
+            fontSize: '0.75rem',
+            color: '#5d4037',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: 14,
+          }}
+        >
           <strong style={{ color: '#4e342e' }}>Multi-therapy match:</strong>
           <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-            <input type="radio" name="iv-mode" checked={interventionMode === 'any'}
-              onChange={() => { setInterventionMode('any'); setPage(0); }} />
+            <input
+              type="radio"
+              name="iv-mode"
+              checked={interventionMode === 'any'}
+              onChange={() => {
+                setInterventionMode('any');
+                setPage(0);
+              }}
+            />
             Any (OR) — trials with at least one of the therapies
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-            <input type="radio" name="iv-mode" checked={interventionMode === 'all'}
-              onChange={() => { setInterventionMode('all'); setPage(0); }} />
+            <input
+              type="radio"
+              name="iv-mode"
+              checked={interventionMode === 'all'}
+              onChange={() => {
+                setInterventionMode('all');
+                setPage(0);
+              }}
+            />
             All (AND) — trials containing every therapy
           </label>
           {interventionMode === 'all' && (
@@ -293,16 +423,28 @@ export default function TrialExplorer() {
                 title="If checked, the trial must contain ONLY the searched therapies (no other drugs)."
                 style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}
               >
-                <input type="checkbox" checked={interventionExclusive}
-                  onChange={(e) => { setInterventionExclusive(e.target.checked); setPage(0); }} />
+                <input
+                  type="checkbox"
+                  checked={interventionExclusive}
+                  onChange={(e) => {
+                    setInterventionExclusive(e.target.checked);
+                    setPage(0);
+                  }}
+                />
                 Exclusive (no other therapies allowed)
               </label>
               <label
                 title="If checked, every therapy must appear in the SAME trial arm/group (not across separate arms)."
                 style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}
               >
-                <input type="checkbox" checked={interventionSameArm}
-                  onChange={(e) => { setInterventionSameArm(e.target.checked); setPage(0); }} />
+                <input
+                  type="checkbox"
+                  checked={interventionSameArm}
+                  onChange={(e) => {
+                    setInterventionSameArm(e.target.checked);
+                    setPage(0);
+                  }}
+                />
                 Same arm/group
               </label>
             </>
@@ -312,28 +454,34 @@ export default function TrialExplorer() {
 
       {/* MeSH expansion info */}
       {expandSynonyms && (appliedExpansions.condition || appliedExpansions.intervention) && (
-        <div style={{
-          marginBottom: '0.5rem', padding: '0.4rem 0.6rem',
-          background: '#e8f4fd', border: '1px solid #b3dcf5', borderRadius: 4,
-          fontSize: '0.72rem', color: '#0c5460',
-        }}>
+        <div
+          style={{
+            marginBottom: '0.5rem',
+            padding: '0.4rem 0.6rem',
+            background: '#e8f4fd',
+            border: '1px solid #b3dcf5',
+            borderRadius: 4,
+            fontSize: '0.72rem',
+            color: '#0c5460',
+          }}
+        >
           {appliedExpansions.condition && (
             <div>
-              <strong>Condition matched via MeSH:</strong>{' '}
-              {appliedExpansions.condition.join(', ')}
+              <strong>Condition matched via MeSH:</strong> {appliedExpansions.condition.join(', ')}
             </div>
           )}
           {appliedExpansions.intervention && (
             <div style={{ marginTop: appliedExpansions.condition ? 4 : 0 }}>
-              <strong>Intervention matched via MeSH:</strong>{' '}
-              {appliedExpansions.intervention.join(', ')}
+              <strong>Intervention matched via MeSH:</strong> {appliedExpansions.intervention.join(', ')}
             </div>
           )}
         </div>
       )}
 
       {/* Row 2: Status + Phase + Results + WHO filters */}
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+      <div
+        style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-start' }}
+      >
         <MultiPicker
           label="+ Status…"
           options={[
@@ -345,13 +493,19 @@ export default function TrialExplorer() {
             { value: 'NOT_YET_RECRUITING', label: 'NOT_YET_RECRUITING' },
           ]}
           selected={statuses}
-          onChange={(next) => { setStatuses(next); setPage(0); }}
+          onChange={(next) => {
+            setStatuses(next);
+            setPage(0);
+          }}
         />
         <MultiPicker
           label="+ Phase…"
           options={['EARLY_PHASE1', 'PHASE1', 'PHASE2', 'PHASE3', 'PHASE4', 'NA'].map((p) => ({ value: p, label: p }))}
           selected={phases}
-          onChange={(next) => { setPhases(next); setPage(0); }}
+          onChange={(next) => {
+            setPhases(next);
+            setPage(0);
+          }}
         />
         <MultiPicker
           label="+ Results…"
@@ -361,7 +515,10 @@ export default function TrialExplorer() {
             { value: 'no_outcomes', label: 'No outcomes reported' },
           ]}
           selected={hasResultsList}
-          onChange={(next) => { setHasResultsList(next); setPage(0); }}
+          onChange={(next) => {
+            setHasResultsList(next);
+            setPage(0);
+          }}
         />
         <MultiPicker
           label="+ WHO Subtype…"
@@ -373,25 +530,32 @@ export default function TrialExplorer() {
             { value: 'Diffuse glioma, NOS', label: 'Glioma NOS' },
           ]}
           selected={whoTypes}
-          onChange={(next) => { setWhoTypes(next); setPage(0); }}
+          onChange={(next) => {
+            setWhoTypes(next);
+            setPage(0);
+          }}
         />
       </div>
 
       {/* Row 3: Outcome keyword expansion */}
-      <div style={{
-        marginBottom: '1rem',
-        padding: '0.6rem 0.75rem',
-        background: '#f8f9fa',
-        borderRadius: 6,
-        border: '1px solid #e9ecef',
-      }}>
+      <div
+        style={{
+          marginBottom: '1rem',
+          padding: '0.6rem 0.75rem',
+          background: '#f8f9fa',
+          borderRadius: 6,
+          border: '1px solid #e9ecef',
+        }}
+      >
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <AutocompleteInput
             placeholder="Outcome measure (e.g., PFS, response rate, overall survival)..."
             value={outcomeInput}
             onChange={(v) => setOutcomeInput(v)}
             field="outcomes"
-            onKeyDown={(e) => { if (e.key === 'Enter') handleExpandOutcomes(); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleExpandOutcomes();
+            }}
           />
           <button
             onClick={handleExpandOutcomes}
@@ -429,14 +593,33 @@ export default function TrialExplorer() {
         {/* Expanded outcome tags */}
         {expandedOutcomes.length > 0 && (
           <div style={{ marginTop: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.75rem', color: '#555', marginBottom: 4 }}>
-              <span>{selectedOutcomes.size} of {expandedOutcomes.length} terms selected — click to toggle:</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: '0.75rem',
+                color: '#555',
+                marginBottom: 4,
+              }}
+            >
+              <span>
+                {selectedOutcomes.size} of {expandedOutcomes.length} terms selected — click to toggle:
+              </span>
               <button
-                onClick={() => { setSelectedOutcomes(new Set(expandedOutcomes)); setPage(0); }}
+                onClick={() => {
+                  setSelectedOutcomes(new Set(expandedOutcomes));
+                  setPage(0);
+                }}
                 disabled={selectedOutcomes.size === expandedOutcomes.length}
                 style={{
-                  background: 'none', border: 'none', color: '#17a2b8', cursor: 'pointer',
-                  fontSize: '0.72rem', fontWeight: 600, padding: 0,
+                  background: 'none',
+                  border: 'none',
+                  color: '#17a2b8',
+                  cursor: 'pointer',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  padding: 0,
                   opacity: selectedOutcomes.size === expandedOutcomes.length ? 0.4 : 1,
                 }}
               >
@@ -444,11 +627,19 @@ export default function TrialExplorer() {
               </button>
               <span style={{ color: '#ccc' }}>|</span>
               <button
-                onClick={() => { setSelectedOutcomes(new Set()); setPage(0); }}
+                onClick={() => {
+                  setSelectedOutcomes(new Set());
+                  setPage(0);
+                }}
                 disabled={selectedOutcomes.size === 0}
                 style={{
-                  background: 'none', border: 'none', color: '#dc3545', cursor: 'pointer',
-                  fontSize: '0.72rem', fontWeight: 600, padding: 0,
+                  background: 'none',
+                  border: 'none',
+                  color: '#dc3545',
+                  cursor: 'pointer',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  padding: 0,
                   opacity: selectedOutcomes.size === 0 ? 0.4 : 1,
                 }}
               >
@@ -503,9 +694,7 @@ export default function TrialExplorer() {
             >
               Previous
             </button>
-            <span style={{ padding: '0.4rem 0.5rem', fontSize: '0.85rem', color: '#666' }}>
-              Page {page + 1}
-            </span>
+            <span style={{ padding: '0.4rem 0.5rem', fontSize: '0.85rem', color: '#666' }}>Page {page + 1}</span>
             <button
               disabled={data.trials.length < limit}
               onClick={() => setPage((p) => p + 1)}

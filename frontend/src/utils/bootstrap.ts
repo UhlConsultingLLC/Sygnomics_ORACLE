@@ -27,19 +27,19 @@ export type CurveType = 'ols' | 'none';
 
 export interface BootstrapInputPoint {
   x: number;
-  y: number;                 // point estimate (e.g. mean_predicted_rate)
-  yDrawFn?: () => number;    // fresh draw from the point's predictive distribution
-  moaKey: string;            // used for stratification + per-MOA output
-  label?: string;            // optional display label (e.g. nct_id or therapy name)
+  y: number; // point estimate (e.g. mean_predicted_rate)
+  yDrawFn?: () => number; // fresh draw from the point's predictive distribution
+  moaKey: string; // used for stratification + per-MOA output
+  label?: string; // optional display label (e.g. nct_id or therapy name)
 }
 
 export interface BootstrapConfig {
   B: number;
   scheme: ResamplingScheme;
-  ciLevel: number;           // e.g. 0.95
+  ciLevel: number; // e.g. 0.95
   ciMethod: CIMethod;
   curveType: CurveType;
-  seed?: number;             // if provided, resampling is deterministic
+  seed?: number; // if provided, resampling is deterministic
 }
 
 export interface MOABootStats {
@@ -87,12 +87,20 @@ export interface BootstrapResult {
 export function pearson(xs: number[], ys: number[]): number | null {
   if (xs.length < 2 || xs.length !== ys.length) return null;
   const n = xs.length;
-  let sx = 0, sy = 0;
-  for (let i = 0; i < n; i++) { sx += xs[i]; sy += ys[i]; }
-  const mx = sx / n, my = sy / n;
-  let num = 0, dx = 0, dy = 0;
+  let sx = 0,
+    sy = 0;
   for (let i = 0; i < n; i++) {
-    const xi = xs[i] - mx, yi = ys[i] - my;
+    sx += xs[i];
+    sy += ys[i];
+  }
+  const mx = sx / n,
+    my = sy / n;
+  let num = 0,
+    dx = 0,
+    dy = 0;
+  for (let i = 0; i < n; i++) {
+    const xi = xs[i] - mx,
+      yi = ys[i] - my;
     num += xi * yi;
     dx += xi * xi;
     dy += yi * yi;
@@ -121,16 +129,19 @@ export function spearman(xs: number[], ys: number[]): number | null {
   return pearson(rankAvg(xs), rankAvg(ys));
 }
 
-export function olsFit(
-  xs: number[],
-  ys: number[]
-): { slope: number; intercept: number } | null {
+export function olsFit(xs: number[], ys: number[]): { slope: number; intercept: number } | null {
   const n = xs.length;
   if (n < 2) return null;
-  let sx = 0, sy = 0;
-  for (let i = 0; i < n; i++) { sx += xs[i]; sy += ys[i]; }
-  const mx = sx / n, my = sy / n;
-  let sxx = 0, sxy = 0;
+  let sx = 0,
+    sy = 0;
+  for (let i = 0; i < n; i++) {
+    sx += xs[i];
+    sy += ys[i];
+  }
+  const mx = sx / n,
+    my = sy / n;
+  let sxx = 0,
+    sxy = 0;
   for (let i = 0; i < n; i++) {
     const dx = xs[i] - mx;
     sxx += dx * dx;
@@ -150,7 +161,8 @@ export function makeRng(seed?: number): () => number {
   if (seed == null || Number.isNaN(seed)) return Math.random;
   let a = seed | 0;
   return function () {
-    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
     let t = a;
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -172,37 +184,48 @@ export function gaussian(rng: () => number): number {
 export function pnorm(z: number): number {
   const t = 1 / (1 + 0.2316419 * Math.abs(z));
   const d = 0.3989422804014327 * Math.exp(-0.5 * z * z);
-  const p = d * t *
-    ((((1.330274429 * t - 1.821255978) * t + 1.781477937) * t - 0.356563782) * t + 0.319381530);
+  const p = d * t * ((((1.330274429 * t - 1.821255978) * t + 1.781477937) * t - 0.356563782) * t + 0.31938153);
   return z > 0 ? 1 - p : p;
 }
 
 export function qnorm(p: number): number {
   if (p <= 0) return -Infinity;
   if (p >= 1) return Infinity;
-  const A = [-3.969683028665376e+1, 2.209460984245205e+2, -2.759285104469687e+2,
-             1.383577518672690e+2, -3.066479806614716e+1, 2.506628277459239e+0];
-  const B = [-5.447609879822406e+1, 1.615858368580409e+2, -1.556989798598866e+2,
-             6.680131188771972e+1, -1.328068155288572e+1];
-  const C = [-7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838e+0,
-             -2.549732539343734e+0, 4.374664141464968e+0, 2.938163982698783e+0];
-  const D = [7.784695709041462e-3, 3.224671290700398e-1,
-             2.445134137142996e+0, 3.754408661907416e+0];
-  const pLow = 0.02425, pHigh = 1 - pLow;
+  const A = [
+    -3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.38357751867269e2, -3.066479806614716e1,
+    2.506628277459239,
+  ];
+  const B = [
+    -5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1, -1.328068155288572e1,
+  ];
+  const C = [
+    -7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734, 4.374664141464968,
+    2.938163982698783,
+  ];
+  const D = [7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996, 3.754408661907416];
+  const pLow = 0.02425,
+    pHigh = 1 - pLow;
   let q: number, r: number;
   if (p < pLow) {
     q = Math.sqrt(-2 * Math.log(p));
-    return (((((C[0] * q + C[1]) * q + C[2]) * q + C[3]) * q + C[4]) * q + C[5]) /
-           ((((D[0] * q + D[1]) * q + D[2]) * q + D[3]) * q + 1);
+    return (
+      (((((C[0] * q + C[1]) * q + C[2]) * q + C[3]) * q + C[4]) * q + C[5]) /
+      ((((D[0] * q + D[1]) * q + D[2]) * q + D[3]) * q + 1)
+    );
   }
   if (p <= pHigh) {
-    q = p - 0.5; r = q * q;
-    return (((((A[0] * r + A[1]) * r + A[2]) * r + A[3]) * r + A[4]) * r + A[5]) * q /
-           (((((B[0] * r + B[1]) * r + B[2]) * r + B[3]) * r + B[4]) * r + 1);
+    q = p - 0.5;
+    r = q * q;
+    return (
+      ((((((A[0] * r + A[1]) * r + A[2]) * r + A[3]) * r + A[4]) * r + A[5]) * q) /
+      (((((B[0] * r + B[1]) * r + B[2]) * r + B[3]) * r + B[4]) * r + 1)
+    );
   }
   q = Math.sqrt(-2 * Math.log(1 - p));
-  return -(((((C[0] * q + C[1]) * q + C[2]) * q + C[3]) * q + C[4]) * q + C[5]) /
-          ((((D[0] * q + D[1]) * q + D[2]) * q + D[3]) * q + 1);
+  return (
+    -(((((C[0] * q + C[1]) * q + C[2]) * q + C[3]) * q + C[4]) * q + C[5]) /
+    ((((D[0] * q + D[1]) * q + D[2]) * q + D[3]) * q + 1)
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -222,7 +245,7 @@ export function bcaCI(
   values: number[],
   thetaHat: number,
   jackknife: number[],
-  ciLevel: number
+  ciLevel: number,
 ): [number, number] | null {
   const finite = values.filter(Number.isFinite);
   if (finite.length < 2 || !Number.isFinite(thetaHat)) return null;
@@ -238,7 +261,8 @@ export function bcaCI(
   let a = 0;
   if (jackknife.length >= 2) {
     const jMean = jackknife.reduce((s, v) => s + v, 0) / jackknife.length;
-    let num = 0, den = 0;
+    let num = 0,
+      den = 0;
     for (const j of jackknife) {
       const d = jMean - j;
       num += d * d * d;
@@ -249,7 +273,8 @@ export function bcaCI(
   }
 
   const alpha = (1 - ciLevel) / 2;
-  const zLo = qnorm(alpha), zHi = qnorm(1 - alpha);
+  const zLo = qnorm(alpha),
+    zHi = qnorm(1 - alpha);
   const pLo = pnorm(z0 + (z0 + zLo) / (1 - a * (z0 + zLo)));
   const pHi = pnorm(z0 + (z0 + zHi) / (1 - a * (z0 + zHi)));
   const loIdx = Math.max(0, Math.min(B - 1, Math.floor(pLo * B)));
@@ -288,10 +313,7 @@ function jackknifeSpearman(xs: number[], ys: number[]): number[] {
 // ─────────────────────────────────────────────────────────────────────────
 
 /** Run the bootstrap. Synchronous: expect <1s for B≤2000, n≤~300. */
-export function runBootstrap(
-  points: BootstrapInputPoint[],
-  config: BootstrapConfig
-): BootstrapResult {
+export function runBootstrap(points: BootstrapInputPoint[], config: BootstrapConfig): BootstrapResult {
   const rng = makeRng(config.seed);
   const B = Math.max(1, Math.floor(config.B));
   const n = points.length;
@@ -325,8 +347,7 @@ export function runBootstrap(
   const seen = new Uint8Array(n);
   let sumUnique = 0;
 
-  const drawY = (p: BootstrapInputPoint): number =>
-    p.yDrawFn ? p.yDrawFn() : p.y;
+  const drawY = (p: BootstrapInputPoint): number => (p.yDrawFn ? p.yDrawFn() : p.y);
 
   for (let b = 0; b < B; b++) {
     // Build resampled (x, y) arrays for this iteration.
@@ -347,9 +368,12 @@ export function runBootstrap(
         const k = indices.length;
         for (let j = 0; j < k; j++) {
           const idx = indices[Math.floor(rng() * k)];
-          if (!seen[idx]) { seen[idx] = 1; uniqueThisIter++; }
+          if (!seen[idx]) {
+            seen[idx] = 1;
+            uniqueThisIter++;
+          }
           xBuf[w] = points[idx].x;
-          yBuf[w] = points[idx].y;  // simulation overlay not applied under stratified
+          yBuf[w] = points[idx].y; // simulation overlay not applied under stratified
           w++;
         }
       }
@@ -359,7 +383,10 @@ export function runBootstrap(
       const redraw = config.scheme === 'nested';
       for (let i = 0; i < n; i++) {
         const idx = Math.floor(rng() * n);
-        if (!seen[idx]) { seen[idx] = 1; uniqueThisIter++; }
+        if (!seen[idx]) {
+          seen[idx] = 1;
+          uniqueThisIter++;
+        }
         xBuf[i] = points[idx].x;
         yBuf[i] = redraw ? drawY(points[idx]) : points[idx].y;
       }
@@ -395,9 +422,7 @@ export function runBootstrap(
     }
     const xs = idxs.map((i) => points[i].x);
     const ysBase = idxs.map((i) => points[i].y);
-    const pmRng = makeRng(
-      config.seed != null ? (config.seed ^ hashStr(key)) >>> 0 : undefined
-    );
+    const pmRng = makeRng(config.seed != null ? (config.seed ^ hashStr(key)) >>> 0 : undefined);
     const xB = new Array<number>(k);
     const yB = new Array<number>(k);
     for (let b = 0; b < B; b++) {
@@ -428,11 +453,7 @@ export function runBootstrap(
   const interceptHat = fit ? fit.intercept : null;
 
   // CIs
-  const pick = (
-    arr: number[],
-    hat: number | null,
-    jack: () => number[]
-  ): [number, number] | null => {
+  const pick = (arr: number[], hat: number | null, jack: () => number[]): [number, number] | null => {
     if (hat == null) return null;
     if (config.ciMethod === 'bca') {
       const ci = bcaCI(arr, hat, jack(), config.ciLevel);
@@ -460,15 +481,14 @@ export function runBootstrap(
       rCI:
         rH != null && rSeries.length >= 2
           ? config.ciMethod === 'bca'
-            ? bcaCI(rSeries, rH, jackknifePearson(xs, ys), config.ciLevel) ??
-              percentileCI(rSeries, config.ciLevel)
+            ? (bcaCI(rSeries, rH, jackknifePearson(xs, ys), config.ciLevel) ?? percentileCI(rSeries, config.ciLevel))
             : percentileCI(rSeries, config.ciLevel)
           : null,
       rhoCI:
         rhoH != null && rhoSeries.length >= 2
           ? config.ciMethod === 'bca'
-            ? bcaCI(rhoSeries, rhoH, jackknifeSpearman(xs, ys), config.ciLevel) ??
-              percentileCI(rhoSeries, config.ciLevel)
+            ? (bcaCI(rhoSeries, rhoH, jackknifeSpearman(xs, ys), config.ciLevel) ??
+              percentileCI(rhoSeries, config.ciLevel))
             : percentileCI(rhoSeries, config.ciLevel)
           : null,
     };
@@ -477,9 +497,16 @@ export function runBootstrap(
   return {
     config,
     nPoints: n,
-    rValues, rhoValues, slopes, intercepts,
-    rHat, rhoHat, slopeHat, interceptHat,
-    rCI, rhoCI,
+    rValues,
+    rhoValues,
+    slopes,
+    intercepts,
+    rHat,
+    rhoHat,
+    slopeHat,
+    interceptHat,
+    rCI,
+    rhoCI,
     meanUniqueCount,
     perMoa,
   };
@@ -490,10 +517,7 @@ export function runBootstrap(
 // ─────────────────────────────────────────────────────────────────────────
 
 /** Compute pointwise CI band for the OLS fit at each x in `xGrid`. */
-export function materializeBand(
-  result: BootstrapResult,
-  xGrid: number[]
-): { lower: number[]; upper: number[] } | null {
+export function materializeBand(result: BootstrapResult, xGrid: number[]): { lower: number[]; upper: number[] } | null {
   if (result.config.curveType === 'none') return null;
   const { slopes, intercepts, config } = result;
   const usable: Array<{ s: number; i: number }> = [];
@@ -554,16 +578,16 @@ function hashStr(s: string): number {
 // supporting the correlation.
 
 export interface InfluencePoint {
-  index: number;            // original index in points array
-  label: string;            // display label (falls back to `#<index>`)
+  index: number; // original index in points array
+  label: string; // display label (falls back to `#<index>`)
   moaKey: string;
   x: number;
   y: number;
-  deltaR: number | null;        // r_minus − rHat
+  deltaR: number | null; // r_minus − rHat
   deltaRho: number | null;
   deltaSlope: number | null;
   deltaIntercept: number | null;
-  rMinus: number | null;        // r computed without this point
+  rMinus: number | null; // r computed without this point
   rhoMinus: number | null;
 }
 
@@ -587,7 +611,7 @@ export interface LeaveKOutConfig {
 }
 
 export interface LeaveKOutResult {
-  config: LeaveKOutConfig;     // k may differ from request if clamped
+  config: LeaveKOutConfig; // k may differ from request if clamped
   n: number;
   rHat: number | null;
   rhoHat: number | null;
@@ -617,8 +641,14 @@ export function runJackknife(points: BootstrapInputPoint[]): JackknifeResult {
   if (n < 3) {
     return {
       n,
-      rHat, rhoHat, slopeHat, interceptHat,
-      influence, maxAbsDeltaR, maxAbsDeltaRho, maxAbsDeltaSlope,
+      rHat,
+      rhoHat,
+      slopeHat,
+      interceptHat,
+      influence,
+      maxAbsDeltaR,
+      maxAbsDeltaRho,
+      maxAbsDeltaSlope,
     };
   }
 
@@ -648,15 +678,25 @@ export function runJackknife(points: BootstrapInputPoint[]): JackknifeResult {
       moaKey: points[k].moaKey,
       x: points[k].x,
       y: points[k].y,
-      deltaR, deltaRho, deltaSlope, deltaIntercept,
-      rMinus: rk, rhoMinus: rhok,
+      deltaR,
+      deltaRho,
+      deltaSlope,
+      deltaIntercept,
+      rMinus: rk,
+      rhoMinus: rhok,
     });
   }
 
   return {
     n,
-    rHat, rhoHat, slopeHat, interceptHat,
-    influence, maxAbsDeltaR, maxAbsDeltaRho, maxAbsDeltaSlope,
+    rHat,
+    rhoHat,
+    slopeHat,
+    interceptHat,
+    influence,
+    maxAbsDeltaR,
+    maxAbsDeltaRho,
+    maxAbsDeltaSlope,
   };
 }
 
@@ -717,12 +757,20 @@ export function calibrationTestWald(result: BootstrapResult): CalibrationTestRes
 
   // 2×2 sample covariance of the replicates
   const n = valid.length;
-  let sMean = 0, iMean = 0;
-  for (const [s, i] of valid) { sMean += s; iMean += i; }
-  sMean /= n; iMean /= n;
-  let sss = 0, sii = 0, ssi = 0;
+  let sMean = 0,
+    iMean = 0;
   for (const [s, i] of valid) {
-    const ds = s - sMean, di = i - iMean;
+    sMean += s;
+    iMean += i;
+  }
+  sMean /= n;
+  iMean /= n;
+  let sss = 0,
+    sii = 0,
+    ssi = 0;
+  for (const [s, i] of valid) {
+    const ds = s - sMean,
+      di = i - iMean;
     sss += ds * ds;
     sii += di * di;
     ssi += ds * di;
@@ -734,12 +782,11 @@ export function calibrationTestWald(result: BootstrapResult): CalibrationTestRes
   // Invert Σ̂
   const det = covSlope * covInt - covSI * covSI;
   if (!Number.isFinite(det) || det <= 0) return null;
-  const inv00 = covInt / det;   // [slope, slope]
+  const inv00 = covInt / det; // [slope, slope]
   const inv11 = covSlope / det; // [intercept, intercept]
-  const inv01 = -covSI / det;   // off-diagonal
+  const inv01 = -covSI / det; // off-diagonal
 
-  const mahal = (ds: number, di: number) =>
-    ds * (inv00 * ds + inv01 * di) + di * (inv01 * ds + inv11 * di);
+  const mahal = (ds: number, di: number) => ds * (inv00 * ds + inv01 * di) + di * (inv01 * ds + inv11 * di);
 
   // Observed D² from (β̂ − 1, α̂ − 0)
   const observedD2 = mahal(result.slopeHat - 1, result.interceptHat - 0);
@@ -753,9 +800,7 @@ export function calibrationTestWald(result: BootstrapResult): CalibrationTestRes
   const p = (1 + countExceed) / (1 + n);
 
   // Asymptotic χ²(2) tail = exp(−x/2) for x ≥ 0
-  const pChi2 = Number.isFinite(observedD2) && observedD2 >= 0
-    ? Math.exp(-observedD2 / 2)
-    : null;
+  const pChi2 = Number.isFinite(observedD2) && observedD2 >= 0 ? Math.exp(-observedD2 / 2) : null;
 
   return {
     slopeHat: result.slopeHat,
@@ -796,12 +841,20 @@ export function confidenceEllipse(
 
   // Same covariance as the calibration test
   const n = valid.length;
-  let sMean = 0, iMean = 0;
-  for (const [s, i] of valid) { sMean += s; iMean += i; }
-  sMean /= n; iMean /= n;
-  let sss = 0, sii = 0, ssi = 0;
+  let sMean = 0,
+    iMean = 0;
   for (const [s, i] of valid) {
-    const ds = s - sMean, di = i - iMean;
+    sMean += s;
+    iMean += i;
+  }
+  sMean /= n;
+  iMean /= n;
+  let sss = 0,
+    sii = 0,
+    ssi = 0;
+  for (const [s, i] of valid) {
+    const ds = s - sMean,
+      di = i - iMean;
     sss += ds * ds;
     sii += di * di;
     ssi += ds * di;
@@ -845,9 +898,16 @@ export function confidenceEllipse(
     v1x /= norm;
     v1y /= norm;
   } else {
-    if (covSlope >= covInt) { v1x = 1; v1y = 0; } else { v1x = 0; v1y = 1; }
+    if (covSlope >= covInt) {
+      v1x = 1;
+      v1y = 0;
+    } else {
+      v1x = 0;
+      v1y = 1;
+    }
   }
-  const v2x = -v1y, v2y = v1x;  // perpendicular
+  const v2x = -v1y,
+    v2y = v1x; // perpendicular
 
   const a1 = Math.sqrt(Math.max(0, kCrit * lambda1));
   const a2 = Math.sqrt(Math.max(0, kCrit * lambda2));
@@ -855,7 +915,8 @@ export function confidenceEllipse(
   const interceptArr: number[] = new Array(nPoints + 1);
   for (let t = 0; t <= nPoints; t++) {
     const theta = (2 * Math.PI * t) / nPoints;
-    const c = Math.cos(theta), s = Math.sin(theta);
+    const c = Math.cos(theta),
+      s = Math.sin(theta);
     slopeArr[t] = result.slopeHat + a1 * c * v1x + a2 * s * v2x;
     interceptArr[t] = result.interceptHat + a1 * c * v1y + a2 * s * v2y;
   }
@@ -892,12 +953,7 @@ export interface PermutationResult {
   absRho: number | null;
 }
 
-export function permutationTest(
-  xs: number[],
-  ys: number[],
-  B: number = 10000,
-  seed?: number,
-): PermutationResult {
+export function permutationTest(xs: number[], ys: number[], B: number = 10000, seed?: number): PermutationResult {
   const n = xs.length;
   if (n < 3 || ys.length !== n) {
     return { pR: null, pRho: null, nPerm: 0, B, absR: null, absRho: null };
@@ -933,8 +989,12 @@ export function permutationTest(
     for (let i = n - 1; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1));
       if (j !== i) {
-        const t1 = yPerm[i]; yPerm[i] = yPerm[j]; yPerm[j] = t1;
-        const t2 = yrPerm[i]; yrPerm[i] = yrPerm[j]; yrPerm[j] = t2;
+        const t1 = yPerm[i];
+        yPerm[i] = yPerm[j];
+        yPerm[j] = t1;
+        const t2 = yrPerm[i];
+        yrPerm[i] = yrPerm[j];
+        yrPerm[j] = t2;
       }
     }
     if (absR != null) {
@@ -960,10 +1020,7 @@ export function permutationTest(
   return { pR, pRho, nPerm, B: B1, absR, absRho };
 }
 
-export function runLeaveKOut(
-  points: BootstrapInputPoint[],
-  config: LeaveKOutConfig
-): LeaveKOutResult {
+export function runLeaveKOut(points: BootstrapInputPoint[], config: LeaveKOutConfig): LeaveKOutResult {
   const n = points.length;
   // Must leave at least 3 points behind for Pearson to be defined
   const k = Math.max(1, Math.min(n - 3, Math.floor(config.k)));
@@ -981,10 +1038,14 @@ export function runLeaveKOut(
     return {
       config: { ...config, k },
       n,
-      rHat, rhoHat,
-      rValues, rhoValues,
-      rRange: null, rhoRange: null,
-      rCI: null, rhoCI: null,
+      rHat,
+      rhoHat,
+      rValues,
+      rhoValues,
+      rRange: null,
+      rhoRange: null,
+      rCI: null,
+      rhoCI: null,
     };
   }
 
@@ -997,7 +1058,9 @@ export function runLeaveKOut(
   for (let b = 0; b < B; b++) {
     for (let i = 0; i < m; i++) {
       const j = i + Math.floor(rng() * (n - i));
-      const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+      const tmp = pool[i];
+      pool[i] = pool[j];
+      pool[j] = tmp;
     }
     for (let i = 0; i < m; i++) {
       xb[i] = xs[pool[i]];
@@ -1011,16 +1074,22 @@ export function runLeaveKOut(
 
   const rangeOf = (arr: number[]): [number, number] | null => {
     if (arr.length === 0) return null;
-    let lo = Infinity, hi = -Infinity;
-    for (const v of arr) { if (v < lo) lo = v; if (v > hi) hi = v; }
+    let lo = Infinity,
+      hi = -Infinity;
+    for (const v of arr) {
+      if (v < lo) lo = v;
+      if (v > hi) hi = v;
+    }
     return [lo, hi];
   };
 
   return {
     config: { ...config, k },
     n,
-    rHat, rhoHat,
-    rValues, rhoValues,
+    rHat,
+    rhoHat,
+    rValues,
+    rhoValues,
     rRange: rangeOf(rValues),
     rhoRange: rangeOf(rhoValues),
     rCI: percentileCI(rValues, config.ciLevel),

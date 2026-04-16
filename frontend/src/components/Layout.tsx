@@ -37,23 +37,42 @@ export default function Layout() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <nav style={{
-        width: 220,
-        background: '#1c3e72',
-        color: '#e0e0e0',
-        padding: '1rem 0',
-        flexShrink: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
-        overflowY: 'auto',
-      }}>
-        <h2 style={{ textAlign: 'center', color: '#ffffff', margin: '0 0 0.25rem', fontSize: '1.05rem', letterSpacing: '0.5px' }}>
+      <nav
+        style={{
+          width: 220,
+          background: '#1c3e72',
+          color: '#e0e0e0',
+          padding: '1rem 0',
+          flexShrink: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          overflowY: 'auto',
+        }}
+      >
+        <h2
+          style={{
+            textAlign: 'center',
+            color: '#ffffff',
+            margin: '0 0 0.25rem',
+            fontSize: '1.05rem',
+            letterSpacing: '0.5px',
+          }}
+        >
           Sygnomics
         </h2>
-        <h1 style={{ textAlign: 'center', color: '#ffffff', margin: '0 0 1.25rem', fontSize: '1.5rem', fontWeight: 700, letterSpacing: '2px' }}>
+        <h1
+          style={{
+            textAlign: 'center',
+            color: '#ffffff',
+            margin: '0 0 1.25rem',
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            letterSpacing: '2px',
+          }}
+        >
           ORACLE
         </h1>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1 }}>
@@ -79,22 +98,32 @@ export default function Layout() {
             );
           })}
         </ul>
-        <div style={{
-          marginTop: '1rem',
-          padding: '0.85rem 1rem',
-          borderTop: '1px solid #2c5a96',
-          fontSize: '0.7rem',
-          lineHeight: 1.5,
-          color: '#ffffff',
-        }}>
-          <div style={{ color: '#ffffff', fontWeight: 600, marginBottom: 4, letterSpacing: '0.5px' }}>
-            ORACLE
+        <div
+          style={{
+            marginTop: '1rem',
+            padding: '0.85rem 1rem',
+            borderTop: '1px solid #2c5a96',
+            fontSize: '0.7rem',
+            lineHeight: 1.5,
+            color: '#ffffff',
+          }}
+        >
+          <div style={{ color: '#ffffff', fontWeight: 600, marginBottom: 4, letterSpacing: '0.5px' }}>ORACLE</div>
+          <div>
+            <strong style={{ color: '#ffffff' }}>O</strong>ncology
           </div>
-          <div><strong style={{ color: '#ffffff' }}>O</strong>ncology</div>
-          <div><strong style={{ color: '#ffffff' }}>R</strong>esponse &amp;</div>
-          <div><strong style={{ color: '#ffffff' }}>C</strong>ohort</div>
-          <div><strong style={{ color: '#ffffff' }}>L</strong>earning</div>
-          <div><strong style={{ color: '#ffffff' }}>E</strong>ngine</div>
+          <div>
+            <strong style={{ color: '#ffffff' }}>R</strong>esponse &amp;
+          </div>
+          <div>
+            <strong style={{ color: '#ffffff' }}>C</strong>ohort
+          </div>
+          <div>
+            <strong style={{ color: '#ffffff' }}>L</strong>earning
+          </div>
+          <div>
+            <strong style={{ color: '#ffffff' }}>E</strong>ngine
+          </div>
           <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-start' }}>
             <VersionBadge />
           </div>

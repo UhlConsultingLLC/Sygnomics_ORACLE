@@ -44,6 +44,11 @@ dev = [
     "pytest-asyncio>=0.23",
     "ruff>=0.1",
     "httpx",  # for FastAPI TestClient
+    "pre-commit>=3.6",
+]
+# Optional: install with `pip install -e ".[sentry]"` to enable error reporting.
+sentry = [
+    "sentry-sdk[fastapi]>=2.0",
 ]
 
 [tool.ruff]
@@ -95,6 +100,17 @@ ignore = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["api", "analysis", "connectors", "database", "moa_classification", "visualization", "config"]
+omit = ["*/migrations/*", "*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+# Fail CI if coverage drops below this threshold (set conservatively
+# since coverage was unmeasured before v1.0 — tighten over time).
+fail_under = 0
 
 [tool.setuptools.packages.find]
 include = [

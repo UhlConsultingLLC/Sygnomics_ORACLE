@@ -11,7 +11,10 @@ export default function Conditions() {
   const navigate = useNavigate();
   const { data: conditions, isLoading } = useConditions();
   const [disease, setDisease, resetDisease] = usePersistentState<string>('conditions_disease', '');
-  const [suggestion, setSuggestion, resetSuggestion] = usePersistentState<ExpandedTrialCounts | null>('conditions_suggestion', null);
+  const [suggestion, setSuggestion, resetSuggestion] = usePersistentState<ExpandedTrialCounts | null>(
+    'conditions_suggestion',
+    null,
+  );
   const [suggesting, setSuggesting] = useState(false);
 
   const handleReset = () => {
@@ -38,37 +41,41 @@ export default function Conditions() {
 
       <InterpretBox id="conditions-intro" title="How to read this page">
         <p style={{ margin: '0 0 0.5rem' }}>
-          Clinical trial condition strings vary wildly: the same tumor might be indexed
-          as "glioblastoma", "GBM", "glioblastoma multiforme", "WHO grade IV astrocytoma",
-          or "high-grade glioma". This page uses NLM MeSH expansion to map a disease term
-          to all its synonyms, then counts trials in the local database for each synonym.
+          Clinical trial condition strings vary wildly: the same tumor might be indexed as "glioblastoma", "GBM",
+          "glioblastoma multiforme", "WHO grade IV astrocytoma", or "high-grade glioma". This page uses NLM MeSH
+          expansion to map a disease term to all its synonyms, then counts trials in the local database for each
+          synonym.
         </p>
         <ul style={{ margin: '0.25rem 0 0.5rem 1.1rem', padding: 0 }}>
           <li>
-            <strong>Original vs expanded</strong> — the term you typed is shown under{' '}
-            <em>Original</em>; MeSH-derived synonyms are listed in the <em>Term</em>{' '}
-            column. Each has its own independent trial count in the local DB.
+            <strong>Original vs expanded</strong> — the term you typed is shown under <em>Original</em>; MeSH-derived
+            synonyms are listed in the <em>Term</em> column. Each has its own independent trial count in the local DB.
           </li>
           <li>
-            <strong>Unique trials matching any term</strong> — deduplicated count across
-            all synonyms (a trial indexed under two different synonyms is counted once).
-            This is the number that lands in Trial Explorer when you click the green
-            action button.
+            <strong>Unique trials matching any term</strong> — deduplicated count across all synonyms (a trial indexed
+            under two different synonyms is counted once). This is the number that lands in Trial Explorer when you
+            click the green action button.
           </li>
           <li>
-            <strong>All Conditions in Database (bottom)</strong> — raw condition strings
-            already ingested from CT.gov. Useful when you want to see what condition
-            labels exist before launching an expansion.
+            <strong>All Conditions in Database (bottom)</strong> — raw condition strings already ingested from CT.gov.
+            Useful when you want to see what condition labels exist before launching an expansion.
           </li>
         </ul>
         <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: '#555' }}>
-          <strong>Workflow:</strong> expand → review synonyms → click{' '}
-          <em>View matching trials</em> to pre-populate the Trial Explorer with all
-          synonyms pre-selected and the "expand synonyms" toggle on.
+          <strong>Workflow:</strong> expand → review synonyms → click <em>View matching trials</em> to pre-populate the
+          Trial Explorer with all synonyms pre-selected and the "expand synonyms" toggle on.
         </p>
       </InterpretBox>
 
-      <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1.5rem' }}>
+      <div
+        style={{
+          background: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: 8,
+          padding: '1rem',
+          marginBottom: '1.5rem',
+        }}
+      >
         <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Disease Term Expansion</h3>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <AutocompleteInput
@@ -76,18 +83,34 @@ export default function Conditions() {
             value={disease}
             onChange={setDisease}
             field="conditions"
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSuggest(); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSuggest();
+            }}
           />
           <button
             onClick={handleSuggest}
             disabled={suggesting}
-            style={{ padding: '0.4rem 1.2rem', background: '#007bff', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+            style={{
+              padding: '0.4rem 1.2rem',
+              background: '#007bff',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+            }}
           >
             {suggesting ? 'Expanding...' : 'Expand'}
           </button>
           <button
             onClick={handleReset}
-            style={{ padding: '0.4rem 1.2rem', background: '#6c757d', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+            style={{
+              padding: '0.4rem 1.2rem',
+              background: '#6c757d',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+            }}
           >
             Reset
           </button>
@@ -115,8 +138,13 @@ export default function Conditions() {
                 navigate('/trials');
               }}
               style={{
-                padding: '0.35rem 0.9rem', background: '#28a745', color: '#fff',
-                border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.8rem',
+                padding: '0.35rem 0.9rem',
+                background: '#28a745',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontSize: '0.8rem',
                 marginBottom: '0.5rem',
               }}
             >

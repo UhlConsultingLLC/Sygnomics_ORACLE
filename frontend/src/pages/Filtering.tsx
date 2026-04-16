@@ -23,9 +23,7 @@ export default function Filtering() {
 
       {results && (
         <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem' }}>
-          <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>
-            Results ({results.total} trials)
-          </h3>
+          <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Results ({results.total} trials)</h3>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
             <thead>
               <tr>
@@ -41,8 +39,21 @@ export default function Filtering() {
               {results.trials.map((t) => (
                 <tr key={t.nct_id} style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '0.4rem 0.5rem', fontWeight: 600 }}>{t.nct_id}</td>
-                  <td title={t.title} style={{ padding: '0.4rem 0.5rem', maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</td>
-                  <td style={{ padding: '0.4rem 0.5rem', maxWidth: 200, fontSize: '0.8rem' }}>{t.interventions?.join(', ') || '-'}</td>
+                  <td
+                    title={t.title}
+                    style={{
+                      padding: '0.4rem 0.5rem',
+                      maxWidth: 300,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {t.title}
+                  </td>
+                  <td style={{ padding: '0.4rem 0.5rem', maxWidth: 200, fontSize: '0.8rem' }}>
+                    {t.interventions?.join(', ') || '-'}
+                  </td>
                   <td style={{ padding: '0.4rem 0.5rem' }}>{t.status}</td>
                   <td style={{ padding: '0.4rem 0.5rem' }}>{t.phase}</td>
                   <td style={{ padding: '0.4rem 0.5rem', textAlign: 'right' }}>{t.enrollment_count ?? '-'}</td>

@@ -20,20 +20,30 @@ export default function Dashboard() {
 
       <InterpretBox id="dashboard-intro" title="How to read this dashboard">
         <p style={{ margin: '0 0 0.5rem' }}>
-          These cards and charts summarize <strong>every trial ingested so far</strong> — before any
-          disease filters, cohort splits, or simulations. Use it to sanity-check that ingestion pulled
-          the expected volume of trials for a disease, and to get a feel for which phases, statuses,
-          and conditions dominate the corpus.
+          These cards and charts summarize <strong>every trial ingested so far</strong> — before any disease filters,
+          cohort splits, or simulations. Use it to sanity-check that ingestion pulled the expected volume of trials for
+          a disease, and to get a feel for which phases, statuses, and conditions dominate the corpus.
         </p>
         <ul style={{ margin: '0 0 0.25rem 1.1rem', padding: 0 }}>
-          <li><strong>Total Trials</strong> — unique NCT IDs in the database.</li>
-          <li><strong>Total / Mean Enrollment</strong> — sum and average of reported enrollment sizes. Many Phase 1 trials are tiny, which pulls the mean down.</li>
-          <li><strong>Conditions / Interventions</strong> — distinct disease terms and distinct intervention strings (before MOA grouping).</li>
-          <li><strong>Phase &amp; Status breakdowns</strong> — useful for spotting gaps (e.g. no Phase 3 trials recruiting) before you commit to a cohort.</li>
+          <li>
+            <strong>Total Trials</strong> — unique NCT IDs in the database.
+          </li>
+          <li>
+            <strong>Total / Mean Enrollment</strong> — sum and average of reported enrollment sizes. Many Phase 1 trials
+            are tiny, which pulls the mean down.
+          </li>
+          <li>
+            <strong>Conditions / Interventions</strong> — distinct disease terms and distinct intervention strings
+            (before MOA grouping).
+          </li>
+          <li>
+            <strong>Phase &amp; Status breakdowns</strong> — useful for spotting gaps (e.g. no Phase 3 trials
+            recruiting) before you commit to a cohort.
+          </li>
         </ul>
         <p style={{ margin: '0.5rem 0 0', color: '#555', fontSize: '0.8rem' }}>
-          Move to <em>Trial Filtering</em> once these numbers look sensible — that's where you carve
-          a focused cohort out of this raw pool.
+          Move to <em>Trial Filtering</em> once these numbers look sensible — that's where you carve a focused cohort
+          out of this raw pool.
         </p>
       </InterpretBox>
 
@@ -106,7 +116,8 @@ export default function Dashboard() {
         <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem' }}>
           <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Status Breakdown</h3>
           <div style={{ fontSize: '0.78rem', color: '#666', marginBottom: 6 }}>
-            Trial recruitment state. Completed trials are the main source of outcome data; recruiting / active trials are candidates for future simulation.
+            Trial recruitment state. Completed trials are the main source of outcome data; recruiting / active trials
+            are candidates for future simulation.
           </div>
           {statusData && (
             <DataTable<StatusDistribution>

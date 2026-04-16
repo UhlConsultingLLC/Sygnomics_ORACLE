@@ -65,7 +65,7 @@ export default function TrialCard({ trial }: { trial: TrialSummary }) {
   const isMentioned = trial.intercavitary_delivery === 'mentioned';
   const hasIntercavitary = isConfirmed || isMentioned;
   const mechanisms = trial.intercavitary_mechanisms
-    ? trial.intercavitary_mechanisms.split(', ').map(m => mechanismDisplayNames[m.trim()] || m.trim())
+    ? trial.intercavitary_mechanisms.split(', ').map((m) => mechanismDisplayNames[m.trim()] || m.trim())
     : [];
 
   // WHO 2021 classification
@@ -73,14 +73,16 @@ export default function TrialCard({ trial }: { trial: TrialSummary }) {
   const whoConfidence = trial.who_confidence || '';
 
   return (
-    <div style={{
-      border: '1px solid #ddd',
-      borderRadius: 8,
-      padding: '1rem',
-      marginBottom: '0.75rem',
-      background: '#fff',
-      borderLeft: `4px solid ${color}`,
-    }}>
+    <div
+      style={{
+        border: '1px solid #ddd',
+        borderRadius: 8,
+        padding: '1rem',
+        marginBottom: '0.75rem',
+        background: '#fff',
+        borderLeft: `4px solid ${color}`,
+      }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <Link to={`/trials/${trial.nct_id}`} style={{ fontWeight: 600, color: '#1a1a2e', textDecoration: 'none' }}>
@@ -88,10 +90,18 @@ export default function TrialCard({ trial }: { trial: TrialSummary }) {
           </Link>
           <span style={{ fontSize: '0.8rem', color, fontWeight: 500 }}>{trial.status}</span>
           {trial.source === 'ctis' && (
-            <span style={{
-              background: '#e8f5e9', color: '#2e7d32', padding: '1px 6px',
-              borderRadius: 4, fontSize: '0.65rem', fontWeight: 600,
-            }}>EU</span>
+            <span
+              style={{
+                background: '#e8f5e9',
+                color: '#2e7d32',
+                padding: '1px 6px',
+                borderRadius: 4,
+                fontSize: '0.65rem',
+                fontWeight: 600,
+              }}
+            >
+              EU
+            </span>
           )}
           {hasIntercavitary && (
             <span
@@ -111,38 +121,41 @@ export default function TrialCard({ trial }: { trial: TrialSummary }) {
               {mechanisms.length > 1 ? ` +${mechanisms.length - 1}` : ''}
             </span>
           )}
-          {whoTypes.length > 0 && whoTypes.map((wt) => {
-            const display = whoTypeDisplay[wt] || { label: wt.split(',')[0], bg: '#f5f5f5', text: '#616161' };
-            return (
-              <span
-                key={wt}
-                title={`WHO 2021: ${wt} (${whoConfidence} confidence)`}
-                style={{
-                  background: display.bg,
-                  color: display.text,
-                  padding: '1px 6px',
-                  borderRadius: 4,
-                  fontSize: '0.6rem',
-                  fontWeight: 600,
-                  cursor: 'default',
-                  border: `1px solid ${display.bg}`,
-                }}
-              >
-                {display.label}
-                {whoConfidence && (
-                  <span style={{
-                    display: 'inline-block',
-                    width: 5,
-                    height: 5,
-                    borderRadius: '50%',
-                    background: confidenceColors[whoConfidence] || '#9e9e9e',
-                    marginLeft: 3,
-                    verticalAlign: 'middle',
-                  }} />
-                )}
-              </span>
-            );
-          })}
+          {whoTypes.length > 0 &&
+            whoTypes.map((wt) => {
+              const display = whoTypeDisplay[wt] || { label: wt.split(',')[0], bg: '#f5f5f5', text: '#616161' };
+              return (
+                <span
+                  key={wt}
+                  title={`WHO 2021: ${wt} (${whoConfidence} confidence)`}
+                  style={{
+                    background: display.bg,
+                    color: display.text,
+                    padding: '1px 6px',
+                    borderRadius: 4,
+                    fontSize: '0.6rem',
+                    fontWeight: 600,
+                    cursor: 'default',
+                    border: `1px solid ${display.bg}`,
+                  }}
+                >
+                  {display.label}
+                  {whoConfidence && (
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        width: 5,
+                        height: 5,
+                        borderRadius: '50%',
+                        background: confidenceColors[whoConfidence] || '#9e9e9e',
+                        marginLeft: 3,
+                        verticalAlign: 'middle',
+                      }}
+                    />
+                  )}
+                </span>
+              );
+            })}
         </div>
         <span style={{ fontSize: '0.8rem', color: '#888', flexShrink: 0 }}>{trial.phase}</span>
       </div>
@@ -152,15 +165,18 @@ export default function TrialCard({ trial }: { trial: TrialSummary }) {
       {trial.interventions && trial.interventions.length > 0 && (
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 4 }}>
           {trial.interventions.map((iv) => (
-            <span key={iv} style={{
-              background: '#e8f5e9',
-              color: '#2e7d32',
-              padding: '2px 8px',
-              borderRadius: 10,
-              fontSize: '0.72rem',
-              fontWeight: 500,
-              border: '1px solid #c8e6c9',
-            }}>
+            <span
+              key={iv}
+              style={{
+                background: '#e8f5e9',
+                color: '#2e7d32',
+                padding: '2px 8px',
+                borderRadius: 10,
+                fontSize: '0.72rem',
+                fontWeight: 500,
+                border: '1px solid #c8e6c9',
+              }}
+            >
               {iv}
             </span>
           ))}
@@ -198,40 +214,45 @@ export default function TrialCard({ trial }: { trial: TrialSummary }) {
             {secondaryCount > 0 && (
               <span style={{ ...pillStyle, ...outcomeTypeColors.SECONDARY }}>{secondaryCount} secondary</span>
             )}
-            {otherCount > 0 && (
-              <span style={{ ...pillStyle, ...outcomeTypeColors.OTHER }}>{otherCount} other</span>
-            )}
+            {otherCount > 0 && <span style={{ ...pillStyle, ...outcomeTypeColors.OTHER }}>{otherCount} other</span>}
           </button>
 
           {showOutcomes && (
-            <div style={{
-              marginTop: 6,
-              padding: '0.5rem',
-              background: '#fafafa',
-              borderRadius: 6,
-              border: '1px solid #eee',
-              maxHeight: 250,
-              overflowY: 'auto',
-            }}>
+            <div
+              style={{
+                marginTop: 6,
+                padding: '0.5rem',
+                background: '#fafafa',
+                borderRadius: 6,
+                border: '1px solid #eee',
+                maxHeight: 250,
+                overflowY: 'auto',
+              }}
+            >
               {outcomes.map((o, i) => {
                 const typeStyle = outcomeTypeColors[o.type] || outcomeTypeColors.OTHER;
                 return (
-                  <div key={i} style={{
-                    padding: '4px 0',
-                    borderBottom: i < outcomes.length - 1 ? '1px solid #eee' : 'none',
-                    fontSize: '0.78rem',
-                  }}>
+                  <div
+                    key={i}
+                    style={{
+                      padding: '4px 0',
+                      borderBottom: i < outcomes.length - 1 ? '1px solid #eee' : 'none',
+                      fontSize: '0.78rem',
+                    }}
+                  >
                     <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
-                      <span style={{
-                        background: typeStyle.bg,
-                        color: typeStyle.text,
-                        padding: '1px 6px',
-                        borderRadius: 4,
-                        fontSize: '0.65rem',
-                        fontWeight: 600,
-                        flexShrink: 0,
-                        marginTop: 1,
-                      }}>
+                      <span
+                        style={{
+                          background: typeStyle.bg,
+                          color: typeStyle.text,
+                          padding: '1px 6px',
+                          borderRadius: 4,
+                          fontSize: '0.65rem',
+                          fontWeight: 600,
+                          flexShrink: 0,
+                          marginTop: 1,
+                        }}
+                      >
                         {o.type}
                       </span>
                       <span style={{ color: '#333' }}>{o.measure}</span>

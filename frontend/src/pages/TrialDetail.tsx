@@ -27,7 +27,7 @@ export default function TrialDetail() {
   useEffect(() => {
     if (!trial || !nctId || autoFetchAttempted.current) return;
     const hasOutcomes = trial.outcomes.length > 0;
-    const allMissingResults = trial.outcomes.every(o => !o.results || o.results.length === 0);
+    const allMissingResults = trial.outcomes.every((o) => !o.results || o.results.length === 0);
     if (hasOutcomes && allMissingResults) {
       autoFetchAttempted.current = true;
       handleRefresh();
@@ -57,13 +57,26 @@ export default function TrialDetail() {
   };
 
   if (isLoading) return <div>Loading trial details...</div>;
-  if (error || !trial) return <div>Trial not found. <Link to="/trials">Back to explorer</Link></div>;
+  if (error || !trial)
+    return (
+      <div>
+        Trial not found. <Link to="/trials">Back to explorer</Link>
+      </div>
+    );
 
   return (
     <div>
       <button
         onClick={() => navigate('/trials')}
-        style={{ fontSize: '0.85rem', color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+        style={{
+          fontSize: '0.85rem',
+          color: '#007bff',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 0,
+          textDecoration: 'underline',
+        }}
       >
         &larr; Back to Explorer
       </button>
@@ -89,7 +102,12 @@ export default function TrialDetail() {
         <Section title="Conditions">
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {trial.conditions.map((c) => (
-              <span key={c} style={{ background: '#e8f4fd', padding: '4px 10px', borderRadius: 12, fontSize: '0.8rem' }}>{c}</span>
+              <span
+                key={c}
+                style={{ background: '#e8f4fd', padding: '4px 10px', borderRadius: 12, fontSize: '0.8rem' }}
+              >
+                {c}
+              </span>
             ))}
           </div>
         </Section>
@@ -108,23 +126,42 @@ export default function TrialDetail() {
               };
               const c = typeColors[wt] || { bg: '#f5f5f5', text: '#616161' };
               return (
-                <span key={wt} style={{
-                  background: c.bg, color: c.text,
-                  padding: '4px 12px', borderRadius: 6,
-                  fontSize: '0.85rem', fontWeight: 600,
-                }}>
+                <span
+                  key={wt}
+                  style={{
+                    background: c.bg,
+                    color: c.text,
+                    padding: '4px 12px',
+                    borderRadius: 6,
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                  }}
+                >
                   {wt}
                 </span>
               );
             })}
-            <span style={{
-              fontSize: '0.78rem', color: '#888', alignSelf: 'center',
-            }}>
-              Confidence: <span style={{
-                color: whoProfile.confidence === 'high' ? '#2e7d32'
-                  : whoProfile.confidence === 'medium' ? '#f57f17' : '#9e9e9e',
-                fontWeight: 600,
-              }}>{whoProfile.confidence}</span>
+            <span
+              style={{
+                fontSize: '0.78rem',
+                color: '#888',
+                alignSelf: 'center',
+              }}
+            >
+              Confidence:{' '}
+              <span
+                style={{
+                  color:
+                    whoProfile.confidence === 'high'
+                      ? '#2e7d32'
+                      : whoProfile.confidence === 'medium'
+                        ? '#f57f17'
+                        : '#9e9e9e',
+                  fontWeight: 600,
+                }}
+              >
+                {whoProfile.confidence}
+              </span>
             </span>
           </div>
           <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', fontSize: '0.82rem' }}>
@@ -135,14 +172,13 @@ export default function TrialDetail() {
             <MolReq label="H3K27M" value={whoProfile.h3k27m_status} />
             {whoProfile.who_grade_min !== 'Unknown' && (
               <span style={{ color: '#555' }}>
-                Grade: {whoProfile.who_grade_min === whoProfile.who_grade_max
+                Grade:{' '}
+                {whoProfile.who_grade_min === whoProfile.who_grade_max
                   ? whoProfile.who_grade_min
                   : `${whoProfile.who_grade_min} \u2013 ${whoProfile.who_grade_max}`}
               </span>
             )}
-            <span style={{ color: '#888' }}>
-              {whoProfile.biomarker_count} biomarker criteria detected
-            </span>
+            <span style={{ color: '#888' }}>{whoProfile.biomarker_count} biomarker criteria detected</span>
           </div>
         </Section>
       )}
@@ -152,8 +188,12 @@ export default function TrialDetail() {
           {trial.interventions.map((iv, i) => (
             <div key={i} style={{ marginBottom: 8 }}>
               <strong>{iv.name}</strong> <span style={{ color: '#888', fontSize: '0.8rem' }}>({iv.type})</span>
-              {iv.chembl_id && <span style={{ marginLeft: 8, fontSize: '0.75rem', color: '#007bff' }}>{iv.chembl_id}</span>}
-              {iv.description && <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#666' }}>{iv.description}</p>}
+              {iv.chembl_id && (
+                <span style={{ marginLeft: 8, fontSize: '0.75rem', color: '#007bff' }}>{iv.chembl_id}</span>
+              )}
+              {iv.description && (
+                <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#666' }}>{iv.description}</p>
+              )}
             </div>
           ))}
         </Section>
@@ -161,22 +201,24 @@ export default function TrialDetail() {
 
       {trial.sponsor && (
         <Section title="Sponsor">
-          <p style={{ fontSize: '0.9rem' }}>{trial.sponsor.name} ({trial.sponsor.type})</p>
+          <p style={{ fontSize: '0.9rem' }}>
+            {trial.sponsor.name} ({trial.sponsor.type})
+          </p>
         </Section>
       )}
 
       {trial.arms.length > 0 && (
         <Section title="Arms">
           {trial.arms.map((arm, i) => {
-            const armBio = biomarkerData?.arm_biomarkers?.find(
-              (ab) => ab.arm_label === arm.label
-            );
+            const armBio = biomarkerData?.arm_biomarkers?.find((ab) => ab.arm_label === arm.label);
             return (
               <div key={i} style={{ marginBottom: 10 }}>
                 <div>
                   <strong>{arm.label}</strong> <span style={{ color: '#888', fontSize: '0.8rem' }}>({arm.type})</span>
                 </div>
-                {arm.description && <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#666' }}>{arm.description}</p>}
+                {arm.description && (
+                  <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#666' }}>{arm.description}</p>
+                )}
                 {armBio && armBio.biomarkers.length > 0 && (
                   <div style={{ marginTop: 4 }}>
                     <InlineBiomarkerTags biomarkers={armBio.biomarkers} />
@@ -194,7 +236,7 @@ export default function TrialDetail() {
           {biomarkerData && biomarkerData.arm_biomarkers && biomarkerData.arm_biomarkers.length > 0 && (
             <ArmCriteriaPanel armBiomarkers={biomarkerData.arm_biomarkers} />
           )}
-          {trial.outcomes.every(o => !o.results || o.results.length === 0) && (
+          {trial.outcomes.every((o) => !o.results || o.results.length === 0) && (
             <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               {refreshing && (
                 <span style={{ fontSize: '0.8rem', color: '#007bff', fontStyle: 'italic' }}>
@@ -205,8 +247,12 @@ export default function TrialDetail() {
                 <button
                   onClick={handleRefresh}
                   style={{
-                    fontSize: '0.8rem', padding: '4px 12px', borderRadius: 4,
-                    border: '1px solid #007bff', background: '#e8f4fd', color: '#007bff',
+                    fontSize: '0.8rem',
+                    padding: '4px 12px',
+                    borderRadius: 4,
+                    border: '1px solid #007bff',
+                    background: '#e8f4fd',
+                    color: '#007bff',
                     cursor: 'pointer',
                   }}
                 >
@@ -217,10 +263,18 @@ export default function TrialDetail() {
                 <>
                   <span style={{ fontSize: '0.8rem', color: '#888' }}>{refreshMsg}</span>
                   <button
-                    onClick={() => { setRefreshMsg(''); autoFetchAttempted.current = false; handleRefresh(); }}
+                    onClick={() => {
+                      setRefreshMsg('');
+                      autoFetchAttempted.current = false;
+                      handleRefresh();
+                    }}
                     style={{
-                      fontSize: '0.75rem', padding: '2px 8px', borderRadius: 4,
-                      border: '1px solid #ccc', background: '#f8f9fa', color: '#555',
+                      fontSize: '0.75rem',
+                      padding: '2px 8px',
+                      borderRadius: 4,
+                      border: '1px solid #ccc',
+                      background: '#f8f9fa',
+                      color: '#555',
                       cursor: 'pointer',
                     }}
                   >
@@ -231,21 +285,35 @@ export default function TrialDetail() {
             </div>
           )}
           {trial.outcomes.map((o, i) => (
-            <div key={i} style={{ marginBottom: 12, paddingBottom: 10, borderBottom: i < trial.outcomes.length - 1 ? '1px solid #eee' : 'none' }}>
+            <div
+              key={i}
+              style={{
+                marginBottom: 12,
+                paddingBottom: 10,
+                borderBottom: i < trial.outcomes.length - 1 ? '1px solid #eee' : 'none',
+              }}
+            >
               <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start', marginBottom: 4 }}>
-                <span style={{
-                  background: o.type === 'PRIMARY' ? '#e3f2fd' : o.type === 'SECONDARY' ? '#fff3e0' : '#f3e5f5',
-                  color: o.type === 'PRIMARY' ? '#1565c0' : o.type === 'SECONDARY' ? '#e65100' : '#7b1fa2',
-                  padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 600, flexShrink: 0,
-                }}>{o.type}</span>
+                <span
+                  style={{
+                    background: o.type === 'PRIMARY' ? '#e3f2fd' : o.type === 'SECONDARY' ? '#fff3e0' : '#f3e5f5',
+                    color: o.type === 'PRIMARY' ? '#1565c0' : o.type === 'SECONDARY' ? '#e65100' : '#7b1fa2',
+                    padding: '2px 8px',
+                    borderRadius: 4,
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    flexShrink: 0,
+                  }}
+                >
+                  {o.type}
+                </span>
                 <strong style={{ fontSize: '0.9rem' }}>{o.measure}</strong>
               </div>
-              {o.time_frame && <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: 4 }}>Time frame: {o.time_frame}</div>}
+              {o.time_frame && (
+                <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: 4 }}>Time frame: {o.time_frame}</div>
+              )}
               {o.results && o.results.length > 0 && (
-                <OutcomeResultsTable
-                  results={o.results}
-                  armBiomarkers={biomarkerData?.arm_biomarkers}
-                />
+                <OutcomeResultsTable results={o.results} armBiomarkers={biomarkerData?.arm_biomarkers} />
               )}
             </div>
           ))}
@@ -254,12 +322,24 @@ export default function TrialDetail() {
 
       {trial.eligibility && (
         <Section title="Eligibility">
-          <p style={{ fontSize: '0.85rem' }}>Sex: {trial.eligibility.sex} | Age: {trial.eligibility.min_age} - {trial.eligibility.max_age}</p>
+          <p style={{ fontSize: '0.85rem' }}>
+            Sex: {trial.eligibility.sex} | Age: {trial.eligibility.min_age} - {trial.eligibility.max_age}
+          </p>
           {biomarkerData && biomarkerData.biomarkers.length > 0 && (
             <BiomarkerTags biomarkers={biomarkerData.biomarkers} />
           )}
           {trial.eligibility.criteria_text && (
-            <pre style={{ fontSize: '0.8rem', whiteSpace: 'pre-wrap', background: '#f8f9fa', padding: '0.5rem', borderRadius: 4, maxHeight: 300, overflow: 'auto' }}>
+            <pre
+              style={{
+                fontSize: '0.8rem',
+                whiteSpace: 'pre-wrap',
+                background: '#f8f9fa',
+                padding: '0.5rem',
+                borderRadius: 4,
+                maxHeight: 300,
+                overflow: 'auto',
+              }}
+            >
               {trial.eligibility.criteria_text}
             </pre>
           )}
@@ -274,7 +354,13 @@ function computeRate(value: string, participants: number | null, unit: string | 
   if (isNaN(num)) return null;
   const u = (unit || '').toLowerCase();
   // Unit takes precedence: percentage values are already response rates.
-  if (u.includes('percent') || u.includes('%') || u.includes('proportion') || u.includes('fraction') || u.includes('rate')) {
+  if (
+    u.includes('percent') ||
+    u.includes('%') ||
+    u.includes('proportion') ||
+    u.includes('fraction') ||
+    u.includes('rate')
+  ) {
     if (num >= 0 && num <= 1) return (num * 100).toFixed(1) + '%';
     if (num > 1 && num <= 100) return num.toFixed(1) + '%';
     return null;
@@ -285,7 +371,13 @@ function computeRate(value: string, participants: number | null, unit: string | 
   return ((num / participants) * 100).toFixed(1) + '%';
 }
 
-function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResultInfo[]; armBiomarkers?: ArmBiomarkerInfo[] }) {
+function OutcomeResultsTable({
+  results,
+  armBiomarkers,
+}: {
+  results: OutcomeResultInfo[];
+  armBiomarkers?: ArmBiomarkerInfo[];
+}) {
   // Match result groups to arm biomarkers by scored fuzzy label matching
   const getArmBioForGroup = (groupTitle: string): ArmBiomarkerInfo | undefined => {
     if (!armBiomarkers || armBiomarkers.length === 0) return undefined;
@@ -299,18 +391,24 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
       let score = 0;
 
       // Exact full match is highest priority
-      if (gt === label) { score += 100; }
+      if (gt === label) {
+        score += 100;
+      }
       // Full label contained in group title (e.g. "group a" in "Group A - TG02 + RT")
-      else if (gt.includes(label)) { score += 50; }
+      else if (gt.includes(label)) {
+        score += 50;
+      }
       // Group title contained in arm label
-      else if (label.includes(gt)) { score += 40; }
+      else if (label.includes(gt)) {
+        score += 40;
+      }
 
       // Check for group identifier matches (e.g. "group a", "group b", "arm 1", "arm 2")
       const groupIdPattern = /\b(group|arm|cohort)\s*[a-z0-9]+\b/gi;
-      const gtIds = (gt.match(groupIdPattern) || []).map(s => s.toLowerCase().replace(/\s+/g, ' '));
-      const labelIds = (label.match(groupIdPattern) || []).map(s => s.toLowerCase().replace(/\s+/g, ' '));
+      const gtIds = (gt.match(groupIdPattern) || []).map((s) => s.toLowerCase().replace(/\s+/g, ' '));
+      const labelIds = (label.match(groupIdPattern) || []).map((s) => s.toLowerCase().replace(/\s+/g, ' '));
       if (gtIds.length > 0 && labelIds.length > 0) {
-        const idOverlap = gtIds.filter(id => labelIds.includes(id)).length;
+        const idOverlap = gtIds.filter((id) => labelIds.includes(id)).length;
         if (idOverlap > 0) {
           score += 30 * idOverlap; // Strong signal: "Group B" matches "Group B"
         } else {
@@ -321,9 +419,9 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
 
       // Word overlap scoring for remaining words (skip very short/common words)
       const stopWords = new Set(['the', 'and', 'for', 'with', 'group', 'arm', 'cohort', 'total']);
-      const gtWords = gt.split(/[\s:,\-+/()]+/).filter(w => w.length > 2 && !stopWords.has(w));
-      const labelWords = label.split(/[\s:,\-+/()]+/).filter(w => w.length > 2 && !stopWords.has(w));
-      const wordOverlap = gtWords.filter(w => labelWords.includes(w)).length;
+      const gtWords = gt.split(/[\s:,\-+/()]+/).filter((w) => w.length > 2 && !stopWords.has(w));
+      const labelWords = label.split(/[\s:,\-+/()]+/).filter((w) => w.length > 2 && !stopWords.has(w));
+      const wordOverlap = gtWords.filter((w) => labelWords.includes(w)).length;
       score += wordOverlap * 5;
 
       if (score > bestScore) {
@@ -339,30 +437,73 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
         <thead>
           <tr style={{ background: '#f8f9fa' }}>
-            <th style={{ textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>Arm / Group</th>
-            <th style={{ textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>Category</th>
-            <th style={{ textAlign: 'right', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>N Analyzed</th>
-            <th style={{ textAlign: 'right', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>Value</th>
-            <th style={{ textAlign: 'right', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>Rate</th>
-            <th style={{ textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>CI / Range</th>
+            <th style={{ textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              Arm / Group
+            </th>
+            <th style={{ textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              Category
+            </th>
+            <th style={{ textAlign: 'right', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              N Analyzed
+            </th>
+            <th style={{ textAlign: 'right', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              Value
+            </th>
+            <th style={{ textAlign: 'right', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              Rate
+            </th>
+            <th style={{ textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              CI / Range
+            </th>
           </tr>
         </thead>
         <tbody>
           {(() => {
             const NEG = new Set([
-              'no', 'non-responder', 'non responders', 'non-responders', 'no response',
-              'progressive disease', 'progression', 'progressed', 'progressive',
-              'pd', 'pd (progressive disease)', 'disease progression',
-              'stable disease', 'stable', 'sd', 'sd (stable disease)', 'disease stable',
-              'sd+pd', 'sd/pd',
+              'no',
+              'non-responder',
+              'non responders',
+              'non-responders',
+              'no response',
+              'progressive disease',
+              'progression',
+              'progressed',
+              'progressive',
+              'pd',
+              'pd (progressive disease)',
+              'disease progression',
+              'stable disease',
+              'stable',
+              'sd',
+              'sd (stable disease)',
+              'disease stable',
+              'sd+pd',
+              'sd/pd',
             ]);
             const POS = new Set([
-              'yes', 'responder', 'responders', 'response', 'responded',
-              'complete response', 'partial response', 'complete or partial response',
-              'complete remission', 'partial remission', 'complete or partial remission',
-              'objective response', 'overall response', 'objective response rate',
-              'cr', 'pr', 'cr+pr', 'cr/pr', 'cr or pr',
-              'tumor response', 'tumour response', 'with response', 'achieved response',
+              'yes',
+              'responder',
+              'responders',
+              'response',
+              'responded',
+              'complete response',
+              'partial response',
+              'complete or partial response',
+              'complete remission',
+              'partial remission',
+              'complete or partial remission',
+              'objective response',
+              'overall response',
+              'objective response rate',
+              'cr',
+              'pr',
+              'cr+pr',
+              'cr/pr',
+              'cr or pr',
+              'tumor response',
+              'tumour response',
+              'with response',
+              'achieved response',
             ]);
             const catOf = (r: OutcomeResultInfo) => (r.category || r.class_title || '').trim();
             // Preserve ordering of group_title first appearance
@@ -386,58 +527,81 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
               const dim = isNegative || isMissing;
               const autoRate = dim ? null : computeRate(r.value, r.participants_count, r.unit);
               return (
-              <tr key={key} style={{ borderBottom: '1px solid #eee', opacity: dim ? 0.55 : 1, background: dim ? '#fafafa' : undefined }}>
-                <td style={{ padding: '5px 8px', maxWidth: 280 }}>
-                  <div style={{ fontWeight: 500 }}>{r.group_title}</div>
-                  {r.group_description && (
-                    <div
-                      title={r.group_description}
-                      style={{ fontSize: '0.72rem', color: '#888', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 260 }}
-                    >
-                      {r.group_description}
-                    </div>
-                  )}
-                  {(() => {
-                    const armBio = getArmBioForGroup(r.group_title);
-                    return armBio && armBio.biomarkers.length > 0 ? (
-                      <div style={{ marginTop: 3 }}>
-                        <InlineBiomarkerTags biomarkers={armBio.biomarkers} small />
+                <tr
+                  key={key}
+                  style={{
+                    borderBottom: '1px solid #eee',
+                    opacity: dim ? 0.55 : 1,
+                    background: dim ? '#fafafa' : undefined,
+                  }}
+                >
+                  <td style={{ padding: '5px 8px', maxWidth: 280 }}>
+                    <div style={{ fontWeight: 500 }}>{r.group_title}</div>
+                    {r.group_description && (
+                      <div
+                        title={r.group_description}
+                        style={{
+                          fontSize: '0.72rem',
+                          color: '#888',
+                          marginTop: 1,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          maxWidth: 260,
+                        }}
+                      >
+                        {r.group_description}
                       </div>
-                    ) : null;
-                  })()}
-                </td>
-                <td style={{ padding: '5px 8px', fontSize: '0.78rem' }}>
-                  {cat ? (
-                    <span style={{
-                      display: 'inline-block', padding: '2px 8px', borderRadius: 10,
-                      background: isNegative ? '#fce4e4' : (isMissing ? '#eee' : '#e3f2e3'),
-                      color: isNegative ? '#a33' : (isMissing ? '#777' : '#256029'),
-                      fontWeight: 600,
-                    }}>{cat}</span>
-                  ) : <span style={{ color: '#bbb' }}>-</span>}
-                </td>
-                <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 500 }}>
-                  {r.participants_count != null ? r.participants_count.toLocaleString() : '-'}
-                </td>
-                <td style={{ padding: '5px 8px', textAlign: 'right' }}>
-                  <span style={{ fontWeight: 600, color: '#1a1a2e' }}>{r.value || '-'}</span>
-                  {r.unit && <span style={{ fontSize: '0.72rem', color: '#888', marginLeft: 3 }}>{r.unit}</span>}
-                  {r.param_type && (
-                    <div style={{ fontSize: '0.68rem', color: '#999' }}>{r.param_type.toLowerCase().replace(/_/g, ' ')}</div>
-                  )}
-                </td>
-                <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 600, color: '#2e7d32' }}>
-                  {autoRate || '-'}
-                </td>
-                <td style={{ padding: '5px 8px', fontSize: '0.78rem', color: '#666' }}>
-                  {r.lower_limit && r.upper_limit
-                    ? `${r.lower_limit} to ${r.upper_limit}`
-                    : '-'}
-                  {r.dispersion_type && r.lower_limit && (
-                    <div style={{ fontSize: '0.68rem', color: '#999' }}>{r.dispersion_type}</div>
-                  )}
-                </td>
-              </tr>
+                    )}
+                    {(() => {
+                      const armBio = getArmBioForGroup(r.group_title);
+                      return armBio && armBio.biomarkers.length > 0 ? (
+                        <div style={{ marginTop: 3 }}>
+                          <InlineBiomarkerTags biomarkers={armBio.biomarkers} small />
+                        </div>
+                      ) : null;
+                    })()}
+                  </td>
+                  <td style={{ padding: '5px 8px', fontSize: '0.78rem' }}>
+                    {cat ? (
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          padding: '2px 8px',
+                          borderRadius: 10,
+                          background: isNegative ? '#fce4e4' : isMissing ? '#eee' : '#e3f2e3',
+                          color: isNegative ? '#a33' : isMissing ? '#777' : '#256029',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {cat}
+                      </span>
+                    ) : (
+                      <span style={{ color: '#bbb' }}>-</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 500 }}>
+                    {r.participants_count != null ? r.participants_count.toLocaleString() : '-'}
+                  </td>
+                  <td style={{ padding: '5px 8px', textAlign: 'right' }}>
+                    <span style={{ fontWeight: 600, color: '#1a1a2e' }}>{r.value || '-'}</span>
+                    {r.unit && <span style={{ fontSize: '0.72rem', color: '#888', marginLeft: 3 }}>{r.unit}</span>}
+                    {r.param_type && (
+                      <div style={{ fontSize: '0.68rem', color: '#999' }}>
+                        {r.param_type.toLowerCase().replace(/_/g, ' ')}
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 600, color: '#2e7d32' }}>
+                    {autoRate || '-'}
+                  </td>
+                  <td style={{ padding: '5px 8px', fontSize: '0.78rem', color: '#666' }}>
+                    {r.lower_limit && r.upper_limit ? `${r.lower_limit} to ${r.upper_limit}` : '-'}
+                    {r.dispersion_type && r.lower_limit && (
+                      <div style={{ fontSize: '0.68rem', color: '#999' }}>{r.dispersion_type}</div>
+                    )}
+                  </td>
+                </tr>
               );
             };
 
@@ -463,17 +627,23 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
               let allInt = true;
               for (const r of positives) {
                 const v = parseFloat((r.value || '').trim());
-                if (!Number.isFinite(v) || !Number.isInteger(v)) { allInt = false; break; }
+                if (!Number.isFinite(v) || !Number.isInteger(v)) {
+                  allInt = false;
+                  break;
+                }
                 total += v;
               }
               if (!allInt || total < 0 || total > participants) return;
               const combinedRate = ((total / participants) * 100).toFixed(1) + '%';
               const labels = positives.map((r) => catOf(r)).join(' + ');
               out.push(
-                <tr key={`${gt}-combined`} style={{
-                  borderBottom: '1px solid #cde',
-                  background: '#f0f7ff',
-                }}>
+                <tr
+                  key={`${gt}-combined`}
+                  style={{
+                    borderBottom: '1px solid #cde',
+                    background: '#f0f7ff',
+                  }}
+                >
                   <td style={{ padding: '6px 8px', maxWidth: 280 }}>
                     <div style={{ fontWeight: 600, color: '#1a3a6e' }}>{gt}</div>
                     <div style={{ fontSize: '0.7rem', color: '#5a6e8a', fontStyle: 'italic', marginTop: 1 }}>
@@ -481,10 +651,17 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
                     </div>
                   </td>
                   <td style={{ padding: '6px 8px', fontSize: '0.78rem' }}>
-                    <span style={{
-                      display: 'inline-block', padding: '2px 8px', borderRadius: 10,
-                      background: '#1a3a6e', color: '#fff', fontWeight: 600,
-                    }} title={`Computed as ${labels}`}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '2px 8px',
+                        borderRadius: 10,
+                        background: '#1a3a6e',
+                        color: '#fff',
+                        fontWeight: 600,
+                      }}
+                      title={`Computed as ${labels}`}
+                    >
                       Combined ({labels})
                     </span>
                   </td>
@@ -502,7 +679,7 @@ function OutcomeResultsTable({ results, armBiomarkers }: { results: OutcomeResul
                   <td style={{ padding: '6px 8px', fontSize: '0.72rem', color: '#5a6e8a', fontStyle: 'italic' }}>
                     app-calculated
                   </td>
-                </tr>
+                </tr>,
               );
             });
             return out;
@@ -524,7 +701,9 @@ function InfoCard({ label, value }: { label: string; value: string }) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
+    <div
+      style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}
+    >
       <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', color: '#333' }}>{title}</h3>
       {children}
     </div>
@@ -533,23 +712,48 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function ArmCriteriaPanel({ armBiomarkers }: { armBiomarkers: ArmBiomarkerInfo[] }) {
   return (
-    <div style={{
-      margin: '0 0 12px',
-      padding: '8px 12px',
-      background: '#f0f4f8',
-      border: '1px solid #d0d7de',
-      borderRadius: 6,
-    }}>
-      <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#586069', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+    <div
+      style={{
+        margin: '0 0 12px',
+        padding: '8px 12px',
+        background: '#f0f4f8',
+        border: '1px solid #d0d7de',
+        borderRadius: 6,
+      }}
+    >
+      <div
+        style={{
+          fontSize: '0.72rem',
+          fontWeight: 600,
+          color: '#586069',
+          marginBottom: 6,
+          textTransform: 'uppercase',
+          letterSpacing: '0.03em',
+        }}
+      >
         Arm-Specific Molecular Criteria
       </div>
       {armBiomarkers.map((ab, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: i < armBiomarkers.length - 1 ? 6 : 0, flexWrap: 'wrap' }}>
+        <div
+          key={i}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginBottom: i < armBiomarkers.length - 1 ? 6 : 0,
+            flexWrap: 'wrap',
+          }}
+        >
           <span
             title={ab.arm_label}
             style={{
-              fontSize: '0.78rem', fontWeight: 600, color: '#24292e',
-              minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              color: '#24292e',
+              minWidth: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
               maxWidth: 280,
             }}
           >
@@ -581,42 +785,62 @@ function InlineBiomarkerTags({ biomarkers, small }: { biomarkers: BiomarkerMatch
             onMouseEnter={() => setHoveredIdx(i)}
             onMouseLeave={() => setHoveredIdx(null)}
           >
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 3,
-              padding,
-              borderRadius: 10,
-              border: `1px solid ${colors.border}`,
-              background: isExcluded ? '#f5f5f5' : colors.bg,
-              color: isExcluded ? '#999' : colors.text,
-              fontSize,
-              fontWeight: 500,
-              cursor: 'default',
-              textDecoration: isExcluded ? 'line-through' : 'none',
-              opacity: isExcluded ? 0.7 : 1,
-              transition: 'box-shadow 0.15s',
-              boxShadow: hoveredIdx === i ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
-            }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 3,
+                padding,
+                borderRadius: 10,
+                border: `1px solid ${colors.border}`,
+                background: isExcluded ? '#f5f5f5' : colors.bg,
+                color: isExcluded ? '#999' : colors.text,
+                fontSize,
+                fontWeight: 500,
+                cursor: 'default',
+                textDecoration: isExcluded ? 'line-through' : 'none',
+                opacity: isExcluded ? 0.7 : 1,
+                transition: 'box-shadow 0.15s',
+                boxShadow: hoveredIdx === i ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
+              }}
+            >
               {bm.marker}
               {bm.tcga_percent != null && (
-                <span style={{
-                  fontSize: badgeFontSize, fontWeight: 600,
-                  background: isExcluded ? '#e0e0e0' : colors.text,
-                  color: '#fff', borderRadius: 6, padding: '0px 4px',
-                }}>
+                <span
+                  style={{
+                    fontSize: badgeFontSize,
+                    fontWeight: 600,
+                    background: isExcluded ? '#e0e0e0' : colors.text,
+                    color: '#fff',
+                    borderRadius: 6,
+                    padding: '0px 4px',
+                  }}
+                >
                   {bm.tcga_percent < 1 ? '<1' : Math.round(bm.tcga_percent)}%
                 </span>
               )}
             </span>
             {hoveredIdx === i && (
-              <div style={{
-                position: 'absolute', bottom: '100%', left: '50%',
-                transform: 'translateX(-50%)', marginBottom: 6,
-                padding: '8px 12px', background: '#1a1a2e', color: '#fff',
-                borderRadius: 6, fontSize: '0.75rem', lineHeight: 1.4,
-                whiteSpace: 'nowrap', zIndex: 1000,
-                boxShadow: '0 4px 16px rgba(0,0,0,0.25)', pointerEvents: 'none',
-                minWidth: 200,
-              }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  marginBottom: 6,
+                  padding: '8px 12px',
+                  background: '#1a1a2e',
+                  color: '#fff',
+                  borderRadius: 6,
+                  fontSize: '0.75rem',
+                  lineHeight: 1.4,
+                  whiteSpace: 'nowrap',
+                  zIndex: 1000,
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                  pointerEvents: 'none',
+                  minWidth: 200,
+                }}
+              >
                 <div style={{ fontWeight: 700, marginBottom: 2 }}>{bm.marker}</div>
                 {bm.tcga_count != null && bm.tcga_total != null && (
                   <div style={{ color: '#7dd3fc', fontWeight: 600 }}>
@@ -624,16 +848,25 @@ function InlineBiomarkerTags({ biomarkers, small }: { biomarkers: BiomarkerMatch
                   </div>
                 )}
                 {bm.tcga_note && (
-                  <div style={{ fontSize: '0.68rem', color: '#aaa', whiteSpace: 'normal', maxWidth: 280, marginTop: 2 }}>
+                  <div
+                    style={{ fontSize: '0.68rem', color: '#aaa', whiteSpace: 'normal', maxWidth: 280, marginTop: 2 }}
+                  >
                     {bm.tcga_note}
                   </div>
                 )}
-                <div style={{
-                  position: 'absolute', top: '100%', left: '50%',
-                  transform: 'translateX(-50%)', width: 0, height: 0,
-                  borderLeft: '5px solid transparent', borderRight: '5px solid transparent',
-                  borderTop: '5px solid #1a1a2e',
-                }} />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: 0,
+                    height: 0,
+                    borderLeft: '5px solid transparent',
+                    borderRight: '5px solid transparent',
+                    borderTop: '5px solid #1a1a2e',
+                  }}
+                />
               </div>
             )}
           </span>
@@ -659,9 +892,7 @@ function MolReq({ label, value }: { label: string; value: string }) {
   };
   return (
     <span style={{ color: '#555' }}>
-      {label}: <span style={{ color: colors[value] || '#666', fontWeight: 600 }}>
-        {labels[value] || value}
-      </span>
+      {label}: <span style={{ color: colors[value] || '#666', fontWeight: 600 }}>{labels[value] || value}</span>
     </span>
   );
 }
@@ -677,17 +908,34 @@ const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string
 };
 
 const REQ_ICONS: Record<string, string> = {
-  required: '\u2714',   // checkmark
-  excluded: '\u2718',   // X
-  mentioned: '\u2022',  // bullet
+  required: '\u2714', // checkmark
+  excluded: '\u2718', // X
+  mentioned: '\u2022', // bullet
 };
 
 function BiomarkerTags({ biomarkers }: { biomarkers: BiomarkerMatch[] }) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   return (
-    <div style={{ margin: '8px 0 12px', padding: '10px 12px', background: '#fafbfc', border: '1px solid #e1e4e8', borderRadius: 6 }}>
-      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#586069', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+    <div
+      style={{
+        margin: '8px 0 12px',
+        padding: '10px 12px',
+        background: '#fafbfc',
+        border: '1px solid #e1e4e8',
+        borderRadius: 6,
+      }}
+    >
+      <div
+        style={{
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          color: '#586069',
+          marginBottom: 6,
+          textTransform: 'uppercase',
+          letterSpacing: '0.03em',
+        }}
+      >
         TCGA-GBM Matchable Criteria
       </div>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -725,15 +973,17 @@ function BiomarkerTags({ biomarkers }: { biomarkers: BiomarkerMatch[] }) {
                 <span style={{ fontSize: '0.7rem' }}>{reqIcon}</span>
                 {bm.marker}
                 {bm.tcga_percent != null && (
-                  <span style={{
-                    fontSize: '0.68rem',
-                    fontWeight: 600,
-                    background: isExcluded ? '#e0e0e0' : colors.text,
-                    color: '#fff',
-                    borderRadius: 8,
-                    padding: '1px 5px',
-                    marginLeft: 2,
-                  }}>
+                  <span
+                    style={{
+                      fontSize: '0.68rem',
+                      fontWeight: 600,
+                      background: isExcluded ? '#e0e0e0' : colors.text,
+                      color: '#fff',
+                      borderRadius: 8,
+                      padding: '1px 5px',
+                      marginLeft: 2,
+                    }}
+                  >
                     {bm.tcga_percent < 1 ? '<1' : Math.round(bm.tcga_percent)}%
                   </span>
                 )}
@@ -741,24 +991,26 @@ function BiomarkerTags({ biomarkers }: { biomarkers: BiomarkerMatch[] }) {
 
               {/* Tooltip popup */}
               {hoveredIdx === i && (
-                <div style={{
-                  position: 'absolute',
-                  bottom: '100%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  marginBottom: 8,
-                  padding: '10px 14px',
-                  background: '#1a1a2e',
-                  color: '#fff',
-                  borderRadius: 8,
-                  fontSize: '0.78rem',
-                  lineHeight: 1.5,
-                  whiteSpace: 'nowrap',
-                  zIndex: 1000,
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-                  pointerEvents: 'none',
-                  minWidth: 220,
-                }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginBottom: 8,
+                    padding: '10px 14px',
+                    background: '#1a1a2e',
+                    color: '#fff',
+                    borderRadius: 8,
+                    fontSize: '0.78rem',
+                    lineHeight: 1.5,
+                    whiteSpace: 'nowrap',
+                    zIndex: 1000,
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                    pointerEvents: 'none',
+                    minWidth: 220,
+                  }}
+                >
                   <div style={{ fontWeight: 700, marginBottom: 4, fontSize: '0.85rem' }}>{bm.marker}</div>
                   <div style={{ color: '#ccc', marginBottom: 4 }}>
                     <span style={{ textTransform: 'capitalize' }}>{bm.category}</span>
@@ -768,24 +1020,36 @@ function BiomarkerTags({ biomarkers }: { biomarkers: BiomarkerMatch[] }) {
                     <span style={{ textTransform: 'capitalize' }}>{bm.requirement}</span>
                   </div>
                   {bm.tcga_count != null && bm.tcga_total != null && (
-                    <div style={{ marginTop: 4, padding: '6px 8px', background: 'rgba(255,255,255,0.1)', borderRadius: 4 }}>
+                    <div
+                      style={{ marginTop: 4, padding: '6px 8px', background: 'rgba(255,255,255,0.1)', borderRadius: 4 }}
+                    >
                       <div style={{ fontWeight: 600, color: '#7dd3fc', fontSize: '0.9rem' }}>
                         TCGA-GBM: {bm.tcga_count} / {bm.tcga_total} patients ({bm.tcga_percent?.toFixed(1)}%)
                       </div>
-                      <div style={{
-                        marginTop: 4, height: 6, background: 'rgba(255,255,255,0.15)', borderRadius: 3, overflow: 'hidden',
-                      }}>
-                        <div style={{
-                          height: '100%',
-                          width: `${Math.min(100, bm.tcga_percent || 0)}%`,
-                          background: '#7dd3fc',
+                      <div
+                        style={{
+                          marginTop: 4,
+                          height: 6,
+                          background: 'rgba(255,255,255,0.15)',
                           borderRadius: 3,
-                        }} />
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: '100%',
+                            width: `${Math.min(100, bm.tcga_percent || 0)}%`,
+                            background: '#7dd3fc',
+                            borderRadius: 3,
+                          }}
+                        />
                       </div>
                     </div>
                   )}
                   {bm.tcga_note && (
-                    <div style={{ marginTop: 6, fontSize: '0.72rem', color: '#aaa', whiteSpace: 'normal', maxWidth: 300 }}>
+                    <div
+                      style={{ marginTop: 6, fontSize: '0.72rem', color: '#aaa', whiteSpace: 'normal', maxWidth: 300 }}
+                    >
                       {bm.tcga_note}
                     </div>
                   )}
@@ -793,17 +1057,19 @@ function BiomarkerTags({ biomarkers }: { biomarkers: BiomarkerMatch[] }) {
                     Matched text: &ldquo;{bm.raw_text}&rdquo;
                   </div>
                   {/* Tooltip arrow */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: 0,
-                    height: 0,
-                    borderLeft: '6px solid transparent',
-                    borderRight: '6px solid transparent',
-                    borderTop: '6px solid #1a1a2e',
-                  }} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '6px solid transparent',
+                      borderRight: '6px solid transparent',
+                      borderTop: '6px solid #1a1a2e',
+                    }}
+                  />
                 </div>
               )}
             </div>

@@ -13,9 +13,7 @@ export default function VersionBadge() {
   const info = useVersion();
   const [copied, setCopied] = useState(false);
 
-  const label = info
-    ? `${info.name} v${info.version} · ${info.git_sha}`
-    : 'version unknown';
+  const label = info ? `${info.name} v${info.version} · ${info.git_sha}` : 'version unknown';
   const buildId = info ? info.build_id : '';
 
   const handleCopy = async () => {
@@ -37,7 +35,9 @@ export default function VersionBadge() {
         info.platform ? `Platform: ${info.platform}` : '',
         '',
         'Click to copy build ID',
-      ].filter(Boolean).join('\n')
+      ]
+        .filter(Boolean)
+        .join('\n')
     : 'Backend /version endpoint did not respond. Exports will not be stamped with a build ID.';
 
   return (

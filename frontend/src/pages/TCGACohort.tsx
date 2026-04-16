@@ -10,20 +10,34 @@
  */
 import { useState, useEffect, useRef } from 'react';
 import { useTCGASummary, useDCNADetail, useExpressionDetail, usePatientProfile } from '../hooks/useApi';
-import { fetchTCGADrugs, fetchTCGAGenes, fetchScatterData, fetchDrugTargets, fetchExpressionHeatmap } from '../services/api';
+import {
+  fetchTCGADrugs,
+  fetchTCGAGenes,
+  fetchScatterData,
+  fetchDrugTargets,
+  fetchExpressionHeatmap,
+} from '../services/api';
 import { usePersistentState, clearPersistentKeys } from '../hooks/usePersistentState';
 import { Metric, InterpretBox, InlineHelp } from '../components/Interpretation';
 import { withProvenance, provenanceImageFilename } from '../utils/provenance';
 
 const tabResetBtnStyle: React.CSSProperties = {
-  padding: '0.3rem 0.9rem', background: '#6c757d', color: '#fff',
-  border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.78rem',
+  padding: '0.3rem 0.9rem',
+  background: '#6c757d',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 4,
+  cursor: 'pointer',
+  fontSize: '0.78rem',
 };
 import Plotly from 'plotly.js/dist/plotly.min.js';
 
 export default function TCGACohort() {
   const { data: summary, isLoading } = useTCGASummary();
-  const [activeTab, setActiveTab, resetActiveTab] = usePersistentState<'dcna' | 'expression' | 'scatter' | 'patient'>('tcga_cohort_active_tab', 'dcna');
+  const [activeTab, setActiveTab, resetActiveTab] = usePersistentState<'dcna' | 'expression' | 'scatter' | 'patient'>(
+    'tcga_cohort_active_tab',
+    'dcna',
+  );
   const [dcnaNonce, setDcnaNonce] = useState(0);
   const [exprNonce, setExprNonce] = useState(0);
   const [scatterNonce, setScatterNonce] = useState(0);
@@ -61,8 +75,13 @@ export default function TCGACohort() {
         <button
           onClick={handleResetAll}
           style={{
-            padding: '0.4rem 1.2rem', background: '#6c757d', color: '#fff',
-            border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.85rem',
+            padding: '0.4rem 1.2rem',
+            background: '#6c757d',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: '0.85rem',
           }}
         >
           Reset All
@@ -74,22 +93,35 @@ export default function TCGACohort() {
 
       <InterpretBox id="tcga-intro" title="How to read this page">
         <p style={{ margin: '0 0 0.5rem' }}>
-          This page lets you inspect every molecular signal we use downstream to simulate trials.
-          Each tab answers one question:
+          This page lets you inspect every molecular signal we use downstream to simulate trials. Each tab answers one
+          question:
         </p>
         <ul style={{ margin: '0 0 0.5rem 1.1rem', padding: 0 }}>
-          <li><strong>DCNA by Drug</strong> — "how sensitive is each patient to this drug?" A per-patient score built from the drug's target gene set. Higher = more sensitive.</li>
-          <li><strong>Gene Expression</strong> — "how much of this gene's mRNA does each patient make?" Raw normalized expression; use the heatmap for relative z-scores across the cohort.</li>
-          <li><strong>DCNA vs Expression</strong> — scatter plot to check whether a drug's DCNA really tracks its target gene's expression (expected: positive correlation for agonists, negative for inhibitors).</li>
-          <li><strong>Patient Profile</strong> — per-patient leaderboard of top DCNA hits and highest-expressed genes.</li>
+          <li>
+            <strong>DCNA by Drug</strong> — "how sensitive is each patient to this drug?" A per-patient score built from
+            the drug's target gene set. Higher = more sensitive.
+          </li>
+          <li>
+            <strong>Gene Expression</strong> — "how much of this gene's mRNA does each patient make?" Raw normalized
+            expression; use the heatmap for relative z-scores across the cohort.
+          </li>
+          <li>
+            <strong>DCNA vs Expression</strong> — scatter plot to check whether a drug's DCNA really tracks its target
+            gene's expression (expected: positive correlation for agonists, negative for inhibitors).
+          </li>
+          <li>
+            <strong>Patient Profile</strong> — per-patient leaderboard of top DCNA hits and highest-expressed genes.
+          </li>
         </ul>
         <p style={{ margin: '0 0 0.25rem' }}>
-          <strong>Reading distributions.</strong> DCNA is roughly <em>−1 to +1</em>; expression in the heatmap is shown as
-          <em> z-score</em> (red = above cohort mean, blue = below). One patient's z = 0 means "average for this cohort", not
-          "average expression" in absolute terms.
+          <strong>Reading distributions.</strong> DCNA is roughly <em>−1 to +1</em>; expression in the heatmap is shown
+          as
+          <em> z-score</em> (red = above cohort mean, blue = below). One patient's z = 0 means "average for this
+          cohort", not "average expression" in absolute terms.
         </p>
         <p style={{ margin: '0.3rem 0 0', color: '#555', fontSize: '0.8rem' }}>
-          Tip: compare two drugs by opening the DCNA tab for each — if their target gene sets overlap heavily, DCNA profiles will look very similar.
+          Tip: compare two drugs by opening the DCNA tab for each — if their target gene sets overlap heavily, DCNA
+          profiles will look very similar.
         </p>
       </InterpretBox>
 
@@ -140,7 +172,13 @@ export default function TCGACohort() {
                   borderRadius: idx === 0 ? '6px 0 0 6px' : idx === arr.length - 1 ? '0 6px 6px 0' : 0,
                 }}
               >
-                {tab === 'dcna' ? 'DCNA by Drug' : tab === 'expression' ? 'Gene Expression' : tab === 'scatter' ? 'DCNA vs Expression' : 'Patient Profile'}
+                {tab === 'dcna'
+                  ? 'DCNA by Drug'
+                  : tab === 'expression'
+                    ? 'Gene Expression'
+                    : tab === 'scatter'
+                      ? 'DCNA vs Expression'
+                      : 'Patient Profile'}
               </button>
             ))}
           </div>
@@ -163,9 +201,12 @@ export default function TCGACohort() {
   );
 }
 
-
 // --- Autocomplete search input ---
-function SearchInput({ placeholder, fetchSuggestions, onSelect }: {
+function SearchInput({
+  placeholder,
+  fetchSuggestions,
+  onSelect,
+}: {
   placeholder: string;
   fetchSuggestions: (q: string) => Promise<string[]>;
   onSelect: (val: string) => void;
@@ -177,7 +218,10 @@ function SearchInput({ placeholder, fetchSuggestions, onSelect }: {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
-    if (query.length < 2) { setSuggestions([]); return; }
+    if (query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
       const results = await fetchSuggestions(query);
@@ -201,37 +245,69 @@ function SearchInput({ placeholder, fetchSuggestions, onSelect }: {
         onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
         onKeyDown={(e) => {
-          if (e.key === 'ArrowDown') { setHighlight((h) => Math.min(h + 1, suggestions.length - 1)); e.preventDefault(); }
-          else if (e.key === 'ArrowUp') { setHighlight((h) => Math.max(h - 1, 0)); e.preventDefault(); }
-          else if (e.key === 'Enter') {
+          if (e.key === 'ArrowDown') {
+            setHighlight((h) => Math.min(h + 1, suggestions.length - 1));
+            e.preventDefault();
+          } else if (e.key === 'ArrowUp') {
+            setHighlight((h) => Math.max(h - 1, 0));
+            e.preventDefault();
+          } else if (e.key === 'Enter') {
             if (highlight >= 0 && highlight < suggestions.length) select(suggestions[highlight]);
             else if (query.trim()) onSelect(query.trim());
           }
         }}
         placeholder={placeholder}
-        style={{ width: '100%', padding: '8px 12px', fontSize: '0.85rem', border: '1px solid #ccc', borderRadius: 6, boxSizing: 'border-box' }}
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          fontSize: '0.85rem',
+          border: '1px solid #ccc',
+          borderRadius: 6,
+          boxSizing: 'border-box',
+        }}
       />
       {showDropdown && suggestions.length > 0 && (
-        <ul style={{
-          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100,
-          background: '#fff', border: '1px solid #ddd', borderRadius: '0 0 6px 6px',
-          listStyle: 'none', padding: 0, margin: 0, maxHeight: 220, overflowY: 'auto',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.12)',
-        }}>
+        <ul
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 100,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: '0 0 6px 6px',
+            listStyle: 'none',
+            padding: 0,
+            margin: 0,
+            maxHeight: 220,
+            overflowY: 'auto',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.12)',
+          }}
+        >
           {suggestions.map((s, i) => (
             <li
               key={s}
               title={s}
-              onMouseDown={(e) => { e.preventDefault(); select(s); }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                select(s);
+              }}
               onMouseEnter={() => setHighlight(i)}
               style={{
-                padding: '6px 12px', fontSize: '0.82rem', cursor: 'pointer',
+                padding: '6px 12px',
+                fontSize: '0.82rem',
+                cursor: 'pointer',
                 background: i === highlight ? '#e8f4fd' : '#fff',
                 color: '#333',
                 borderBottom: i < suggestions.length - 1 ? '1px solid #f0f0f0' : 'none',
-                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
-            >{s}</li>
+            >
+              {s}
+            </li>
           ))}
         </ul>
       )}
@@ -240,7 +316,11 @@ function SearchInput({ placeholder, fetchSuggestions, onSelect }: {
 }
 
 // --- Distribution bar chart helper ---
-function DistributionChart({ values, label, color }: {
+function DistributionChart({
+  values,
+  label,
+  color,
+}: {
   values: { patient: string; value: number }[];
   label: string;
   color: string;
@@ -280,7 +360,9 @@ function DistributionChart({ values, label, color }: {
           />
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#999', marginTop: 2 }}>
+      <div
+        style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#999', marginTop: 2 }}
+      >
         <span>{min.toFixed(2)}</span>
         <span>{max.toFixed(2)}</span>
       </div>
@@ -312,7 +394,11 @@ function StatsRow({ stats }: { stats: { mean: number; median: number; stdev: num
 }
 
 // --- Ranked table ---
-function RankedTable({ rows, columns, maxRows = 50 }: {
+function RankedTable({
+  rows,
+  columns,
+  maxRows = 50,
+}: {
   rows: Record<string, any>[];
   columns: { key: string; label: string; align?: string; format?: (v: any) => string }[];
   maxRows?: number;
@@ -324,9 +410,21 @@ function RankedTable({ rows, columns, maxRows = 50 }: {
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
         <thead>
           <tr style={{ background: '#f8f9fa' }}>
-            <th style={{ padding: '5px 8px', textAlign: 'left', borderBottom: '2px solid #ddd', fontWeight: 600 }}>#</th>
+            <th style={{ padding: '5px 8px', textAlign: 'left', borderBottom: '2px solid #ddd', fontWeight: 600 }}>
+              #
+            </th>
             {columns.map((c) => (
-              <th key={c.key} style={{ padding: '5px 8px', textAlign: (c.align || 'left') as any, borderBottom: '2px solid #ddd', fontWeight: 600 }}>{c.label}</th>
+              <th
+                key={c.key}
+                style={{
+                  padding: '5px 8px',
+                  textAlign: (c.align || 'left') as any,
+                  borderBottom: '2px solid #ddd',
+                  fontWeight: 600,
+                }}
+              >
+                {c.label}
+              </th>
             ))}
           </tr>
         </thead>
@@ -346,7 +444,15 @@ function RankedTable({ rows, columns, maxRows = 50 }: {
       {rows.length > maxRows && (
         <button
           onClick={() => setShowAll(!showAll)}
-          style={{ marginTop: 6, fontSize: '0.78rem', color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+          style={{
+            marginTop: 6,
+            fontSize: '0.78rem',
+            color: '#007bff',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            textDecoration: 'underline',
+          }}
         >
           {showAll ? `Show top ${maxRows}` : `Show all ${rows.length}`}
         </button>
@@ -356,7 +462,11 @@ function RankedTable({ rows, columns, maxRows = 50 }: {
 }
 
 // --- Expression Heatmap (z-score differential expression) ---
-function ExpressionHeatmap({ genes, includeAverage, title }: {
+function ExpressionHeatmap({
+  genes,
+  includeAverage,
+  title,
+}: {
   genes: string[];
   includeAverage?: boolean;
   title?: string;
@@ -366,14 +476,25 @@ function ExpressionHeatmap({ genes, includeAverage, title }: {
   const plotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!genes || genes.length === 0) { setData(null); return; }
+    if (!genes || genes.length === 0) {
+      setData(null);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     fetchExpressionHeatmap(genes, includeAverage || false)
-      .then((res) => { if (!cancelled) setData(res); })
-      .catch(() => { if (!cancelled) setData({ error: 'Failed to load heatmap' }); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .then((res) => {
+        if (!cancelled) setData(res);
+      })
+      .catch(() => {
+        if (!cancelled) setData({ error: 'Failed to load heatmap' });
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [genes.join(','), includeAverage]);
 
   useEffect(() => {
@@ -386,8 +507,11 @@ function ExpressionHeatmap({ genes, includeAverage, title }: {
       y: data.genes,
       type: 'heatmap' as const,
       colorscale: [
-        [0, '#1565c0'], [0.25, '#64b5f6'], [0.5, '#ffffff'],
-        [0.75, '#ef5350'], [1, '#b71c1c'],
+        [0, '#1565c0'],
+        [0.25, '#64b5f6'],
+        [0.5, '#ffffff'],
+        [0.75, '#ef5350'],
+        [1, '#b71c1c'],
       ],
       zmid: 0,
       zmin: -3,
@@ -399,11 +523,21 @@ function ExpressionHeatmap({ genes, includeAverage, title }: {
     const layout: Partial<Plotly.Layout> = {
       height: Math.max(180, 40 + rowCount * 22),
       margin: { l: 140, r: 40, t: 20, b: 50 },
-      xaxis: { showticklabels: false, title: { text: `Patients sorted by ${includeAverage ? 'target-avg' : 'mean'} z-score (n=${data.patients?.length || 0})` } },
+      xaxis: {
+        showticklabels: false,
+        title: {
+          text: `Patients sorted by ${includeAverage ? 'target-avg' : 'mean'} z-score (n=${data.patients?.length || 0})`,
+        },
+      },
       yaxis: { automargin: true, tickfont: { size: 10 } },
     };
-    Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/tcga/summary'), { responsive: true, displayModeBar: false });
-    return () => { if (plotRef.current) Plotly.purge(plotRef.current); };
+    Plotly.newPlot(plotRef.current, [trace], withProvenance(layout, '/tcga/summary'), {
+      responsive: true,
+      displayModeBar: false,
+    });
+    return () => {
+      if (plotRef.current) Plotly.purge(plotRef.current);
+    };
   }, [data]);
 
   if (loading) {
@@ -415,7 +549,9 @@ function ExpressionHeatmap({ genes, includeAverage, title }: {
   }
   if (!data.zscores || data.zscores.length === 0) return null;
   return (
-    <div style={{ marginTop: 14, padding: '8px 10px', background: '#fafafa', border: '1px solid #eee', borderRadius: 6 }}>
+    <div
+      style={{ marginTop: 14, padding: '8px 10px', background: '#fafafa', border: '1px solid #eee', borderRadius: 6 }}
+    >
       <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#555', marginBottom: 4 }}>
         {title || 'Differential Expression Heatmap (z-score across TCGA cohort)'}
       </div>
@@ -436,38 +572,59 @@ function DCNATab({ patients: _patients, onReset }: { patients: string[]; onReset
   const [targetGenes, setTargetGenes] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!selectedDrug) { setTargetGenes([]); return; }
+    if (!selectedDrug) {
+      setTargetGenes([]);
+      return;
+    }
     let cancelled = false;
-    fetchDrugTargets(selectedDrug).then((res) => {
-      if (cancelled) return;
-      const genes = (res.targets || [])
-        .filter((t) => t.in_expression_data)
-        .map((t) => t.gene_symbol);
-      setTargetGenes(genes);
-    }).catch(() => { if (!cancelled) setTargetGenes([]); });
-    return () => { cancelled = true; };
+    fetchDrugTargets(selectedDrug)
+      .then((res) => {
+        if (cancelled) return;
+        const genes = (res.targets || []).filter((t) => t.in_expression_data).map((t) => t.gene_symbol);
+        setTargetGenes(genes);
+      })
+      .catch(() => {
+        if (!cancelled) setTargetGenes([]);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [selectedDrug]);
 
   return (
     <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <h3 style={{ margin: 0, fontSize: '1rem' }}>Drug Constrained Network Activity (DCNA)</h3>
-        <button onClick={onReset} style={tabResetBtnStyle}>Reset</button>
+        <button onClick={onReset} style={tabResetBtnStyle}>
+          Reset
+        </button>
       </div>
       <p style={{ fontSize: '0.82rem', color: '#666', marginBottom: '0.75rem' }}>
         Search for a drug to see its DCNA values across all patients in the TCGA-GBM cohort.
       </p>
       <InterpretBox id="tcga-dcna-tab" title="How to read DCNA" tone="tip">
         <p style={{ margin: '0 0 0.4rem' }}>
-          <strong>DCNA (Drug-Constrained Network Activity)</strong> is a per-patient score derived from
-          the expression of a drug's target genes. A higher DCNA means the drug's target pathway is more
-          active in that patient, so we expect the patient to be more sensitive to the drug.
+          <strong>DCNA (Drug-Constrained Network Activity)</strong> is a per-patient score derived from the expression
+          of a drug's target genes. A higher DCNA means the drug's target pathway is more active in that patient, so we
+          expect the patient to be more sensitive to the drug.
         </p>
         <ul style={{ margin: '0 0 0.4rem 1.1rem', padding: 0 }}>
-          <li><strong>Scale</strong> — roughly <em>−1 to +1</em>, centered near 0. Values are quantized per drug (step sizes like 0.01, 0.1, or 0.5 depending on target-set size).</li>
-          <li><strong>Distribution</strong> — the histogram shows how DCNA varies across the cohort. Bimodal distributions suggest a biomarker-defined split (responders vs non-responders).</li>
-          <li><strong>Heatmap</strong> — target-gene expression z-scores across the same patients, sorted by average. Use it to see which patients drive the high-DCNA tail.</li>
-          <li><strong>Ranked table</strong> — patients sorted by DCNA. Highest = top candidates for simulated enrollment in this drug's arm.</li>
+          <li>
+            <strong>Scale</strong> — roughly <em>−1 to +1</em>, centered near 0. Values are quantized per drug (step
+            sizes like 0.01, 0.1, or 0.5 depending on target-set size).
+          </li>
+          <li>
+            <strong>Distribution</strong> — the histogram shows how DCNA varies across the cohort. Bimodal distributions
+            suggest a biomarker-defined split (responders vs non-responders).
+          </li>
+          <li>
+            <strong>Heatmap</strong> — target-gene expression z-scores across the same patients, sorted by average. Use
+            it to see which patients drive the high-DCNA tail.
+          </li>
+          <li>
+            <strong>Ranked table</strong> — patients sorted by DCNA. Highest = top candidates for simulated enrollment
+            in this drug's arm.
+          </li>
         </ul>
         <p style={{ margin: 0, color: '#555', fontSize: '0.8rem' }}>
           Two drugs that share the same gene targets produce identical DCNA profiles — that's by design.
@@ -484,7 +641,14 @@ function DCNATab({ patients: _patients, onReset }: { patients: string[]; onReset
         <div style={{ marginTop: 16 }}>
           <h4 style={{ margin: '0 0 4px', fontSize: '0.95rem', color: '#1a1a2e' }}>{data.drug}</h4>
           <StatsRow stats={data.stats} />
-          <div style={{ display: 'grid', gridTemplateColumns: targetGenes.length > 0 ? '1fr 1fr' : '1fr', gap: '1rem', alignItems: 'start' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: targetGenes.length > 0 ? '1fr 1fr' : '1fr',
+              gap: '1rem',
+              alignItems: 'start',
+            }}
+          >
             <DistributionChart values={data.values} label="DCNA" color="#4a90d9" />
             {targetGenes.length > 0 && (
               <ExpressionHeatmap
@@ -522,24 +686,33 @@ function ExpressionTab({ patients: _patients, onReset }: { patients: string[]; o
     <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <h3 style={{ margin: 0, fontSize: '1rem' }}>Normalized Gene Expression (RSEM)</h3>
-        <button onClick={onReset} style={tabResetBtnStyle}>Reset</button>
+        <button onClick={onReset} style={tabResetBtnStyle}>
+          Reset
+        </button>
       </div>
       <p style={{ fontSize: '0.82rem', color: '#666', marginBottom: '0.75rem' }}>
         Search for a gene to see its normalized expression across all patients.
       </p>
       <InterpretBox id="tcga-expression-tab" title="How to read gene expression" tone="tip">
         <p style={{ margin: '0 0 0.4rem' }}>
-          Each patient has one normalized expression value per gene (log-scaled, RSEM-style). Use this
-          to see which patients over- or under-express a gene of interest.
+          Each patient has one normalized expression value per gene (log-scaled, RSEM-style). Use this to see which
+          patients over- or under-express a gene of interest.
         </p>
         <ul style={{ margin: '0 0 0.3rem 1.1rem', padding: 0 }}>
-          <li><strong>Histogram</strong> — raw normalized expression values across the cohort.</li>
-          <li><strong>Heatmap</strong> — the same values rendered as <em>z-scores</em>: red = above cohort mean, blue = below. A z of ±1 means roughly 1 standard deviation from the cohort mean.</li>
-          <li><strong>Ranked table</strong> — patients sorted by absolute expression (not z-score).</li>
+          <li>
+            <strong>Histogram</strong> — raw normalized expression values across the cohort.
+          </li>
+          <li>
+            <strong>Heatmap</strong> — the same values rendered as <em>z-scores</em>: red = above cohort mean, blue =
+            below. A z of ±1 means roughly 1 standard deviation from the cohort mean.
+          </li>
+          <li>
+            <strong>Ranked table</strong> — patients sorted by absolute expression (not z-score).
+          </li>
         </ul>
         <p style={{ margin: 0, color: '#555', fontSize: '0.8rem' }}>
-          Expression here is relative to this GBM cohort only — a "low" value does not mean the gene is
-          truly silent, just that it's low relative to other GBM patients.
+          Expression here is relative to this GBM cohort only — a "low" value does not mean the gene is truly silent,
+          just that it's low relative to other GBM patients.
         </p>
       </InterpretBox>
       <SearchInput
@@ -553,15 +726,14 @@ function ExpressionTab({ patients: _patients, onReset }: { patients: string[]; o
         <div style={{ marginTop: 16 }}>
           <h4 style={{ margin: '0 0 4px', fontSize: '0.95rem', color: '#1a1a2e' }}>
             {data.gene}
-            {data.ensembl_id && <span style={{ fontSize: '0.78rem', color: '#888', marginLeft: 8 }}>{data.ensembl_id}</span>}
+            {data.ensembl_id && (
+              <span style={{ fontSize: '0.78rem', color: '#888', marginLeft: 8 }}>{data.ensembl_id}</span>
+            )}
           </h4>
           <StatsRow stats={data.stats} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'start' }}>
             <DistributionChart values={data.values} label="Expression" color="#2e7d32" />
-            <ExpressionHeatmap
-              genes={[data.gene]}
-              title={`Differential Expression Heatmap — ${data.gene}`}
-            />
+            <ExpressionHeatmap genes={[data.gene]} title={`Differential Expression Heatmap — ${data.gene}`} />
           </div>
           <RankedTable
             rows={data.values}
@@ -585,23 +757,35 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const plotRef = useRef<HTMLDivElement>(null);
-  const [drugTargets, setDrugTargets] = useState<{ gene_symbol: string; action_type: string; in_expression_data: boolean }[]>([]);
+  const [drugTargets, setDrugTargets] = useState<
+    { gene_symbol: string; action_type: string; in_expression_data: boolean }[]
+  >([]);
   const [targetsLoading, setTargetsLoading] = useState(false);
 
   // Fetch drug targets when a drug is selected
   useEffect(() => {
-    if (!selectedDrug) { setDrugTargets([]); return; }
+    if (!selectedDrug) {
+      setDrugTargets([]);
+      return;
+    }
     let cancelled = false;
     setTargetsLoading(true);
-    fetchDrugTargets(selectedDrug).then((result) => {
-      if (!cancelled) {
-        setDrugTargets(result.targets || []);
-        setTargetsLoading(false);
-      }
-    }).catch(() => {
-      if (!cancelled) { setDrugTargets([]); setTargetsLoading(false); }
-    });
-    return () => { cancelled = true; };
+    fetchDrugTargets(selectedDrug)
+      .then((result) => {
+        if (!cancelled) {
+          setDrugTargets(result.targets || []);
+          setTargetsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setDrugTargets([]);
+          setTargetsLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [selectedDrug]);
 
   const fetchGeneSuggestions = async (q: string): Promise<string[]> => {
@@ -665,7 +849,8 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
     const n = xs.length;
     const meanX = xs.reduce((a: number, b: number) => a + b, 0) / n;
     const meanY = ys.reduce((a: number, b: number) => a + b, 0) / n;
-    let num = 0, den = 0;
+    let num = 0,
+      den = 0;
     for (let i = 0; i < n; i++) {
       num += (xs[i] - meanX) * (ys[i] - meanY);
       den += (xs[i] - meanX) ** 2;
@@ -714,44 +899,64 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
     <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <h3 style={{ margin: 0, fontSize: '1rem' }}>DCNA vs Gene Expression</h3>
-        <button onClick={onReset} style={tabResetBtnStyle}>Reset</button>
+        <button onClick={onReset} style={tabResetBtnStyle}>
+          Reset
+        </button>
       </div>
       <p style={{ fontSize: '0.82rem', color: '#666', marginBottom: '0.75rem' }}>
-        Select a drug and a gene to generate a scatter plot of DCNA (x-axis) vs normalized expression (y-axis) across all patients.
+        Select a drug and a gene to generate a scatter plot of DCNA (x-axis) vs normalized expression (y-axis) across
+        all patients.
       </p>
       <InterpretBox id="tcga-scatter-tab" title="How to read the scatter plot" tone="tip">
         <p style={{ margin: '0 0 0.4rem' }}>
           Each point is one patient. The <strong>x-axis</strong> is the drug's DCNA for that patient; the
-          <strong> y-axis</strong> is that patient's expression of the chosen gene. The dashed red line is
-          a least-squares fit, and Pearson <em>r</em> quantifies how tightly DCNA tracks expression.
+          <strong> y-axis</strong> is that patient's expression of the chosen gene. The dashed red line is a
+          least-squares fit, and Pearson <em>r</em> quantifies how tightly DCNA tracks expression.
         </p>
         <ul style={{ margin: '0 0 0.3rem 1.1rem', padding: 0 }}>
-          <li><strong>r ≈ 0</strong> — DCNA and this gene's expression are unrelated. Likely an off-target gene.</li>
-          <li><strong>r &gt; 0.3</strong> — DCNA rises with expression. Consistent with DCNA being driven by this gene (typical for targets of agonists / activators).</li>
-          <li><strong>r &lt; −0.3</strong> — inverse relationship. Consistent with the gene being an inhibitor target (high expression → pathway activity → but DCNA is computed from the target set as a whole).</li>
+          <li>
+            <strong>r ≈ 0</strong> — DCNA and this gene's expression are unrelated. Likely an off-target gene.
+          </li>
+          <li>
+            <strong>r &gt; 0.3</strong> — DCNA rises with expression. Consistent with DCNA being driven by this gene
+            (typical for targets of agonists / activators).
+          </li>
+          <li>
+            <strong>r &lt; −0.3</strong> — inverse relationship. Consistent with the gene being an inhibitor target
+            (high expression → pathway activity → but DCNA is computed from the target set as a whole).
+          </li>
         </ul>
         <p style={{ margin: '0 0 0.25rem' }}>
           Use the <em>"Avg of all targets"</em> button to plot DCNA against the mean expression of <strong>all</strong>
           the drug's known targets — the cleanest sanity check that DCNA reflects the drug's target biology.
         </p>
         <p style={{ margin: 0, color: '#555', fontSize: '0.8rem' }}>
-          r reported here is the sample Pearson correlation. To see a permutation-based p-value for the
-          correlation, use the <em>MOA Correlation</em> page instead.
+          r reported here is the sample Pearson correlation. To see a permutation-based p-value for the correlation, use
+          the <em>MOA Correlation</em> page instead.
         </p>
       </InterpretBox>
-      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+      <div
+        style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '0.5rem' }}
+      >
         <div style={{ flex: 1, minWidth: 200 }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#555', display: 'block', marginBottom: 4 }}>Drug (DCNA)</label>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#555', display: 'block', marginBottom: 4 }}>
+            Drug (DCNA)
+          </label>
           <SearchInput
             placeholder="Search drugs..."
             fetchSuggestions={fetchTCGADrugs}
-            onSelect={(val) => { setSelectedDrug(val); setSelectedGene(''); }}
+            onSelect={(val) => {
+              setSelectedDrug(val);
+              setSelectedGene('');
+            }}
           />
         </div>
         <div style={{ flex: 1, minWidth: 200 }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#555', display: 'block', marginBottom: 4 }}>Gene (Expression)</label>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#555', display: 'block', marginBottom: 4 }}>
+            Gene (Expression)
+          </label>
           <SearchInput
-            placeholder={selectedGene.startsWith('AVG_TARGETS:') ? selectedGene : "Search genes..."}
+            placeholder={selectedGene.startsWith('AVG_TARGETS:') ? selectedGene : 'Search genes...'}
             fetchSuggestions={fetchGeneSuggestions}
             onSelect={setSelectedGene}
           />
@@ -765,10 +970,14 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
           onClick={handleGenerate}
           disabled={!selectedDrug || !selectedGene || loading}
           style={{
-            padding: '8px 20px', fontSize: '0.85rem', fontWeight: 600,
+            padding: '8px 20px',
+            fontSize: '0.85rem',
+            fontWeight: 600,
             background: !selectedDrug || !selectedGene ? '#ccc' : '#1a1a2e',
             color: !selectedDrug || !selectedGene ? '#888' : '#00d4ff',
-            border: 'none', borderRadius: 6, cursor: !selectedDrug || !selectedGene ? 'not-allowed' : 'pointer',
+            border: 'none',
+            borderRadius: 6,
+            cursor: !selectedDrug || !selectedGene ? 'not-allowed' : 'pointer',
             height: 38,
           }}
         >
@@ -789,8 +998,11 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
                     key={t.gene_symbol}
                     onClick={() => handleTargetClick(t.gene_symbol)}
                     style={{
-                      padding: '3px 10px', fontSize: '0.75rem', borderRadius: 12,
-                      border: '1px solid #4a90d9', background: selectedGene === t.gene_symbol ? '#4a90d9' : '#e8f4fd',
+                      padding: '3px 10px',
+                      fontSize: '0.75rem',
+                      borderRadius: 12,
+                      border: '1px solid #4a90d9',
+                      background: selectedGene === t.gene_symbol ? '#4a90d9' : '#e8f4fd',
                       color: selectedGene === t.gene_symbol ? '#fff' : '#1565c0',
                       cursor: 'pointer',
                     }}
@@ -804,10 +1016,14 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
                   <button
                     onClick={handleAverageClick}
                     style={{
-                      padding: '3px 10px', fontSize: '0.75rem', borderRadius: 12,
-                      border: '1px solid #7b1fa2', background: selectedGene.startsWith('AVG_TARGETS:') ? '#7b1fa2' : '#f3e5f5',
+                      padding: '3px 10px',
+                      fontSize: '0.75rem',
+                      borderRadius: 12,
+                      border: '1px solid #7b1fa2',
+                      background: selectedGene.startsWith('AVG_TARGETS:') ? '#7b1fa2' : '#f3e5f5',
                       color: selectedGene.startsWith('AVG_TARGETS:') ? '#fff' : '#7b1fa2',
-                      cursor: 'pointer', fontWeight: 600,
+                      cursor: 'pointer',
+                      fontWeight: 600,
                     }}
                     title={`Average expression of: ${availableTargets.map((t) => t.gene_symbol).join(', ')}`}
                   >
@@ -815,7 +1031,8 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
                   </button>
                 )}
                 {unavailableTargets.length > 0 && (
-                  <span style={{ fontSize: '0.72rem', color: '#999', alignSelf: 'center' }}
+                  <span
+                    style={{ fontSize: '0.72rem', color: '#999', alignSelf: 'center' }}
                     title={`Not in expression data: ${unavailableTargets.map((t) => t.gene_symbol).join(', ')}`}
                   >
                     +{unavailableTargets.length} not in expression data
@@ -836,11 +1053,27 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
 
       {scatterData && (
         <div>
-          <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.82rem', marginBottom: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-            <span><span style={{ color: '#888' }}>Patients: </span><strong>{scatterData.patient_count}</strong></span>
+          <div
+            style={{
+              display: 'flex',
+              gap: '1.5rem',
+              fontSize: '0.82rem',
+              marginBottom: 8,
+              flexWrap: 'wrap',
+              alignItems: 'center',
+            }}
+          >
+            <span>
+              <span style={{ color: '#888' }}>Patients: </span>
+              <strong>{scatterData.patient_count}</strong>
+            </span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
               <span style={{ color: '#888' }}>Pearson r: </span>
-              <strong style={{ color: scatterData.correlation > 0 ? '#2e7d32' : scatterData.correlation < 0 ? '#c62828' : '#555' }}>
+              <strong
+                style={{
+                  color: scatterData.correlation > 0 ? '#2e7d32' : scatterData.correlation < 0 ? '#c62828' : '#555',
+                }}
+              >
                 {scatterData.correlation}
               </strong>
               <InlineHelp
@@ -848,14 +1081,26 @@ function ScatterTab({ onReset }: { onReset: () => void }) {
                 text="Linear correlation coefficient between DCNA and expression across patients. Ranges from -1 (perfect negative) to +1 (perfect positive). |r| > ~0.3 is typically meaningful for biological data."
               />
             </span>
-            <span><span style={{ color: '#888' }}>Drug: </span><strong>{scatterData.drug}</strong></span>
-            <span><span style={{ color: '#888' }}>Gene: </span><strong>{scatterData.gene}</strong></span>
+            <span>
+              <span style={{ color: '#888' }}>Drug: </span>
+              <strong>{scatterData.drug}</strong>
+            </span>
+            <span>
+              <span style={{ color: '#888' }}>Gene: </span>
+              <strong>{scatterData.gene}</strong>
+            </span>
           </div>
           <div ref={plotRef} style={{ width: '100%', height: 500, border: '1px solid #eee', borderRadius: 6 }} />
           {(() => {
             const heatmapGenes = selectedGene.startsWith('AVG_TARGETS:')
-              ? selectedGene.replace('AVG_TARGETS:', '').split(',').map((g) => g.trim()).filter(Boolean)
-              : selectedGene ? [selectedGene] : [];
+              ? selectedGene
+                  .replace('AVG_TARGETS:', '')
+                  .split(',')
+                  .map((g) => g.trim())
+                  .filter(Boolean)
+              : selectedGene
+                ? [selectedGene]
+                : [];
             if (heatmapGenes.length === 0) return null;
             return (
               <ExpressionHeatmap
@@ -885,22 +1130,28 @@ function PatientTab({ patients, onReset }: { patients: string[]; onReset: () => 
     <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <h3 style={{ margin: 0, fontSize: '1rem' }}>Patient Profile</h3>
-        <button onClick={onReset} style={tabResetBtnStyle}>Reset</button>
+        <button onClick={onReset} style={tabResetBtnStyle}>
+          Reset
+        </button>
       </div>
       <p style={{ fontSize: '0.82rem', color: '#666', marginBottom: '0.75rem' }}>
         Search for a patient to see their top DCNA drug sensitivities and highest-expressed genes.
       </p>
       <InterpretBox id="tcga-patient-tab" title="How to read a patient profile" tone="tip">
-        <p style={{ margin: '0 0 0.4rem' }}>
-          A single patient's fingerprint, summarized as two ranked tables.
-        </p>
+        <p style={{ margin: '0 0 0.4rem' }}>A single patient's fingerprint, summarized as two ranked tables.</p>
         <ul style={{ margin: '0 0 0.3rem 1.1rem', padding: 0 }}>
-          <li><strong>Top DCNA</strong> — drugs to which this patient is most sensitive (highest DCNA). Useful for exploring personalized treatment possibilities in silico.</li>
-          <li><strong>Top expressed genes</strong> — genes this patient produces the most mRNA for. Compare against known biomarkers for the disease.</li>
+          <li>
+            <strong>Top DCNA</strong> — drugs to which this patient is most sensitive (highest DCNA). Useful for
+            exploring personalized treatment possibilities in silico.
+          </li>
+          <li>
+            <strong>Top expressed genes</strong> — genes this patient produces the most mRNA for. Compare against known
+            biomarkers for the disease.
+          </li>
         </ul>
         <p style={{ margin: 0, color: '#555', fontSize: '0.8rem' }}>
-          Rankings are relative to this single patient, not the whole cohort. A patient with broadly
-          low DCNA will still have a "top drug" — that doesn't mean they'd respond in absolute terms.
+          Rankings are relative to this single patient, not the whole cohort. A patient with broadly low DCNA will still
+          have a "top drug" — that doesn't mean they'd respond in absolute terms.
         </p>
       </InterpretBox>
       <SearchInput

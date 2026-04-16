@@ -20,7 +20,7 @@ export interface ExportMetadata {
   build_id: string;
   build_time: string;
   exported_at: string;
-  source: string;      // page path / feature name (e.g. "/trial-comparison")
+  source: string; // page path / feature name (e.g. "/trial-comparison")
 }
 
 function nowUtcIso(): string {
@@ -125,10 +125,7 @@ export function plotlyProvenanceAnnotation(meta: ExportMetadata) {
  *
  * The returned object is a shallow copy — the caller's layout is not mutated.
  */
-export function withProvenance<L extends { annotations?: unknown[] }>(
-  layout: L,
-  source: string,
-): L {
+export function withProvenance<L extends { annotations?: unknown[] }>(layout: L, source: string): L {
   const meta = buildExportMetadata(source);
   const ann = plotlyProvenanceAnnotation(meta);
   return {

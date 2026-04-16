@@ -133,7 +133,9 @@ export default function AutocompleteInput({
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        onFocus={() => { if (suggestions.length > 0) setShowDropdown(true); }}
+        onFocus={() => {
+          if (suggestions.length > 0) setShowDropdown(true);
+        }}
         style={{
           padding: '0.4rem 0.8rem',
           paddingRight: clearButton ? 28 : '0.8rem',
@@ -146,28 +148,33 @@ export default function AutocompleteInput({
       />
       {clearButton}
       {showDropdown && suggestions.length > 0 && (
-        <ul style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          zIndex: 1000,
-          background: '#fff',
-          border: '1px solid #ccc',
-          borderTop: 'none',
-          borderRadius: '0 0 4px 4px',
-          margin: 0,
-          padding: 0,
-          listStyle: 'none',
-          maxHeight: 220,
-          overflowY: 'auto',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.12)',
-        }}>
+        <ul
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            background: '#fff',
+            border: '1px solid #ccc',
+            borderTop: 'none',
+            borderRadius: '0 0 4px 4px',
+            margin: 0,
+            padding: 0,
+            listStyle: 'none',
+            maxHeight: 220,
+            overflowY: 'auto',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.12)',
+          }}
+        >
           {suggestions.map((s, i) => (
             <li
               key={s}
               title={s}
-              onMouseDown={(e) => { e.preventDefault(); selectSuggestion(s); }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                selectSuggestion(s);
+              }}
               onMouseEnter={() => setHighlightIndex(i)}
               style={{
                 padding: '6px 10px',

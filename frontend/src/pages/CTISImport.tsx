@@ -135,7 +135,9 @@ export default function CTISImport() {
             pollRef.current = null;
             setImporting(false);
             // Refresh stats
-            getCTISStats().then(setStats).catch(() => {});
+            getCTISStats()
+              .then(setStats)
+              .catch(() => {});
           }
         } catch {
           // Keep polling on transient errors
@@ -166,55 +168,86 @@ export default function CTISImport() {
 
       <InterpretBox id="ctis-intro" title="How to read this page">
         <p style={{ margin: '0 0 0.5rem' }}>
-          CT.gov only lists US-registered trials plus their international partners;
-          many EU-only trials never appear. The EU Clinical Trials Information System
-          (CTIS) is the complementary registry. This page lets you search CTIS, preview
-          results, and import selected trials into the local database with
+          CT.gov only lists US-registered trials plus their international partners; many EU-only trials never appear.
+          The EU Clinical Trials Information System (CTIS) is the complementary registry. This page lets you search
+          CTIS, preview results, and import selected trials into the local database with
           <em> cross-referencing</em> to existing CT.gov records.
         </p>
         <ul style={{ margin: '0.25rem 0 0.5rem 1.1rem', padding: 0 }}>
           <li>
-            <strong>Stats banner</strong> — CT.gov count (US-centric) vs CTIS count
-            (EU-centric) vs Cross-referenced (trials registered in both). EU countries
-            is the number of distinct CTIS member states represented.
+            <strong>Stats banner</strong> — CT.gov count (US-centric) vs CTIS count (EU-centric) vs Cross-referenced
+            (trials registered in both). EU countries is the number of distinct CTIS member states represented.
           </li>
           <li>
-            <strong>Search &amp; preview</strong> — lightweight query (no details fetched).
-            The <em>Already Imported</em> column shows which rows already exist in the
-            local DB so you can skip duplicate work.
+            <strong>Search &amp; preview</strong> — lightweight query (no details fetched). The{' '}
+            <em>Already Imported</em> column shows which rows already exist in the local DB so you can skip duplicate
+            work.
           </li>
           <li>
-            <strong>Import flow</strong> — runs in the background with progress polling
-            every 2 s. <em>Fetch full details</em> makes the import slower but captures
-            sponsors, conditions, products, and country lists.
+            <strong>Import flow</strong> — runs in the background with progress polling every 2 s.{' '}
+            <em>Fetch full details</em> makes the import slower but captures sponsors, conditions, products, and country
+            lists.
           </li>
           <li>
-            <strong>Import All Glioma Trials</strong> — one-click bulk import using a
-            pre-canned multi-term query for glioma variants (bypasses the search box).
+            <strong>Import All Glioma Trials</strong> — one-click bulk import using a pre-canned multi-term query for
+            glioma variants (bypasses the search box).
           </li>
         </ul>
         <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: '#555' }}>
-          <strong>Cross-referencing:</strong> a trial is considered cross-referenced
-          when its CTIS <code>ct_number</code> maps to a known CT.gov NCT ID via the
-          sponsor/identifier links published by EMA.
+          <strong>Cross-referencing:</strong> a trial is considered cross-referenced when its CTIS{' '}
+          <code>ct_number</code> maps to a known CT.gov NCT ID via the sponsor/identifier links published by EMA.
         </p>
       </InterpretBox>
 
       {/* Stats banner */}
-      <div style={{
-        display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap',
-      }}>
-        <StatCard label="CT.gov Trials" value={stats?.total_ctgov_trials ?? '-'} loading={statsLoading} color="#007bff" tooltip="Total trials ingested from ClinicalTrials.gov in the local DB." />
-        <StatCard label="CTIS Trials" value={stats?.total_ctis_trials ?? '-'} loading={statsLoading} color="#28a745" tooltip="Total trials ingested from the EU Clinical Trials Information System." />
-        <StatCard label="Cross-Referenced" value={stats?.cross_referenced ?? '-'} loading={statsLoading} color="#6f42c1" tooltip="Trials present in both registries — CTIS ct_number linked to CT.gov NCT ID via EMA-published sponsor identifiers." />
-        <StatCard label="EU Countries" value={stats?.ctis_countries?.length ?? '-'} loading={statsLoading} color="#fd7e14" tooltip="Number of distinct CTIS member states represented across imported trials." />
+      <div
+        style={{
+          display: 'flex',
+          gap: '1rem',
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap',
+        }}
+      >
+        <StatCard
+          label="CT.gov Trials"
+          value={stats?.total_ctgov_trials ?? '-'}
+          loading={statsLoading}
+          color="#007bff"
+          tooltip="Total trials ingested from ClinicalTrials.gov in the local DB."
+        />
+        <StatCard
+          label="CTIS Trials"
+          value={stats?.total_ctis_trials ?? '-'}
+          loading={statsLoading}
+          color="#28a745"
+          tooltip="Total trials ingested from the EU Clinical Trials Information System."
+        />
+        <StatCard
+          label="Cross-Referenced"
+          value={stats?.cross_referenced ?? '-'}
+          loading={statsLoading}
+          color="#6f42c1"
+          tooltip="Trials present in both registries — CTIS ct_number linked to CT.gov NCT ID via EMA-published sponsor identifiers."
+        />
+        <StatCard
+          label="EU Countries"
+          value={stats?.ctis_countries?.length ?? '-'}
+          loading={statsLoading}
+          color="#fd7e14"
+          tooltip="Number of distinct CTIS member states represented across imported trials."
+        />
       </div>
 
       {/* Search panel */}
-      <div style={{
-        background: '#fff', border: '1px solid #ddd', borderRadius: 8,
-        padding: '1.25rem', marginBottom: '1.5rem',
-      }}>
+      <div
+        style={{
+          background: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: 8,
+          padding: '1.25rem',
+          marginBottom: '1.5rem',
+        }}
+      >
         <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem' }}>Search CTIS</h3>
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
           <input
@@ -222,10 +255,16 @@ export default function CTISImport() {
             placeholder="Search term (e.g., glioblastoma, temozolomide)..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSearch();
+            }}
             style={{
-              flex: 1, minWidth: 250, padding: '0.5rem 0.75rem',
-              border: '1px solid #ccc', borderRadius: 4, fontSize: '0.9rem',
+              flex: 1,
+              minWidth: 250,
+              padding: '0.5rem 0.75rem',
+              border: '1px solid #ccc',
+              borderRadius: 4,
+              fontSize: '0.9rem',
             }}
           />
           <select
@@ -242,9 +281,13 @@ export default function CTISImport() {
             onClick={handleSearch}
             disabled={searching || !query.trim()}
             style={{
-              padding: '0.5rem 1.2rem', background: '#007bff', color: '#fff',
-              border: 'none', borderRadius: 4, cursor: 'pointer',
-              opacity: (searching || !query.trim()) ? 0.6 : 1,
+              padding: '0.5rem 1.2rem',
+              background: '#007bff',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              opacity: searching || !query.trim() ? 0.6 : 1,
             }}
           >
             {searching ? 'Searching...' : 'Search'}
@@ -252,8 +295,12 @@ export default function CTISImport() {
           <button
             onClick={handleReset}
             style={{
-              padding: '0.5rem 1.2rem', background: '#6c757d', color: '#fff',
-              border: 'none', borderRadius: 4, cursor: 'pointer',
+              padding: '0.5rem 1.2rem',
+              background: '#6c757d',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
             }}
           >
             Reset
@@ -262,20 +309,22 @@ export default function CTISImport() {
 
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', fontSize: '0.85rem' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <input
-              type="checkbox"
-              checked={fetchDetails}
-              onChange={(e) => setFetchDetails(e.target.checked)}
-            />
+            <input type="checkbox" checked={fetchDetails} onChange={(e) => setFetchDetails(e.target.checked)} />
             Fetch full details on import (slower but richer data)
           </label>
           <button
             onClick={() => handleImport(true)}
             disabled={importing}
             style={{
-              padding: '0.4rem 1rem', background: '#28a745', color: '#fff',
-              border: 'none', borderRadius: 4, cursor: 'pointer', marginLeft: 'auto',
-              opacity: importing ? 0.6 : 1, fontSize: '0.85rem',
+              padding: '0.4rem 1rem',
+              background: '#28a745',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              marginLeft: 'auto',
+              opacity: importing ? 0.6 : 1,
+              fontSize: '0.85rem',
             }}
           >
             Import All Glioma Trials
@@ -283,69 +332,92 @@ export default function CTISImport() {
         </div>
 
         {searchError && (
-          <div style={{ marginTop: '0.75rem', color: '#dc3545', fontSize: '0.85rem' }}>
-            {searchError}
-          </div>
+          <div style={{ marginTop: '0.75rem', color: '#dc3545', fontSize: '0.85rem' }}>{searchError}</div>
         )}
       </div>
 
       {/* Import progress */}
       {importJob && (
-        <div style={{
-          background: importJob.status === 'error' ? '#fff5f5' : importJob.status === 'complete' ? '#f0fff4' : '#fff',
-          border: `1px solid ${importJob.status === 'error' ? '#f5c6cb' : importJob.status === 'complete' ? '#c3e6cb' : '#ddd'}`,
-          borderRadius: 8, padding: '1rem', marginBottom: '1.5rem',
-        }}>
+        <div
+          style={{
+            background: importJob.status === 'error' ? '#fff5f5' : importJob.status === 'complete' ? '#f0fff4' : '#fff',
+            border: `1px solid ${importJob.status === 'error' ? '#f5c6cb' : importJob.status === 'complete' ? '#c3e6cb' : '#ddd'}`,
+            borderRadius: 8,
+            padding: '1rem',
+            marginBottom: '1.5rem',
+          }}
+        >
           <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>
-            Import {importJob.status === 'running' ? 'In Progress' : importJob.status === 'complete' ? 'Complete' : 'Failed'}
+            Import{' '}
+            {importJob.status === 'running' ? 'In Progress' : importJob.status === 'complete' ? 'Complete' : 'Failed'}
           </h3>
           {importJob.status === 'running' && (
             <div style={{ marginBottom: '0.5rem' }}>
-              <div style={{
-                height: 8, background: '#e9ecef', borderRadius: 4, overflow: 'hidden',
-              }}>
-                <div style={{
-                  height: '100%', width: `${importJob.progress_pct}%`,
-                  background: '#007bff', borderRadius: 4,
-                  transition: 'width 0.3s ease',
-                }} />
+              <div
+                style={{
+                  height: 8,
+                  background: '#e9ecef',
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  style={{
+                    height: '100%',
+                    width: `${importJob.progress_pct}%`,
+                    background: '#007bff',
+                    borderRadius: 4,
+                    transition: 'width 0.3s ease',
+                  }}
+                />
               </div>
             </div>
           )}
           <div style={{ fontSize: '0.85rem', color: '#555' }}>
-            <p style={{ margin: '0.25rem 0' }}><strong>Stage:</strong> {importJob.stage}</p>
+            <p style={{ margin: '0.25rem 0' }}>
+              <strong>Stage:</strong> {importJob.stage}
+            </p>
             <p style={{ margin: '0.25rem 0' }}>{importJob.detail}</p>
             {importJob.trials_found > 0 && (
               <p style={{ margin: '0.25rem 0' }}>
-                Found: {importJob.trials_found} | Imported: {importJob.trials_imported} | Skipped: {importJob.trials_skipped}
+                Found: {importJob.trials_found} | Imported: {importJob.trials_imported} | Skipped:{' '}
+                {importJob.trials_skipped}
               </p>
             )}
-            {importJob.error && (
-              <p style={{ margin: '0.25rem 0', color: '#dc3545' }}>Error: {importJob.error}</p>
-            )}
+            {importJob.error && <p style={{ margin: '0.25rem 0', color: '#dc3545' }}>Error: {importJob.error}</p>}
           </div>
         </div>
       )}
 
       {/* Search results table */}
       {results.length > 0 && (
-        <div style={{
-          background: '#fff', border: '1px solid #ddd', borderRadius: 8,
-          padding: '1rem',
-        }}>
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            marginBottom: '0.75rem',
-          }}>
-            <h3 style={{ margin: 0, fontSize: '1rem' }}>
-              Search Results ({searchTotal} trials)
-            </h3>
+        <div
+          style={{
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 8,
+            padding: '1rem',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '0.75rem',
+            }}
+          >
+            <h3 style={{ margin: 0, fontSize: '1rem' }}>Search Results ({searchTotal} trials)</h3>
             <button
               onClick={() => handleImport(false)}
               disabled={importing}
               style={{
-                padding: '0.4rem 1rem', background: '#28a745', color: '#fff',
-                border: 'none', borderRadius: 4, cursor: 'pointer',
+                padding: '0.4rem 1rem',
+                background: '#28a745',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
                 opacity: importing ? 0.6 : 1,
               }}
             >
@@ -403,17 +475,27 @@ export default function CTISImport() {
 
       {/* Countries list */}
       {stats && stats.ctis_countries.length > 0 && (
-        <div style={{
-          background: '#fff', border: '1px solid #ddd', borderRadius: 8,
-          padding: '1rem', marginTop: '1.5rem',
-        }}>
+        <div
+          style={{
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 8,
+            padding: '1rem',
+            marginTop: '1.5rem',
+          }}
+        >
           <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Countries Represented</h3>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {stats.ctis_countries.map((c) => (
-              <span key={c} style={{
-                background: '#e8f4fd', padding: '3px 10px', borderRadius: 12,
-                fontSize: '0.8rem',
-              }}>
+              <span
+                key={c}
+                style={{
+                  background: '#e8f4fd',
+                  padding: '3px 10px',
+                  borderRadius: 12,
+                  fontSize: '0.8rem',
+                }}
+              >
                 {c}
               </span>
             ))}
@@ -424,30 +506,49 @@ export default function CTISImport() {
   );
 }
 
-function StatCard({ label, value, loading, color, tooltip }: {
-  label: string; value: number | string; loading: boolean; color: string; tooltip?: string;
+function StatCard({
+  label,
+  value,
+  loading,
+  color,
+  tooltip,
+}: {
+  label: string;
+  value: number | string;
+  loading: boolean;
+  color: string;
+  tooltip?: string;
 }) {
   return (
-    <div style={{
-      background: '#fff', border: '1px solid #ddd', borderRadius: 8,
-      padding: '1rem 1.25rem', minWidth: 140, borderTop: `3px solid ${color}`,
-    }}>
-      <div style={{ fontSize: '0.75rem', color: '#888', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+    <div
+      style={{
+        background: '#fff',
+        border: '1px solid #ddd',
+        borderRadius: 8,
+        padding: '1rem 1.25rem',
+        minWidth: 140,
+        borderTop: `3px solid ${color}`,
+      }}
+    >
+      <div
+        style={{ fontSize: '0.75rem', color: '#888', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}
+      >
         {label}
         {tooltip && <InlineHelp size={11} text={tooltip} />}
       </div>
-      <div style={{ fontSize: '1.5rem', fontWeight: 700, color }}>
-        {loading ? '...' : value}
-      </div>
+      <div style={{ fontSize: '1.5rem', fontWeight: 700, color }}>{loading ? '...' : value}</div>
     </div>
   );
 }
 
 const thStyle: React.CSSProperties = {
-  textAlign: 'left', padding: '0.5rem', borderBottom: '2px solid #ddd',
+  textAlign: 'left',
+  padding: '0.5rem',
+  borderBottom: '2px solid #ddd',
   whiteSpace: 'nowrap',
 };
 
 const tdStyle: React.CSSProperties = {
-  padding: '0.4rem 0.5rem', verticalAlign: 'top',
+  padding: '0.4rem 0.5rem',
+  verticalAlign: 'top',
 };
