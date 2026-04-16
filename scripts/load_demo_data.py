@@ -5,10 +5,11 @@ Usage:
     python scripts/load_demo_data.py
 
 Reads ``data/demo_trials.json`` (15 representative GBM clinical trials)
-and upserts them into the local SQLite database via the existing ETL
-pipeline. Existing records with the same NCT ID are updated in place;
-new records are inserted. The script is idempotent — running it twice
-produces the same result.
+and **inserts only trials that don't already exist** in the local SQLite
+database. Existing records are left untouched — this prevents the sparse
+demo fixtures from overwriting richer records ingested from CT.gov
+(which include arms, outcomes, sponsor data, and outcome results that
+the demo JSON intentionally omits for brevity).
 
 After running, start the backend (``uvicorn api.main:app --reload``) and
 browse to http://localhost:5173 — the Trial Explorer, Disease Search,
@@ -29,6 +30,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from connectors.models.trial import Trial  # noqa: E402
 from database.engine import create_db_engine, init_db  # noqa: E402
 from database.etl import load_trials  # noqa: E402
+from database.models import TrialRecord  # noqa: E402
 
 DEMO_FILE = REPO_ROOT / "data" / "demo_trials.json"
 
@@ -41,18 +43,34 @@ def main() -> None:
     with open(DEMO_FILE, encoding="utf-8") as f:
         raw = json.load(f)
 
-    trials = [Trial(**t) for t in raw]
-    print(f"Loaded {len(trials)} demo trials from {DEMO_FILE.name}")
-
     engine = create_db_engine()
     init_db(engine)
 
     from sqlalchemy.orm import Session
 
     with Session(engine) as session:
-        records = load_trials(session, trials)
+        # Check which demo trials already exist so we don't overwrite
+        # richer CT.gov-sourced records with sparse demo stubs.
+        existing_ids = {
+            nct_id
+            for (nct_id,) in session.query(TrialRecord.nct_id)
+            .filter(TrialRecord.nct_id.in_([t["nct_id"] for t in raw]))
+            .all()
+        }
+
+        new_trials = [Trial(**t) for t in raw if t["nct_id"] not in existing_ids]
+        skipped = len(raw) - len(new_trials)
+
+        if skipped:
+            print(f"Skipping {skipped} demo trial(s) already in the database.")
+        if not new_trials:
+            print("All demo trials already exist. Nothing to insert.")
+            return
+
+        print(f"Inserting {len(new_trials)} new demo trial(s)...")
+        records = load_trials(session, new_trials)
         session.commit()
-        print(f"Upserted {len(records)} trial records into the database.")
+        print(f"Inserted {len(records)} trial records.")
         print("Done. Start the backend and browse to the UI to see the data.")
 
 
