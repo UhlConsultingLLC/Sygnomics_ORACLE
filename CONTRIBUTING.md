@@ -76,6 +76,19 @@ sure it hasn't already been reported.
 - Configuration keys live in `config/default_config.yaml` and are validated
   by Pydantic in `config/schema.py`. If you add a new key, add it to both.
 
+### Database schema changes
+
+ORACLE does **not** use Alembic. Tables are created by
+`database/engine.init_db()` → `Base.metadata.create_all()` on first
+start. When you add a column:
+
+1. Add the column to the ORM model in `database/models.py`.
+2. Add an ALTER TABLE entry to `database/engine._apply_column_migrations()`.
+   This function runs on every startup and silently catches "column already
+   exists" errors, so existing databases upgrade without data loss.
+3. Test locally: delete `clinical_trials.db`, restart uvicorn, confirm the
+   new column appears in `sqlite3 clinical_trials.db '.schema <table>'`.
+
 ### Before you push
 
 Run the checks that CI will also run:
