@@ -1,0 +1,20 @@
+# Code owners — automatically requested for review on PRs that touch
+# these paths. See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default: the maintainer reviews everything
+* @UhlConsultingLLC
+
+# Backend-specific paths
+/api/                  @UhlConsultingLLC
+/analysis/             @UhlConsultingLLC
+/connectors/           @UhlConsultingLLC
+/database/             @UhlConsultingLLC
+/config/               @UhlConsultingLLC
+
+# Frontend-specific paths
+/frontend/             @UhlConsultingLLC
+
+# CI / infra
+/.github/              @UhlConsultingLLC
+Dockerfile             @UhlConsultingLLC
+docker-compose.yml     @UhlConsultingLLC
