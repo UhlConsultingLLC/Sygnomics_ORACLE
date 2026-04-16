@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * Plotly layout objects + screening-impact API records use dynamic
+ * keys not fully typed in frontend/src/types. Tracked for v1.1.
+ */
+/* eslint-disable react-hooks/exhaustive-deps --
+ * Ref-cleanup warnings from the three plot effects; refs are copied
+ * to local vars inside each effect at read time. Tracked for v1.1.
+ */
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';

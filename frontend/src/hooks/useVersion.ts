@@ -21,6 +21,10 @@ export function useVersion(): VersionInfo | null {
 
   useEffect(() => {
     if (info) return;
+    // Intentional sync setState from module-level cache so first paint
+    // has the version ID without waiting for a micro-task. Refactor
+    // to a suspense boundary tracked for v1.1.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (_cache) { setInfo(_cache); return; }
     if (!_inflight) {
       _inflight = fetchVersion()

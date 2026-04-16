@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * Plotly layout objects + validation-run API response use dynamic
+ * keys not fully typed yet. Tracked for v1.1.
+ */
+/* eslint-disable react-hooks/exhaustive-deps --
+ * Polling effect intentionally closes over the runId rather than
+ * re-subscribing on dep changes.
+ */
 import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import axios from 'axios';
 import Plotly from 'plotly.js/dist/plotly.min.js';

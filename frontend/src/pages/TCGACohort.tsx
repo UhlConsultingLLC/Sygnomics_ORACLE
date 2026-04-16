@@ -1,3 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * TCGA API payloads (cohort, DCNA, expression, scatter, heatmap) are
+ * dynamic shapes that aren't fully typed in frontend/src/types yet.
+ * Plotly layout objects here also use `any` for the same reason as
+ * Simulation.tsx. Proper types tracked for v1.1.
+ */
+/* eslint-disable react-hooks/exhaustive-deps --
+ * Effects intentionally omit setState updaters (stable by React
+ * contract) and computed props. Tracked for v1.1.
+ */
 import { useState, useEffect, useRef } from 'react';
 import { useTCGASummary, useDCNADetail, useExpressionDetail, usePatientProfile } from '../hooks/useApi';
 import { fetchTCGADrugs, fetchTCGAGenes, fetchScatterData, fetchDrugTargets, fetchExpressionHeatmap } from '../services/api';
@@ -153,17 +163,6 @@ export default function TCGACohort() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div style={{
-      background: '#fff', border: '1px solid #ddd', borderRadius: 8,
-      padding: '0.75rem 1.25rem', minWidth: 140, textAlign: 'center',
-    }}>
-      <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1a1a2e' }}>{value.toLocaleString()}</div>
-      <div style={{ fontSize: '0.78rem', color: '#888' }}>{label}</div>
-    </div>
-  );
-}
 
 // --- Autocomplete search input ---
 function SearchInput({ placeholder, fetchSuggestions, onSelect }: {

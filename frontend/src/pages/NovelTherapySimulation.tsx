@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+ * One `any` on the axios error catch block (standard pattern).
+ */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AutocompleteInput from '../components/AutocompleteInput';
